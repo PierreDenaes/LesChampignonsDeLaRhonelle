@@ -134,18 +134,18 @@
 		<section class="section-partenaire">
 			<h2 class="fw-bold text-blue fs-1 text-center mb-5">No<span class="bg-text">s Partenaires</span>
 			</h2>
-			{# <div class="row">
-			{% for partenaire in partenaires %}
+			<div class="row">
+			{% for sponsor in sponsors %}
 				<div class="col-6 col-md-4 col-lg-2 p-3">
-					<a target="_blank" href="{{ partenaire.siteWeb }}" class="link-recettes">
+					<a target="_blank" href="{{ sponsor.siteWeb }}" class="link-recettes">
 						<picture>
-							<source srcset="{{ asset('images/partenaire/' ~ partenaire.image) }}" media="(max-width: 576px)" width="200" height="200">
-							<img src="{{ asset('images/partenaire/' ~ partenaire.image) }}" alt="logo {{ partenaire.nom }}" width="300" height="300">
+							<source srcset="{{ asset('images/sponsors/' ~ sponsor.image) }}" media="(max-width: 576px)" width="200" height="200">
+							<img src="{{ asset('images/sponsors/' ~ sponsor.image) }}" alt="logo {{ sponsor.nom }}" width="300" height="300">
 						</picture>
 					</a>
 				</div>
 			{% endfor %}
-			</div> #}
+			</div>
 		</section>
 	</main>
 	<div class="divider text-center py-3">

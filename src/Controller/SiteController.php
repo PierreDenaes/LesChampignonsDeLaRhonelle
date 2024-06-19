@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\SponsorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,10 +10,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class SiteController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(): Response
+    public function index(SponsorRepository $sponsorRepository): Response
     {
+        $user = $this->getUser();
+       
+        $sponsors = $sponsorRepository->findAll();
         return $this->render('site/index.html.twig', [
-            'controller_name' => 'SiteController',
+            'controller_name' => 'HomeController',
+            'sponsors' => $sponsors,
+            'user' => $user,
         ]);
     }
 }

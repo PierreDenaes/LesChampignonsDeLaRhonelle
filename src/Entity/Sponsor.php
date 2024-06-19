@@ -23,11 +23,11 @@ class Sponsor
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[Vich\UploadableField(mapping: 'sponsor', fileNameProperty: 'image')]
+    #[Vich\UploadableField(mapping: 'sponsors', fileNameProperty: 'image')]
     private ?File $imageFile = null;
 
-    #[ORM\Column (type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    #[ORM\Column (type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $siteWeb = null;
