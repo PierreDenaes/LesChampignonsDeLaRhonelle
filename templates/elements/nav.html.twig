@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg bg-blue d-flex flex-column sticky-top">
+    <div class="text-center pt-3 px-2">
+        <a class="navbar-brand text-center m-0 d-block" href="#">
+            <img class="logoChampignon" src="{{ asset('images/elements/logo-100.webp') }}" alt="Logo Les Champignons de la Rhônelle" width="100" height="100">
+        </a>
+        <h1 class="text-gold mb-4 mt-3 fw-semibold">Les Champignons de la Rhônelle</h1>
+    </div>
+    <div class="container-fluid pb-2">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="text-center collapse navbar-collapse text-gold fw-bold collapse" id="navbarNav">
+            <ul class="navbar-nav w-100 justify-content-evenly">
+                <li class="nav-item">
+                    <a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_home') }}">
+                        <i class="fas fa-home"></i> Accueil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-4 hover-underline-animation" href=""><i class="fa-solid fa-seedling"></i> Nos espèces
+</a>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-4 hover-underline-animation" href="">
+                        <i class="fas fa-utensils"></i> Vos recettes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-4 hover-underline-animation" href="#">
+                        <i class="fas fa-info-circle"></i> À propos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-4 hover-underline-animation" href="#">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                </li>
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_profile') }}">
+                            <i class="fas fa-user"></i> Profil
+                        </a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link fs-4 hover-underline-animation" href="{{ path('admin') }}">
+                                <i class="fa-solid fa-screwdriver-wrench"></i> Administration
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_register') }}">
+                            <i class="fas fa-user-plus"></i> Inscription
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_login') }}">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
