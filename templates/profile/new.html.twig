@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Créer Profil
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<h1>Créer votre profil</h1>
+
+		{{ form_start(form) }}
+		{{ form_widget(form) }}
+		<button class="btn">Enregistrer</button>
+		{{ form_end(form) }}
+	</div>
+
+
+{% endblock %}
+

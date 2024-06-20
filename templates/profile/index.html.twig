@@ -1,20 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="container-fluid">
+        <div class="wrapper d-flex align-items-stretch row gx-0 pe-4">
+            <nav id="sidebarUser" class="col-3">
+                <div class="p-4">
+                    <div class="mb-5">
+                        <div class="card" id="profile-display">
+                            <div class="card-header text-center p-5">
+                                <a href="{{ path('app_profile') }}" class="img logo rounded-circle mb-5">
+                                    <img class="img-fluid" src="{{ asset('images/avatars/' ~ (profile.avatarName ?: profile.DEFAULT_AVATAR)) }}" alt="Avatar de {{ profile.name }}" style="border: 2px solid #000; border-radius: 50%;"/>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <p class="card-text">
+                                        <strong>Prénom :</strong>
+                                        {{ profile.firstname }}
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="card-text">
+                                        <strong>Nom :</strong>
+                                        {{ profile.name }}
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="card-text">
+                                        <strong>Biographie :</strong>
+                                        {{ profile.biography }}
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="card-text">
+                                        <strong>Pseudo :</strong>
+                                        {{ profile.pseudo }}
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="card-text">
+                                        <strong>Actif :</strong>
+                                        {{ profile.isActive ? 'Oui' : 'Non' }}
+                                    </p>
+                                </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+                                <div class="mb-3">
+                                    <a href="{{ path('app_profile_edit', {'id': profile.id}) }}" id="editProfileButton" class="btn btn-blueboot">Éditer le profil</a>
+                                </div>
+                                <form method="post" action="{{ path('app_profile_delete', {'id': profile.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre profil ?');" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ profile.id) }}">
+                                    <button class="btn btn-danger text-white">Supprimer mon compte</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/pierredenaes/Sites/LesChampignonsDeLaRhonelle/src/Controller/ProfileController.php</code></li>
-        <li>Your template at <code>/Users/pierredenaes/Sites/LesChampignonsDeLaRhonelle/templates/profile/index.html.twig</code></li>
-    </ul>
-</div>
+            <!-- Page Content  -->
+            <div id="dynamicContent" class="p-4 p-md-5 mt-4 border col-9">
+                <!-- Contenu dynamique ici -->
+            </div>
+        </div>
+    </div>
 {% endblock %}
