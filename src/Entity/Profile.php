@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ProfileRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -48,9 +50,13 @@ class Profile
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    #[ORM\OneToMany(mappedBy: 'profile', targetEntity: Recipe::class, cascade: ['persist', 'remove'])]
+    private Collection $recipes;
+
     public function __construct()
     {
         $this->isActive = true;
+        $this->recipes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -169,6 +175,34 @@ class Profile
 
         return $this;
     }
+
+    public function getRecipes(): Collection
+    {
+        return $this->recipes;
+    }
+
+    public function addRecipe(Recipe $recipe): static
+    {
+        if (!$this->recipes->contains($recipe)) {
+            $this->recipes[] = $recipe;
+            $recipe->setProfile($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipe(Recipe $recipe): static
+    {
+        if ($this->recipes->removeElement($recipe)) {
+            // set the owning side to null (unless already changed)
+            if ($recipe->getProfile() === $this) {
+                $recipe->setProfile(null);
+            }
+        }
+
+        return $this;
+    }
+    
     public function __sleep()
     {
         return [

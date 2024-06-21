@@ -26,3 +26,6 @@ services:
     App\Service\AvatarService:
         arguments:
             $vichUploader: '@vich_uploader.property_mapping_factory'
+    App\Service\RecipeService:
+        arguments:
+            $vichUploader: '@vich_uploader.property_mapping_factory'
