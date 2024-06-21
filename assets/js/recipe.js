@@ -1,14 +1,6 @@
-// Import Bootstrap (déjà inclus dans votre projet via Webpack Encore)
-import { Modal } from 'bootstrap';
-
-// Code pour gérer les recettes
 document.addEventListener('DOMContentLoaded', function() {
     const recipesList = document.getElementById('recipes-list');
-    const addRecipeButton = document.getElementById('add-recipe');
     const recipeForm = document.getElementById('recipe-form');
-    const recipeModalElement = document.getElementById('recipeModal');
-    const recipeModal = new Modal(recipeModalElement);
-    const csrfToken = recipesList.getAttribute('data-csrf-token');
 
     // Fonction pour charger les recettes
     function loadRecipes() {
@@ -39,14 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Charger les recettes lors du chargement de la page
     loadRecipes();
 
-    // Fonction pour ajouter une recette
-    addRecipeButton.addEventListener('click', function() {
-        recipeForm.reset();
-        recipeForm.action = '/profile/recipes/new';
-        document.getElementById('recipeModalLabel').textContent = 'Ajouter une recette';
-        recipeModal.show();
-    });
-
     // Fonctions pour voir, éditer et supprimer une recette
     window.viewRecipe = function(id) {
         fetch(`/profile/recipes/${id}`)
@@ -61,14 +45,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 recipeForm.action = `/profile/recipes/${id}/edit`;
-                document.getElementById('recipeModalLabel').textContent = 'Modifier la recette';
                 Object.keys(data).forEach(key => {
                     const input = document.querySelector(`#recipe-form [name="recipe[${key}]"]`);
                     if (input) {
                         input.value = data[key];
                     }
                 });
-                recipeModal.show();
+                const tabTrigger = new bootstrap.Tab(document.querySelector('.nav-link[href="#new-recipe"]'));
+                tabTrigger.show();
             });
     };
 
@@ -77,13 +61,18 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/profile/recipes/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken
+                    'X-CSRF-TOKEN': getCsrfToken(id)
                 }
             }).then(() => {
                 loadRecipes();
             });
         }
     };
+
+    // Fonction pour obtenir le jeton CSRF
+    function getCsrfToken(id) {
+        return '{{ csrf_token("delete") }}'.replace('delete', 'delete' + id);
+    }
 
     // Gestion de la soumission du formulaire via AJAX
     recipeForm.addEventListener('submit', function(event) {
@@ -96,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
         }).then(response => {
             if (response.ok) {
-                recipeModal.hide();
+                const tabTrigger = new bootstrap.Tab(document.querySelector('.nav-link[href="#recipes"]'));
+                tabTrigger.show();
                 loadRecipes();
             } else {
                 alert('Erreur lors de la sauvegarde de la recette.');
