@@ -169,6 +169,23 @@ class Profile
 
         return $this;
     }
-
+    public function __sleep()
+    {
+        return [
+            'id',
+            'avatarName',
+            'updatedAt',
+            'name',
+            'firstname',
+            'idUser',
+            'pseudo',
+            'biography',
+            'isActive'
+        ];
+    }
+    public function __wakeup()
+    {
+        $this->avatarFile = null;
+    }
     
 }

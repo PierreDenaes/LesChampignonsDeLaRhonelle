@@ -25,12 +25,11 @@ class AvatarService
         if (!$avatarFile) {
             return;
         }
-
         // Vérifiez si l'avatar actuel est le fichier par défaut
         if ($profile->getAvatarName() === Profile::DEFAULT_AVATAR) {
             return;
         }
-
+        
         $originalExtension = $avatarFile->guessExtension();
         $image = $this->imageManager->read($avatarFile->getPathname());
         $encodedImage = $image->encode(new WebpEncoder(), 80);
@@ -60,6 +59,7 @@ class AvatarService
         // Mise à jour du nom de fichier dans le profil
         $profile->setAvatarName($webpName);
     }
+    
 
     public function handleAvatarRemoval(Profile $profile)
     {
@@ -68,6 +68,12 @@ class AvatarService
             $uploadDir = $this->getUploadDirectory($profile, 'avatarFile');
             $this->removeFile($uploadDir, $avatarName);
         }
+    }
+    
+    public function removeOldAvatar(string $oldAvatarName, Profile $profile)
+    {
+        $uploadDir = $this->getUploadDirectory($profile, 'avatarFile');
+        $this->removeFile($uploadDir, $oldAvatarName);
     }
 
     private function getUploadDirectory(Profile $profile, string $field): string
@@ -89,10 +95,15 @@ class AvatarService
         foreach ($extensions as $extension) {
             $sizes = ['', '160/', '320/', '640/'];
             foreach ($sizes as $size) {
-                $filePath = $directory . '/' . $size . pathinfo($filename, PATHINFO_FILENAME) . '.' . $extension;
+                $filePath = $directory . '/' . $size . $filename;
                 if (file_exists($filePath)) {
                     unlink($filePath);
                 }
+            }
+            // Supprimer également le fichier original
+            $originalFilePath = $directory . '/' . pathinfo($filename, PATHINFO_FILENAME) . '.' . $extension;
+            if (file_exists($originalFilePath)) {
+                unlink($originalFilePath);
             }
         }
     }

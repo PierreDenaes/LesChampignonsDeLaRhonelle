@@ -1,0 +1,28 @@
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+<div class="form-group">
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.name) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.firstname) }}
+    {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.firstname) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.pseudo) }}
+    {{ form_widget(form.pseudo, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.pseudo) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.biography) }}
+    {{ form_widget(form.biography, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.biography) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.avatarFile) }}
+    {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.avatarFile) }}
+</div>
+<button class="btn btn-primary mt-3">Enregistrer les modifications</button>
+{{ form_end(form) }}

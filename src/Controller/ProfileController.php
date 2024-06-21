@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -23,12 +25,14 @@ class ProfileController extends AbstractController
     private $entityManager;
     private $security;
     private $avatarService;
+    private $csrfTokenManager;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security, AvatarService $avatarService)
+    public function __construct(EntityManagerInterface $entityManager, Security $security, AvatarService $avatarService, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
         $this->avatarService = $avatarService;
+        $this->csrfTokenManager = $csrfTokenManager;
     }
 
     #[Route('/', name: 'app_profile')]
@@ -43,74 +47,86 @@ class ProfileController extends AbstractController
         $profile = $user->getProfile();
 
         if (!$profile) {
-            $profile = new Profile();
-            $profile->setIdUser($user);
-            $profile->setActive(true);
-            $form = $this->createForm(ProfileType::class, $profile);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $this->avatarService->handleAvatarUpload($profile);
-                $this->entityManager->persist($profile);
-                $this->entityManager->flush();
-
-                return $this->redirectToRoute('app_profile');
-            }
-
-            return $this->render('profile/new.html.twig', [
-                'form' => $form->createView(),
-            ]);
+            return $this->handleNewProfile($request, $user);
         }
 
-        return $this->render('profile/index.html.twig', [
-            'profile' => $profile,
-        ]);
+        return $this->handleEditProfile($request, $profile);
     }
 
-    #[Route('/{id}', name: 'app_profile_show', methods: ['GET'])]
-    public function show(Profile $profile): Response
+    private function handleNewProfile(Request $request, $user): Response
     {
-        return $this->render('profile/show.html.twig', [
-            'profile' => $profile,
-        ]);
-    }
+        $profile = new Profile();
+        $profile->setIdUser($user);
+        $profile->setActive(true);
 
-    #[Route('/{id}/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Profile $profile): Response
-    {
         $form = $this->createForm(ProfileType::class, $profile);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->avatarService->handleAvatarUpload($profile);
+            $this->entityManager->persist($profile);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_profile', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_profile');
         }
 
-        return $this->render('profile/edit.html.twig', [
-            'profile' => $profile,
-            'form' => $form,
+        return $this->render('profile/new.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/{id}', name: 'app_profile_delete', methods: ['POST'])]
-    public function deleteProfile(Request $request, TokenStorageInterface $tokenStorage, EntityManagerInterface $entityManager)
+    private function handleEditProfile(Request $request, Profile $profile): Response
+    {
+        $form = $this->createForm(ProfileType::class, $profile);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $oldAvatarName = $profile->getAvatarName();
+            $this->avatarService->handleAvatarUpload($profile);
+            $this->entityManager->flush();
+
+            if ($profile->getAvatarName() !== $oldAvatarName) {
+                // Supprimer l'ancien avatar et ses versions
+                $this->avatarService->removeOldAvatar($oldAvatarName, $profile);
+            }
+
+            return $this->redirectToRoute('app_profile');
+        }
+
+        return $this->render('profile/index.html.twig', [
+            'profile' => $profile,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_profile_delete', methods: ['POST'])]
+    public function deleteProfile(Request $request, TokenStorageInterface $tokenStorage): Response
     {
         $user = $this->getUser();
 
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $profile = $user->getProfile();
+
+        $csrfToken = new CsrfToken('delete' . $profile->getId(), $request->request->get('_token'));
+        if (!$this->csrfTokenManager->isTokenValid($csrfToken)) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
 
         if ($profile) {
             $this->avatarService->handleAvatarRemoval($profile);
-            $entityManager->remove($profile);
+            $this->entityManager->remove($profile);
         }
 
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
 
         $tokenStorage->setToken(null);
         $request->getSession()->invalidate();
+
+        $this->addFlash('success', 'Votre profil et compte utilisateur ont été supprimés avec succès.');
 
         return $this->redirectToRoute('app_home');
     }

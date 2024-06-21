@@ -30,8 +30,8 @@ class ProfileType extends AbstractType
             ])
             ->add('avatarFile', VichImageType::class, [
                 'required' => false,
-                'allow_delete' => true,
-                'delete_label' => 'Effacer',
+                'allow_delete' => false,
+                
                 'download_label' => 'Télécharger',
                 'download_uri' => true,
                 'image_uri' => true,
