@@ -1,7 +1,15 @@
+
+import { Tab } from 'bootstrap';
+import '../styles/site/recipe.scss';
 document.addEventListener('DOMContentLoaded', function() {
+    initializePage();
+});
+
+function initializePage() {
     const recipesList = document.getElementById('recipes-list');
     const recipeForm = document.getElementById('recipe-form');
-
+    const notification = document.getElementById('notification');
+    
     // Fonction pour charger les recettes
     function loadRecipes() {
         fetch('/profile/recipes')
@@ -19,12 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p class="card-text">${recipe.description}</p>
                                 <button class="btn btn-primary" onclick="viewRecipe(${recipe.id})">Voir</button>
                                 <button class="btn btn-secondary" onclick="editRecipe(${recipe.id})">Modifier</button>
-                                <button class="btn btn-danger" onclick="deleteRecipe(${recipe.id})">Supprimer</button>
+                                <button class="btn btn-danger" data-id="${recipe.id}">Supprimer</button>
                             </div>
                         </div>
                     `;
                     recipesList.appendChild(recipeCard);
                 });
+                attachDeleteHandlers();
             });
     }
 
@@ -51,27 +60,38 @@ document.addEventListener('DOMContentLoaded', function() {
                         input.value = data[key];
                     }
                 });
-                const tabTrigger = new bootstrap.Tab(document.querySelector('.nav-link[href="#new-recipe"]'));
+                const tabTrigger = new Tab(document.querySelector('.nav-link[href="#new-recipe"]'));
                 tabTrigger.show();
             });
     };
 
-    window.deleteRecipe = function(id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
-            fetch(`/profile/recipes/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': getCsrfToken(id)
+    function attachDeleteHandlers() {
+        const deleteButtons = document.querySelectorAll('.btn-danger[data-id]');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const csrfToken = recipesList.getAttribute('data-csrf-token');
+                if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
+                    fetch(`/profile/recipes/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    }).then(() => {
+                        loadRecipes();
+                    });
                 }
-            }).then(() => {
-                loadRecipes();
             });
-        }
-    };
+        });
+    }
 
-    // Fonction pour obtenir le jeton CSRF
-    function getCsrfToken(id) {
-        return '{{ csrf_token("delete") }}'.replace('delete', 'delete' + id);
+    // Afficher une notification
+    function showNotification(message) {
+        notification.textContent = message;
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
     }
 
     // Gestion de la soumission du formulaire via AJAX
@@ -85,7 +105,9 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
         }).then(response => {
             if (response.ok) {
-                const tabTrigger = new bootstrap.Tab(document.querySelector('.nav-link[href="#recipes"]'));
+                recipeForm.reset();
+                showNotification('Recette créée avec succès!');
+                const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
                 tabTrigger.show();
                 loadRecipes();
             } else {
@@ -93,4 +115,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
+}

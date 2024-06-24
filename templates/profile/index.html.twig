@@ -1,4 +1,12 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('profil') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('profil') }}
+{% endblock %}
 
 {% block title %}Mon Profil{% endblock %}
 
@@ -6,20 +14,7 @@
 <div class="container">
     <div class="row">
         {% if profile is defined and profile.name is not empty %}
-            <div class="col-md-3">
-                <div class="card text-center">
-                    <div class="card-body">
-                        {% if profile.avatarName is not empty %}
-                            <img class="img-fluid rounded-circle mb-3" src="{{ asset('images/avatars/' ~ profile.avatarName) }}" alt="Avatar de {{ profile.name }}" style="width: 150px; height: 150px; border: 2px solid #000;" />
-                            <h4>{{ profile.firstname }} {{ profile.name }}</h4>
-                        {% else %}
-                            <img class="img-fluid rounded-circle mb-3" src="{{ asset('images/avatars/default-avatar.png') }}" alt="Avatar par défaut" style="width: 150px; height: 150px; border: 2px solid #000;" />
-                        {% endif %}
-                        <a href="{{ path('app_profile') }}" class="btn btn-primary mt-3">Gérer Profil</a>
-                        <a href="{{ path('recipe_manage') }}" class="btn btn-primary mt-3">Gérer les Recettes</a>
-                    </div>
-                </div>
-            </div>
+            {% include 'elements/profilnav.html.twig' %}
             <div class="col-md-9">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -43,12 +38,44 @@
                     </div>
                     <div class="tab-pane fade" id="edit">
                         <h5>Éditer Profil</h5>
-                        <form method="post" enctype="multipart/form-data">
-                            {{ form_start(form) }}
-                            {{ form_widget(form) }}
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            {{ form_end(form) }}
-                        </form>
+<form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    {{ form_start(form, {'attr': {'id': 'profile-form'}}) }}
+
+    <div class="mb-3">
+        {{ form_label(form.firstname, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.firstname) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.name, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.name) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.pseudo, 'Pseudo', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.pseudo, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.pseudo) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.biography, 'Biographie', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.biography, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.biography) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.avatarFile, 'Avatar', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.avatarFile) }}
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+
+    {{ form_end(form) }}
+</form>
                     </div>
                     <div class="tab-pane fade" id="password">
                         <h5>Changer le mot de passe</h5>

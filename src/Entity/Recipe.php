@@ -14,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 class Recipe
 {
-    public const DEFAULT_IMAGE = 'default-recipe.png';
+    public const DEFAULT_IMAGE = 'default-recipe.webp';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
