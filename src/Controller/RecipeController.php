@@ -57,6 +57,7 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
             $this->recipeService->handleImageUpload($recipe);
             $this->entityManager->persist($recipe);
             $this->entityManager->flush();
@@ -106,7 +107,16 @@ class RecipeController extends AbstractController
     {
         $this->denyAccessUnlessGranted('delete', $recipe);
 
-        $this->recipeService->handleImageRemoval($recipe);
+        // Récupérer les données de la requête
+        $data = json_decode($request->getContent(), true);
+        $imageName = $data['imageName'] ?? null;
+
+        // Si l'image n'est pas l'image par défaut, passer le nom de l'image au service pour la gestion de la suppression
+        if ($imageName) {
+            $recipe->setImageName($imageName);
+            $this->recipeService->handleImageRemoval($recipe);
+        }
+
         $this->entityManager->remove($recipe);
         $this->entityManager->flush();
 

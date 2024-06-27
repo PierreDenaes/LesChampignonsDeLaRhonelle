@@ -23,13 +23,10 @@ class AvatarService
     {
         $avatarFile = $profile->getAvatarFile();
         if (!$avatarFile) {
+            // Si aucun fichier n'est téléchargé, ne rien faire
             return;
         }
-        // Vérifiez si l'avatar actuel est le fichier par défaut
-        if ($profile->getAvatarName() === Profile::DEFAULT_AVATAR) {
-            return;
-        }
-        
+
         $originalExtension = $avatarFile->guessExtension();
         $image = $this->imageManager->read($avatarFile->getPathname());
         $encodedImage = $image->encode(new WebpEncoder(), 80);
@@ -37,9 +34,14 @@ class AvatarService
         $uploadDir = $this->getUploadDirectory($profile, 'avatarFile');
         $this->createDirectories($uploadDir);
 
-        $filename = $this->getFileName($profile, 'avatarFile');
+        try {
+            $filename = $this->getFileName($profile, 'avatarFile');
+        } catch (\RuntimeException $e) {
+            // Handle the exception
+            return;
+        }
+
         $filenameWithoutExtension = pathinfo($filename, PATHINFO_FILENAME);
-        $newFileName = $filenameWithoutExtension . '.' . $originalExtension;
         $webpName = $filenameWithoutExtension . '.webp';
         $encodedImage->save($uploadDir . '/' . $webpName);
 
@@ -59,21 +61,23 @@ class AvatarService
         // Mise à jour du nom de fichier dans le profil
         $profile->setAvatarName($webpName);
     }
-    
 
     public function handleAvatarRemoval(Profile $profile)
     {
         $avatarName = $profile->getAvatarName();
-        if ($avatarName && $avatarName !== Profile::DEFAULT_AVATAR) {
+
+        if ($avatarName !== null) {
             $uploadDir = $this->getUploadDirectory($profile, 'avatarFile');
             $this->removeFile($uploadDir, $avatarName);
         }
     }
-    
+
     public function removeOldAvatar(string $oldAvatarName, Profile $profile)
     {
-        $uploadDir = $this->getUploadDirectory($profile, 'avatarFile');
-        $this->removeFile($uploadDir, $oldAvatarName);
+        if ($oldAvatarName !== null) {
+            $uploadDir = $this->getUploadDirectory($profile, 'avatarFile');
+            $this->removeFile($uploadDir, $oldAvatarName);
+        }
     }
 
     private function getUploadDirectory(Profile $profile, string $field): string
@@ -85,7 +89,13 @@ class AvatarService
     private function getFileName(Profile $profile, string $field): string
     {
         $mapping = $this->vichUploader->fromField($profile, $field);
-        return $mapping->getFileName($profile);
+        $fileName = $mapping->getFileName($profile);
+
+        if ($fileName === null) {
+            throw new \RuntimeException('File name is null. Ensure the file is properly uploaded.');
+        }
+
+        return $fileName;
     }
 
     private function removeFile(string $directory, string $filename): void
@@ -100,6 +110,7 @@ class AvatarService
                     unlink($filePath);
                 }
             }
+
             // Supprimer également le fichier original
             $originalFilePath = $directory . '/' . pathinfo($filename, PATHINFO_FILENAME) . '.' . $extension;
             if (file_exists($originalFilePath)) {

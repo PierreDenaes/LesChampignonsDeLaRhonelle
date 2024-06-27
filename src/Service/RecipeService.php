@@ -7,16 +7,19 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
 use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
+use Psr\Log\LoggerInterface;
 
 class RecipeService
 {
     private $vichUploader;
     private $imageManager;
+    private $logger;
 
-    public function __construct(PropertyMappingFactory $vichUploader)
+    public function __construct(PropertyMappingFactory $vichUploader, LoggerInterface $logger)
     {
         $this->vichUploader = $vichUploader;
-        $this->imageManager = new ImageManager(new Driver()); // Utilisation du driver Gd
+        $this->imageManager = new ImageManager(new Driver());
+        $this->logger = $logger;
     }
 
     public function handleImageUpload(Recipe $recipe)
@@ -26,12 +29,6 @@ class RecipeService
             return;
         }
 
-         // Vérifiez si l'avatar actuel est le fichier par défaut
-         if ($recipe->getImageName() === Recipe::DEFAULT_IMAGE) {
-            return;
-        }
-        
-
         $originalExtension = $imageFile->guessExtension();
         $image = $this->imageManager->read($imageFile->getPathname());
         $encodedImage = $image->encode(new WebpEncoder(), 80);
@@ -39,7 +36,13 @@ class RecipeService
         $uploadDir = $this->getUploadDirectory($recipe, 'imageFile');
         $this->createDirectories($uploadDir);
 
-        $filename = $this->getFileName($recipe, 'imageFile');
+        try {
+            $filename = $this->getFileName($recipe, 'imageFile');
+        } catch (\RuntimeException $e) {
+            $this->logger->error('Error getting file name for recipe image: ' . $e->getMessage());
+            return;
+        }
+
         $filenameWithoutExtension = pathinfo($filename, PATHINFO_FILENAME);
         $webpName = $filenameWithoutExtension . '.webp';
         $encodedImage->save($uploadDir . '/' . $webpName);
@@ -51,16 +54,12 @@ class RecipeService
         ];
 
         foreach ($sizes as $size) {
-            $resizedImage = $image->resize($size['width'], null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $resizedImage = $image->scale(width: $size['width']);
             $encodedResizedImage = $resizedImage->encode(new WebpEncoder(), 80);
             $this->createDirectories($uploadDir . '/' . $size['dir']);
             $encodedResizedImage->save($uploadDir . '/' . $size['dir'] . '/' . $webpName);
         }
 
-        // Mise à jour du nom de fichier dans la recette
         $recipe->setImageName($webpName);
     }
 
@@ -88,7 +87,13 @@ class RecipeService
     private function getFileName(Recipe $recipe, string $field): string
     {
         $mapping = $this->vichUploader->fromField($recipe, $field);
-        return $mapping->getFileName($recipe);
+        $fileName = $mapping->getFileName($recipe);
+
+        if ($fileName === null) {
+            throw new \RuntimeException('File name is null. Ensure the file is properly uploaded.');
+        }
+
+        return $fileName;
     }
 
     private function removeFile(string $directory, string $filename): void
@@ -103,7 +108,7 @@ class RecipeService
                     unlink($filePath);
                 }
             }
-            // Supprimer également le fichier original
+
             $originalFilePath = $directory . '/' . pathinfo($filename, PATHINFO_FILENAME) . '.' . $extension;
             if (file_exists($originalFilePath)) {
                 unlink($originalFilePath);

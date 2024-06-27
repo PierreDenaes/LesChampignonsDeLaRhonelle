@@ -4,7 +4,6 @@ namespace App\EventSubscriber;
 
 use App\Entity\Recipe;
 use App\Service\RecipeService;
-use Doctrine\Common\EventArgs;
 use Doctrine\ORM\Events as DoctrineEvents;
 use Vich\UploaderBundle\Event\Event;
 use Vich\UploaderBundle\Event\Events as VichEvents;

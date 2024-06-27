@@ -14,7 +14,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 class Recipe
 {
-    public const DEFAULT_IMAGE = 'default-recipe.webp';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -120,7 +119,7 @@ class Recipe
 
     public function getImageName(): ?string
     {
-        return $this->imageName ?? self::DEFAULT_IMAGE;
+        return $this->imageName;
     }
 
     public function setImageName(?string $imageName): void

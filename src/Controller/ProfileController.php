@@ -70,8 +70,12 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile');
         }
 
+        // Chemin de l'avatar par défaut
+        $defaultAvatar = 'images/avatars/default/default-avatar.png';
+
         return $this->render('profile/new.html.twig', [
             'form' => $form->createView(),
+            'defaultAvatar' => $defaultAvatar,
         ]);
     }
 
@@ -85,7 +89,7 @@ class ProfileController extends AbstractController
             $this->avatarService->handleAvatarUpload($profile);
             $this->entityManager->flush();
 
-            if ($profile->getAvatarName() !== $oldAvatarName) {
+            if ($profile->getAvatarName() !== $oldAvatarName && $oldAvatarName !== null) {
                 // Supprimer l'ancien avatar et ses versions
                 $this->avatarService->removeOldAvatar($oldAvatarName, $profile);
             }
@@ -116,7 +120,10 @@ class ProfileController extends AbstractController
         }
 
         if ($profile) {
-            $this->avatarService->handleAvatarRemoval($profile);
+            // Vérifier si l'avatar est défini
+            if ($profile->getAvatarName() !== null) {
+                $this->avatarService->handleAvatarRemoval($profile);
+            }
             $this->entityManager->remove($profile);
         }
 

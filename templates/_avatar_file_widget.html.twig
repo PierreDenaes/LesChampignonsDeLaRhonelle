@@ -1,0 +1,16 @@
+{% block vich_image_widget %}
+    <div class="form-group">
+        {% set avatarPath = form.parent.vars.data.avatarName is not empty ? 'images/avatars/' ~ form.parent.vars.data.avatarName : 'images/avatars/default/default-avatar.png' %}
+
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        {% if form.parent.vars.data.avatarName is  empty %}
+            <a href="{{ asset(avatarPath) }}" download>
+                <img src="{{ asset(avatarPath) }}" alt=""/>
+            </a>
+            <a href="{{ asset(avatarPath) }}" download>Télécharger</a>
+        
+            
+        {% endif %}
+    </div>
+{% endblock %}

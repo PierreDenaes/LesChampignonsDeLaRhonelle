@@ -1,15 +1,11 @@
 <div class="col-md-3">
-	<div class="card text-center">
-		<div class="card-body">
-			{% if profile.avatarName is not empty %}
-				<img class="img-fluid rounded-circle mb-3" src="{{ asset('images/avatars/' ~ profile.avatarName) }}" alt="Avatar de {{ profile.name }}" style="width: 150px; height: 150px; border: 2px solid #000;"/>
-				<h4>{{ profile.firstname }}
-					{{ profile.name }}</h4>
-			{% else %}
-				<img class="img-fluid rounded-circle mb-3" src="{{ asset('images/avatars/default-avatar.png') }}" alt="Avatar par défaut" style="width: 150px; height: 150px; border: 2px solid #000;"/>
-			{% endif %}
-			<a href="{{ path('app_profile') }}" class="btn btn-blue text-gold mt-3 fw-bold">Gérer Profil</a>
-			<a href="{{ path('recipe_manage') }}" class="btn btn-blue text-gold mt-3 fw-bold">Gérer les Recettes</a>
-		</div>
-	</div>
+    <div class="card text-center">
+        <div class="card-body">
+            {% set avatarPath = profile.avatarName is not null ? 'images/avatars/' ~ profile.avatarName : 'images/avatars/default/default-avatar.png' %}
+            <img class="img-fluid rounded-circle mb-3" src="{{ asset(avatarPath) }}" alt="Avatar de {{ profile.firstname }} {{ profile.name }}" style="width: 150px; height: 150px; border: 2px solid #000;"/>
+            <h4>{{ profile.firstname }} {{ profile.name }}</h4>
+            <a href="{{ path('app_profile') }}" class="btn btn-blue text-gold mt-3 fw-bold">Gérer Profil</a>
+            <a href="{{ path('recipe_manage') }}" class="btn btn-blue text-gold mt-3 fw-bold">Gérer les Recettes</a>
+        </div>
+    </div>
 </div>

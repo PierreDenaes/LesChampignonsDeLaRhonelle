@@ -14,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 class Profile
 {
-    public const DEFAULT_AVATAR = 'default-avatar.png';
+    // public const DEFAULT_AVATAR = 'default-avatar.png';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -95,7 +95,7 @@ class Profile
 
     public function getAvatarName(): ?string
     {
-        return $this->avatarName ?? self::DEFAULT_AVATAR;
+        return $this->avatarName;
     }
 
     public function getName(): ?string
