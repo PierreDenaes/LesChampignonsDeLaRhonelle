@@ -1,0 +1,16 @@
+{% block vich_image_widget %}
+    <div class="form-group">
+        {% set recipePath = form.parent.vars.data.imageName is not empty ? 'images/recipes/' ~ form.parent.vars.data.imageName : 'images/recipes/default/default-recipe.webp' %}
+
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        {% if form.parent.vars.data.imageName is  empty %}
+            <a href="{{ asset(recipePath) }}" download>
+                <img src="{{ asset(recipePath) }}" alt=""/>
+            </a>
+            <a href="{{ asset(recipePath) }}" download>Télécharger</a>
+        
+            
+        {% endif %}
+    </div>
+{% endblock %}

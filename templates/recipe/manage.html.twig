@@ -48,12 +48,15 @@
 								{{ form_errors(form.description) }}
 							</div>
 
-							<div class="mb-3">
+							{# <div class="mb-3">
 								{{ form_label(form.imageFile, 'Image', {'label_attr': {'class': 'form-label'}}) }}
 								{{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
 								{{ form_errors(form.imageFile) }}
+							</div> #}
+							<div class="form-group">
+								{{ form_label(form.imageFile) }}
+								{% include '_recipe_file_widget.html.twig' with {'form': form.imageFile} %}
 							</div>
-
 							<div class="mb-3">
 								{{ form_label(form.difficulty, 'Difficulté', {'label_attr': {'class': 'form-label'}}) }}
 								{{ form_widget(form.difficulty, {'attr': {'class': 'form-control'}}) }}
