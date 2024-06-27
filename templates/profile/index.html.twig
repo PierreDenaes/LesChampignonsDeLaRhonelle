@@ -38,7 +38,7 @@
                     </div>
                     <div class="tab-pane fade" id="edit">
                         <h5>Éditer Profil</h5>
-                    {{ include('profile/edit.html.twig', {form: form}) }}
+                    {{ include('profile/profile_form.html.twig', {form: form}) }}
                     </div>
                     <div class="tab-pane fade" id="password">
                         <h5>Changer le mot de passe</h5>
@@ -57,12 +57,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5>Créer Profil</h5>
-                        <form method="post" enctype="multipart/form-data">
-                            {{ form_start(form) }}
-                            {{ form_widget(form) }}
-                            <button type="submit" class="btn btn-primary">Créer</button>
-                            {{ form_end(form) }}
-                        </form>
+                        {{ include('profile/profile_form.html.twig', {form: form}) }}
                     </div>
                 </div>
             </div>

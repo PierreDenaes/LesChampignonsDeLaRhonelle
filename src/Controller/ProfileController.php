@@ -73,7 +73,7 @@ class ProfileController extends AbstractController
         // Chemin de l'avatar par défaut
         $defaultAvatar = 'images/avatars/default/default-avatar.png';
 
-        return $this->render('profile/new.html.twig', [
+        return $this->render('profile/index.html.twig', [
             'form' => $form->createView(),
             'defaultAvatar' => $defaultAvatar,
         ]);
