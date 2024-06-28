@@ -56,12 +56,14 @@ class Recipe
     #[Groups(['recipe'])]
     private Collection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist', 'remove'])]
-    #[Groups(['recipe'])]
-    private Collection $ingredients;
-
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Ingredient>
+     */
+    #[ORM\OneToMany(targetEntity: Ingredient::class, mappedBy: 'recipe', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $ingredients;
 
 
     public function __construct()
@@ -216,24 +218,24 @@ class Recipe
     }
 
     /**
-     * @return Collection<int, RecipeIngredient>
+     * @return Collection<int, Ingredient>
      */
     public function getIngredients(): Collection
     {
         return $this->ingredients;
     }
 
-    public function addIngredient(RecipeIngredient $ingredient): self
+    public function addIngredient(Ingredient $ingredient): static
     {
         if (!$this->ingredients->contains($ingredient)) {
-            $this->ingredients[] = $ingredient;
+            $this->ingredients->add($ingredient);
             $ingredient->setRecipe($this);
         }
 
         return $this;
     }
 
-    public function removeIngredient(RecipeIngredient $ingredient): self
+    public function removeIngredient(Ingredient $ingredient): static
     {
         if ($this->ingredients->removeElement($ingredient)) {
             // set the owning side to null (unless already changed)
@@ -244,4 +246,5 @@ class Recipe
 
         return $this;
     }
+
 }
