@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\RecipeStepRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RecipeStepRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RecipeStepRepository::class)]
 class RecipeStep
@@ -14,13 +15,16 @@ class RecipeStep
     private ?int $id = null;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['recipe'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['recipe'])]
     private ?int $stepNumber = null;
 
     #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'steps')]
     #[ORM\JoinColumn(nullable: false)]
+    
     private ?Recipe $recipe = null;
 
     public function getId(): ?int

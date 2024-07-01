@@ -9,7 +9,49 @@ function initializePage() {
     const recipesList = document.getElementById('recipes-list');
     const recipeForm = document.getElementById('recipe-form');
     const notification = document.getElementById('notification');
+    let list = document.getElementById('ingredient-list');
+    
+    // Gestion des ingrédients
+    if (list) {
+        let addButton = document.getElementById('add-ingredient');
+        let newWidget = list.dataset.prototype;
+        let index = list.children.length;
 
+        addButton.addEventListener('click', () => {
+            let newLi = document.createElement('li');
+            newLi.innerHTML = newWidget.replace(/__name__/g, index++) + '<button type="button" class="remove-ingredient btn btn-danger">Supprimer</button>';
+            list.appendChild(newLi);
+        });
+
+        list.addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('remove-ingredient')) {
+                e.target.parentElement.remove();
+            }
+        });
+    }
+    
+    // Gestion des étapes de recette
+    let etapeRecettesList = document.getElementById('etapeRecettes-list');
+
+    if (etapeRecettesList) {
+        let addEtapeRecetteButton = document.getElementById('add-etapeRecette');
+        let newEtapeRecetteWidget = etapeRecettesList.dataset.prototype;
+        let etapeRecetteIndex = etapeRecettesList.children.length;
+
+        addEtapeRecetteButton.addEventListener('click', () => {
+            let newLi = document.createElement('li');
+            newLi.innerHTML = newEtapeRecetteWidget.replace(/__name__/g, etapeRecetteIndex++) + '<button type="button" class="remove-etapeRecette btn btn-danger">Supprimer</button>';
+            etapeRecettesList.appendChild(newLi);
+        });
+
+        etapeRecettesList.addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('remove-etapeRecette')) {
+                e.target.parentElement.remove();
+            }
+        });
+    }
+
+    // Chargement des recettes
     function loadRecipes() {
         fetch('/profile/recipes')
             .then(response => response.json())
@@ -38,6 +80,7 @@ function initializePage() {
 
     loadRecipes();
 
+    // Fonction pour afficher une recette
     window.viewRecipe = function(id) {
         fetch(`/profile/recipes/${id}`)
             .then(response => response.json())
@@ -46,11 +89,12 @@ function initializePage() {
             });
     };
 
+    // Fonction pour éditer une recette
     window.editRecipe = function(id) {
         fetch(`/profile/recipes/${id}`)
             .then(response => response.json())
             .then(data => {
-                recipeForm.action = `/profile/recipes/${id}/edit`;
+                recipeForm.action = `/profile/recipes/${id}/edit`; // Mise à jour de l'action du formulaire pour l'édition
                 Object.keys(data).forEach(key => {
                     const input = document.querySelector(`#recipe-form [name="recipe[${key}]"]`);
                     if (input) {
@@ -62,6 +106,7 @@ function initializePage() {
             });
     };
 
+    // Gestionnaire pour les boutons de suppression
     function attachDeleteHandlers() {
         const deleteButtons = document.querySelectorAll('.btn-danger[data-id]');
         deleteButtons.forEach(button => {
@@ -90,6 +135,7 @@ function initializePage() {
         });
     }
 
+    // Fonction pour afficher les notifications
     function showNotification(message) {
         notification.textContent = message;
         notification.style.display = 'block';
@@ -98,23 +144,25 @@ function initializePage() {
         }, 3000);
     }
 
+    // Soumission du formulaire de recette
     recipeForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(recipeForm);
         const url = recipeForm.action;
-        const method = url.includes('edit') ? 'PUT' : 'POST';
+        const method = url.includes('edit') ? 'PUT' : 'POST'; // Utilise 'PUT' pour la mise à jour et 'POST' pour la création
+
         fetch(url, {
             method: method,
             body: formData,
         }).then(response => {
             if (response.ok) {
                 recipeForm.reset();
-                showNotification('Recette créée avec succès!');
+                showNotification('Recette mise à jour avec succès!');
                 const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
                 tabTrigger.show();
                 loadRecipes();
             } else {
-                alert('Erreur lors de la sauvegarde de la recette.');
+                alert('Erreur lors de la mise à jour de la recette.');
             }
         });
     });

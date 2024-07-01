@@ -50,6 +50,7 @@ class Recipe
 
     #[ORM\ManyToOne(targetEntity: Profile::class, inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['recipe'])]
     private ?Profile $profile = null;
 
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeStep::class, cascade: ['persist', 'remove'])]
@@ -63,6 +64,7 @@ class Recipe
      * @var Collection<int, Ingredient>
      */
     #[ORM\OneToMany(targetEntity: Ingredient::class, mappedBy: 'recipe', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[Groups(['recipe'])]
     private Collection $ingredients;
 
 

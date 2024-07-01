@@ -81,13 +81,17 @@ class RecipeController extends AbstractController
         return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/{id<\d+>}/edit', name: 'recipe_edit', methods: ['PUT'])]
+    #[Route('/{id<\d+>}/edit', name: 'recipe_edit', methods: ['PUT', 'PATCH'])]
     public function edit(Request $request, Recipe $recipe): JsonResponse
     {
         $this->denyAccessUnlessGranted('edit', $recipe);
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
+
+        // Log the request data
+        $logger = $this->get('logger');
+        $logger->info('Request data: ' . $request->getContent());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->recipeService->handleImageUpload($recipe);
@@ -98,7 +102,10 @@ class RecipeController extends AbstractController
             return new JsonResponse($responseData, JsonResponse::HTTP_OK, [], true);
         }
 
+        // Log form errors
         $errors = (string) $form->getErrors(true, false);
+        $logger->error('Form errors: ' . $errors);
+
         return new JsonResponse(['error' => 'Invalid data', 'details' => $errors], JsonResponse::HTTP_BAD_REQUEST);
     }
 

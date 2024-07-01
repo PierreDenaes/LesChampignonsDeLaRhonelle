@@ -48,11 +48,6 @@
 								{{ form_errors(form.description) }}
 							</div>
 
-							{# <div class="mb-3">
-								{{ form_label(form.imageFile, 'Image', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.imageFile) }}
-							</div> #}
 							<div class="form-group">
 								{{ form_label(form.imageFile) }}
 								{% include '_recipe_file_widget.html.twig' with {'form': form.imageFile} %}
@@ -76,15 +71,37 @@
 							</div>
 
 							<div class="mb-3">
-								{{ form_label(form.ingredients, 'Ingrédients', {'label_attr': {'class': 'form-label'}}) }}
+								{# {{ form_label(form.ingredients, 'Ingrédients', {'label_attr': {'class': 'form-label'}}) }}
 								{{ form_widget(form.ingredients, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.ingredients) }}
+								{{ form_errors(form.ingredients) }} #}
+								<h2>Ingrédients</h2>
+									<ul id="ingredient-list" class="list-group" data-prototype="{{ form_widget(form.ingredients.vars.prototype)|e('html_attr') }}">
+										{% for ingredient in form.ingredients %}
+											<li>
+												{{ form_row(ingredient) }}
+												<button type="button" class="remove-ingredient">Supprimer</button>
+											</li>
+										{% endfor %}
+									</ul>
+									<button type="button" id="add-ingredient" class="btn btn-secondary text-light fw-bold shadow"><i class="fa-solid fa-pepper-hot"></i> Ajouter un ingrédient</button>
 							</div>
 
 							<div class="mb-3">
-								{{ form_label(form.steps, 'Étapes', {'label_attr': {'class': 'form-label'}}) }}
+								{# {{ form_label(form.steps, 'Étapes', {'label_attr': {'class': 'form-label'}}) }}
 								{{ form_widget(form.steps, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.steps) }}
+								{{ form_errors(form.steps) }} #}
+								<h2 class="my-3">Étapes de réalisation</h2>
+									<ul id="etapeRecettes-list" class="list-group-flush" data-prototype="{{ form_widget(form.steps.vars.prototype)|e('html_attr') }}">
+										
+										{% for step in form.steps %}
+											<li class="list-group-item mb-3">
+												{{ form_row(step) }}
+												<button type="button" class="remove-etapeRecette btn btn-danger">Supprimer <i class="fa-solid fa-trash-can"></i></button>
+											</li>
+										{% endfor %}
+									</ul>
+
+									<button type="button" id="add-etapeRecette" class="btn btn-secondary text-light fw-bold shadow mb-3"><i class="fa-solid fa-file-circle-plus"></i> Ajouter une étape</button>
 							</div>
 
 							<button type="submit" class="btn btn-blue text-gold">Enregistrer</button>
@@ -96,4 +113,5 @@
 			</div>
 		</div>
 	</div>
+	
 {% endblock %}
