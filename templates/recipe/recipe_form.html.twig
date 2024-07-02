@@ -1,0 +1,54 @@
+<div class="mb-3">
+    {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.title) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.description) }}
+</div>
+<div class="form-group">
+								{{ form_label(form.imageFile) }}
+								{% include '_recipe_file_widget.html.twig' with {'form': form.imageFile} %}
+							</div>
+<div class="mb-3">
+    {{ form_label(form.difficulty, 'Difficulté', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.difficulty, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.difficulty) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.cooking_time, 'Temps de cuisson', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.cooking_time, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.cooking_time) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.rest_time, 'Temps de repos', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.rest_time, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.rest_time) }}
+</div>
+<div class="mb-3">
+    <h2>Ingrédients</h2>
+    <ul id="ingredient-list" class="list-group" data-prototype="{{ form_widget(form.ingredients.vars.prototype)|e('html_attr') }}">
+        {% for ingredient in form.ingredients %}
+            <li class="list-group-item">
+                {{ form_row(ingredient) }}
+                <button type="button" class="remove-ingredient btn btn-danger">Supprimer</button>
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="button" id="add-ingredient" class="btn btn-secondary mt-3">Ajouter un ingrédient</button>
+</div>
+<div class="mb-3">
+    <h2>Étapes de réalisation</h2>
+    <ul id="etapeRecettes-list" class="list-group" data-prototype="{{ form_widget(form.steps.vars.prototype)|e('html_attr') }}">
+        {% for step in form.steps %}
+            <li class="list-group-item">
+                {{ form_row(step) }}
+                <button type="button" class="remove-etapeRecette btn btn-danger">Supprimer</button>
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="button" id="add-etapeRecette" class="btn btn-secondary mt-3">Ajouter une étape</button>
+</div>
+<button type="submit" class="btn btn-primary">Enregistrer</button>

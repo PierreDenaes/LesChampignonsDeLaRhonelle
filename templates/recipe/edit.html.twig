@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Éditer Recette{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('recipe') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('recipe') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {% include 'elements/profilnav.html.twig' %}
+            <div class="col-md-9">
+                <h2>Éditer Recette</h2>
+                <form id="recipe-form-edit" method="post" action="{{ path('recipe_edit', {'id': recipe.id}) }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {{ form_start(form_edit, {'attr': {'id': 'recipe-form-edit'}}) }}
+                    {{ include('recipe/recipe_form.html.twig') }}
+                    {{ form_end(form_edit) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
