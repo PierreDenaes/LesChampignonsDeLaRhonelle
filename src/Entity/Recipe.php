@@ -40,28 +40,32 @@ class Recipe
     #[Groups(['recipe'])]
     private ?int $difficulty = null;
 
-    #[ORM\Column(type: 'time')]
+    #[ORM\Column(type: 'integer')]
     #[Groups(['recipe'])]
-    private ?\DateTimeInterface $cooking_time = null;
+    private ?int $cooking_time = null;
 
-    #[ORM\Column(type: 'time', nullable: true)]
+    #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['recipe'])]
-    private ?\DateTimeInterface $rest_time = null;
+    private ?int $rest_time = null;
 
     #[ORM\ManyToOne(targetEntity: Profile::class, inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['recipe'])]
     private ?Profile $profile = null;
 
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeStep::class, cascade: ['persist', 'remove'])]
     #[Groups(['recipe'])]
     private Collection $steps;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist', 'remove'])]
-    #[Groups(['recipe'])]
-    private Collection $ingredients;
-
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Ingredient>
+     */
+    #[ORM\OneToMany(targetEntity: Ingredient::class, mappedBy: 'recipe', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[Groups(['recipe'])]
+    private Collection $ingredients;
 
 
     public function __construct()
@@ -139,24 +143,24 @@ class Recipe
         return $this;
     }
 
-    public function getCookingTime(): ?\DateTimeInterface
+    public function getCookingTime(): ?int
     {
         return $this->cooking_time;
     }
 
-    public function setCookingTime(\DateTimeInterface $cooking_time): self
+    public function setCookingTime(int $cooking_time): self
     {
         $this->cooking_time = $cooking_time;
 
         return $this;
     }
 
-    public function getRestTime(): ?\DateTimeInterface
+    public function getRestTime(): ?int
     {
         return $this->rest_time;
     }
 
-    public function setRestTime(?\DateTimeInterface $rest_time): self
+    public function setRestTime(?int $rest_time): self
     {
         $this->rest_time = $rest_time;
 
@@ -216,24 +220,24 @@ class Recipe
     }
 
     /**
-     * @return Collection<int, RecipeIngredient>
+     * @return Collection<int, Ingredient>
      */
     public function getIngredients(): Collection
     {
         return $this->ingredients;
     }
 
-    public function addIngredient(RecipeIngredient $ingredient): self
+    public function addIngredient(Ingredient $ingredient): static
     {
         if (!$this->ingredients->contains($ingredient)) {
-            $this->ingredients[] = $ingredient;
+            $this->ingredients->add($ingredient);
             $ingredient->setRecipe($this);
         }
 
         return $this;
     }
 
-    public function removeIngredient(RecipeIngredient $ingredient): self
+    public function removeIngredient(Ingredient $ingredient): static
     {
         if ($this->ingredients->removeElement($ingredient)) {
             // set the owning side to null (unless already changed)
@@ -244,4 +248,5 @@ class Recipe
 
         return $this;
     }
+
 }

@@ -21,14 +21,16 @@ class SiteController extends AbstractController
     }
     
     #[Route('/', name: 'app_home')]
-    public function index(SponsorRepository $sponsorRepository): Response
+    public function index(SponsorRepository $sponsorRepository, RecipeRepository $recipeRepository): Response
     {
         $user = $this->getUser();
        
         $sponsors = $sponsorRepository->findAll();
+        $recipes = $recipeRepository->findAll();
         return $this->render('site/index.html.twig', [
             'controller_name' => 'HomeController',
             'sponsors' => $sponsors,
+            'recipes' => $recipes,
             'user' => $user,
         ]);
     }

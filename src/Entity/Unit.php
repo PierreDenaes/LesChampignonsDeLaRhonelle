@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\UnitRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UnitRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: UnitRepository::class)]
@@ -15,6 +16,7 @@ class Unit
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['recipe'])]
     private ?string $name = null;
 
     public function getId(): ?int

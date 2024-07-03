@@ -1,0 +1,9 @@
+
+ 
+                <h2>Éditer Recette</h2>
+                <form id="recipe-form-edit" method="post" action="{{ path('recipe_edit', {'id': recipe.id}) }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {{ include('recipe/recipe_form.html.twig') }}
+                    
+                </form>
+           
+       

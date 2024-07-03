@@ -6,7 +6,7 @@
         {{ form_errors(form) }}
         {% if form.parent.vars.data.imageName is  empty %}
             <a href="{{ asset(recipePath) }}" download>
-                <img src="{{ asset(recipePath) }}" alt=""/>
+                <img class="img-fluid" src="{{ asset(recipePath) }}" alt=""/>
             </a>
             <a href="{{ asset(recipePath) }}" download>Télécharger</a>
         

@@ -105,23 +105,23 @@
 		<section class="section-recettes">
 			<h2 class="fw-bold text-blue fs-1 text-center mb-5">le<span class="bg-text">s Recettes</span>
 			</h2>
-			{# <div class="row">
-				{% for recette in recettes %}
+			 <div class="row">
+				{% for recipe in recipes %}
 				<div class="col-md-6 col-lg-3 p-4 text-center">
-					<a class="link-blue" href="{{ path('app_vue_recette', {'id': recette.id}) }}">
+					
 						<picture>
-							<source srcset="{{ asset('images/recettes/160/' ~ recette.image) }}" media="(max-width: 576px)" width="200" height="300">
-							<source srcset="{{ asset('images/recettes/320/' ~ recette.image) }}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="600">
-							<source srcset="{{ asset('images/recettes/640/' ~ recette.image) }}" media="(min-width: 993px) and (max-width: 1260px)" width="800" height="1200">
-							<source srcset="{{ asset('images/recettes/' ~ recette.image) }}" media="(min-width: 1261px)" width="1200" height="1800">
-							<img class="link-recettes" src="{{ asset('images/recettes/' ~ recette.image) }}" alt=" {{ recette.nom }}" width="750" height="1124">
+							<source srcset="{{ asset('images/recipes/160/' ~ recipe.imageName) }}" media="(max-width: 576px)" width="200" height="300">
+							<source srcset="{{ asset('images/recipes/320/' ~ recipe.imageName) }}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="600">
+							<source srcset="{{ asset('images/recipes/640/' ~ recipe.imageName) }}" media="(min-width: 993px) and (max-width: 1260px)" width="800" height="1200">
+							<source srcset="{{ asset('images/recipes/' ~ recipe.imageName) }}" media="(min-width: 1261px)" width="1200" height="1800">
+							<img class="link-recettes" src="{{ asset('images/recipes/' ~ recipe.imageName) }}" alt=" {{ recipe.title }}" width="750" height="1124">
 						</picture>
-						<h3 class="mt-4 mt-xxl-5 fs-4">{{ recette.nom }}</h3>
+						<h3 class="mt-4 mt-xxl-5 fs-4">{{ recipe.title }}</h3>
 					</a>
 				</div>
 				{% endfor %}
 				
-			</div> #}
+			</div> 
 		</section>
 		<div class="divider text-center py-3">
 			<picture>

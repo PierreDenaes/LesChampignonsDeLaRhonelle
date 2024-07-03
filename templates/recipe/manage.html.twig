@@ -1,99 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gérer les Recettes
-{% endblock %}
+{% block title %}Gérer les Recettes{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('recipe') }}
 {% endblock %}
 {% block javascripts %}
-	{{ parent() }}
-	{{ encore_entry_script_tags('recipe') }}
+    {{ parent() }}
+    {{ encore_entry_script_tags('recipe') }}
 {% endblock %}
 
-
 {% block body %}
-
-	<div class="container">
-		<div class="row">
-			{% include 'elements/profilnav.html.twig' %}
-			<div class="col-md-9">
-				<ul class="nav nav-tabs">
-					<li class="nav-item">
-						<a class="nav-link active" href="#recipes" data-bs-toggle="tab">Mes Recettes</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#new-recipe" data-bs-toggle="tab">Nouvelle Recette</a>
-					</li>
-				</ul>
-				<div class="tab-content p-3">
-					<div class="tab-pane fade show active" id="recipes">
-						<div id="notification" class="alert alert-success" style="display: none;"></div>
-						<div class="row" id="recipes-list" data-csrf-token="{{ csrf_token('delete') }}"></div>
-					</div>
-					<div class="tab-pane fade" id="new-recipe">
-						<form id="recipe-form" method="post" action="{{ path('recipe_new') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
-							{{ form_start(form, {'attr': {'id': 'recipe-form'}}) }}
-
-							<div class="mb-3">
-								{{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.title) }}
-							</div>
-
-							<div class="mb-3">
-								{{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.description) }}
-							</div>
-
-							{# <div class="mb-3">
-								{{ form_label(form.imageFile, 'Image', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.imageFile) }}
-							</div> #}
-							<div class="form-group">
-								{{ form_label(form.imageFile) }}
-								{% include '_recipe_file_widget.html.twig' with {'form': form.imageFile} %}
-							</div>
-							<div class="mb-3">
-								{{ form_label(form.difficulty, 'Difficulté', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.difficulty, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.difficulty) }}
-							</div>
-
-							<div class="mb-3">
-								{{ form_label(form.cooking_time, 'Temps de cuisson', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.cooking_time, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.cooking_time) }}
-							</div>
-
-							<div class="mb-3">
-								{{ form_label(form.rest_time, 'Temps de repos', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.rest_time, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.rest_time) }}
-							</div>
-
-							<div class="mb-3">
-								{{ form_label(form.ingredients, 'Ingrédients', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.ingredients, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.ingredients) }}
-							</div>
-
-							<div class="mb-3">
-								{{ form_label(form.steps, 'Étapes', {'label_attr': {'class': 'form-label'}}) }}
-								{{ form_widget(form.steps, {'attr': {'class': 'form-control'}}) }}
-								{{ form_errors(form.steps) }}
-							</div>
-
-							<button type="submit" class="btn btn-blue text-gold">Enregistrer</button>
-
-							{{ form_end(form) }}
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="row">
+            {% include 'elements/profilnav.html.twig' %}
+            <div class="col-md-9">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#recipes" data-bs-toggle="tab">Mes Recettes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#new-recipe" data-bs-toggle="tab">Nouvelle Recette</a>
+                    </li>
+                    <li class="nav-item" id="edit-recipe-tab" style="display: none;">
+                        <a class="nav-link" href="#edit-recipe" data-bs-toggle="tab">Éditer Recette</a>
+                    </li>
+                </ul>
+                <div class="tab-content p-3">
+                    <div class="tab-pane fade show active" id="recipes">
+                        <div id="notification" class="alert alert-success" style="display: none;"></div>
+                        <div class="row" id="recipes-list" data-csrf-token="{{ csrf_token('delete') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="new-recipe">
+                        <form id="recipe-form-new" method="post" action="{{ path('recipe_new') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            {{ include('recipe/recipe_form.html.twig') }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for editing -->
+    <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRecipeModalLabel">Éditer Recette</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="recipe-edit-container"></div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
