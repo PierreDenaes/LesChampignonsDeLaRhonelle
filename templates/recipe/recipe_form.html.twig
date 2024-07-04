@@ -14,6 +14,11 @@
     {% include '_recipe_file_widget.html.twig' with {'form': form.imageFile} %}
 </div>
 <div class="mb-3">
+    {{ form_label(form.nbGuest, 'Nombre de convives', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.nbGuest, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.nbGuest) }}
+</div>
+<div class="mb-3">
     {{ form_label(form.difficulty, 'Difficulté', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.difficulty, {'attr': {'class': 'form-control'}}) }}
     {{ form_errors(form.difficulty) }}

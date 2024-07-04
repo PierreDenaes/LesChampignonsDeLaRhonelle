@@ -71,11 +71,19 @@ class Recipe
     #[Groups(['recipe'])]
     private Collection $ingredients;
 
+    #[ORM\Column]
+    private ?bool $isActive = null;
+
+    #[ORM\Column]
+    #[Groups(['recipe'])]
+    private ?int $nbGuest = null;
+
 
     public function __construct()
     {
         $this->steps = new ArrayCollection();
         $this->ingredients = new ArrayCollection();
+        $this->isActive = false;
     }
 
     // Getters and setters...
@@ -261,6 +269,30 @@ class Recipe
                 $ingredient->setRecipe(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getNbGuest(): ?int
+    {
+        return $this->nbGuest;
+    }
+
+    public function setNbGuest(int $nbGuest): static
+    {
+        $this->nbGuest = $nbGuest;
 
         return $this;
     }

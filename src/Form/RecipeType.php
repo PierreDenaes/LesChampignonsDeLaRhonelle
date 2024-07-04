@@ -36,6 +36,9 @@ class RecipeType extends AbstractType
             ->add('difficulty', IntegerType::class, [
                 'label' => 'Difficulté',
             ])
+            ->add('nbGuest', IntegerType::class, [
+                'label' => 'Nombre de personnes',
+            ])
             ->add('preparation_time', IntegerType::class, [
                 'label' => 'Temps de préparation',
                 'required' => false,

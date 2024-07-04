@@ -35,12 +35,21 @@ class SiteController extends AbstractController
         ]);
     }
     #[Route('/recipes', name: 'recipe_all', methods: ['GET'])]
-    public function allRecipes(RecipeRepository $recipeRepository): JsonResponse
+    public function allRecipes(RecipeRepository $recipeRepository): Response
     {
         $recipes = $recipeRepository->findAll();
 
-        $data = $this->serializer->serialize($recipes, 'json', ['groups' => 'recipe']);
+        return $this->render('site/recipe_public.html.twig', [
+            'recipes' => $recipes,
+        ]);
+    }
+    #[Route('/recipe/{id}', name: 'recipe_show', methods: ['GET'])]
+    public function showRecipe(RecipeRepository $recipeRepository, $id): Response
+    {
+        $recipe = $recipeRepository->find($id);
 
-        return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
+        return $this->render('site/recipe_show.html.twig', [
+            'recipe' => $recipe,
+        ]);
     }
 }
