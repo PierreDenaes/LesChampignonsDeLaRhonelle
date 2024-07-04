@@ -76,7 +76,7 @@ class RecipeController extends AbstractController
         return new JsonResponse(['error' => 'Invalid data', 'details' => $errors], JsonResponse::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/{id<\d+>}', name: 'recipe_show', methods: ['GET'])]
+    #[Route('/{id<\d+>}/show', name: 'recipe_show', methods: ['GET'])]
     public function show(Recipe $recipe): JsonResponse
     {
         $this->denyAccessUnlessGranted('view', $recipe);

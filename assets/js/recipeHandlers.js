@@ -29,11 +29,20 @@ export function loadRecipes(recipesList, attachDeleteHandlers) {
         });
 }
 
+// Fonction pour voir une recette
 export function viewRecipe(id) {
-    fetch(`/profile/recipes/${id}`)
-        .then(response => response.json())
+    fetch(`/profile/recipes/${id}/show`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json(); // Assurez-vous que la réponse est bien du JSON
+        })
         .then(data => {
             alert(`Titre: ${data.title}\nDescription: ${data.description}`);
+        })
+        .catch(error => {
+            console.error('Error fetching recipe:', error);
         });
 }
 

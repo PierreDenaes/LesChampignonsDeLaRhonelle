@@ -43,7 +43,7 @@ class SiteController extends AbstractController
             'recipes' => $recipes,
         ]);
     }
-    #[Route('/recipe/{id}', name: 'recipe_show', methods: ['GET'])]
+    #[Route('/recipe/{id}', name: 'recipe_show_public', methods: ['GET'])]
     public function showRecipe(RecipeRepository $recipeRepository, $id): Response
     {
         $recipe = $recipeRepository->find($id);
