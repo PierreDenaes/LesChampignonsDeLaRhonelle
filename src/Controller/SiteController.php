@@ -34,13 +34,32 @@ class SiteController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/species', name: 'our_species')]
+    public function species(): Response
+    {
+        return $this->render('site/our_species.html.twig', [
+            'controller_name' => 'HomeController',
+        ]);
+    }
+
     #[Route('/recipes', name: 'recipe_all', methods: ['GET'])]
-    public function allRecipes(RecipeRepository $recipeRepository): JsonResponse
+    public function allRecipes(RecipeRepository $recipeRepository): Response
     {
         $recipes = $recipeRepository->findAll();
 
-        $data = $this->serializer->serialize($recipes, 'json', ['groups' => 'recipe']);
-
-        return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
+        return $this->render('site/recipe_public.html.twig', [
+            'recipes' => $recipes,
+        ]);
     }
+    #[Route('/recipe/{id}', name: 'recipe_show_public', methods: ['GET'])]
+    public function showRecipe(RecipeRepository $recipeRepository, $id): Response
+    {
+        $recipe = $recipeRepository->find($id);
+
+        return $this->render('site/recipe_show.html.twig', [
+            'recipe' => $recipe,
+        ]);
+    }
+
 }

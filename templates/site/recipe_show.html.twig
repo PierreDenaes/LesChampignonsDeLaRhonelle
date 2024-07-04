@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vue Recette
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid text-white bg-recipe mb-5 shadow">
+        <div class="jumboRecipe p-5">
+            <h1 class="display-4 fw-semibold">
+                <span class="undeline-gold ps-2 pe-5">Le coin Recettes</span>
+            </h1>
+            <p class="lead display-6">Partagez et retrouvez toutes vos recettes
+                <img src="{{ asset('images/elements/shroom.png') }}" alt="Nos espèces" width="50" height="50"></p>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="{{ asset('images/recipes/' ~ recipe.imageName) }}" alt="{{ recipe.title }}" class="card-img-top">
+                    <div class="card-body">
+                        <h2 class="card-title fs-3 fw-bold text-blue">{{ recipe.title }}</h2>
+                        <p class="card-text">{{ recipe.description }}</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

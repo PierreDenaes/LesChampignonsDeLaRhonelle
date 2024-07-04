@@ -1,4 +1,3 @@
-// initializePage.js
 import { handleAddIngredient, handleAddStep } from './formHandlers';
 import { loadRecipes, viewRecipe, attachDeleteHandlers, editRecipe } from './recipeHandlers';
 import { showNotification } from './notificationHandlers';
@@ -24,7 +23,7 @@ export function initializePage() {
             body: formData,
         }).then(response => {
             if (response.ok) {
-                recipeFormNew.reset();
+                resetForm(recipeFormNew); // Appeler la fonction pour réinitialiser le formulaire
                 showNotification(notification, 'Recette créée avec succès!');
                 loadRecipes(recipesList, attachDeleteHandlers);
                 const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
@@ -35,13 +34,23 @@ export function initializePage() {
         });
     });
 
-    const ingredientLists = document.querySelectorAll('.ingredient-list');
-    ingredientLists.forEach(list => {
-        handleAddIngredient(list);
+    handleAddIngredient(); // Initialiser les gestionnaires d'événements pour les ingrédients
+    handleAddStep(); // Initialiser les gestionnaires d'événements pour les étapes
+}
+
+// Fonction pour réinitialiser le formulaire et ses éléments dynamiques
+function resetForm(form) {
+    form.reset();
+
+    // Réinitialiser les listes d'ingrédients et d'étapes
+    document.querySelectorAll('.ingredient-list').forEach(list => {
+        list.innerHTML = ''; // Vider la liste des ingrédients
+    });
+    document.querySelectorAll('.step-list').forEach(list => {
+        list.innerHTML = ''; // Vider la liste des étapes
     });
 
-    const stepLists = document.querySelectorAll('.step-list');
-    stepLists.forEach(list => {
-        handleAddStep(list);
-    });
+    // Réinitialiser les gestionnaires d'événements
+    handleAddIngredient();
+    handleAddStep();
 }
