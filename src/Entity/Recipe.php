@@ -40,7 +40,11 @@ class Recipe
     #[Groups(['recipe'])]
     private ?int $difficulty = null;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['recipe'])]
+    private ?int $preparation_time = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['recipe'])]
     private ?int $cooking_time = null;
 
@@ -139,6 +143,18 @@ class Recipe
     public function setDifficulty(int $difficulty): self
     {
         $this->difficulty = $difficulty;
+
+        return $this;
+    }
+
+    public function getPreparationTime(): ?int
+    {
+        return $this->preparation_time;
+    }
+
+    public function setPreparationTime(int $preparation_time): self
+    {
+        $this->preparation_time = $preparation_time;
 
         return $this;
     }
