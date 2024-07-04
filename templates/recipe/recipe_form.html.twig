@@ -19,6 +19,11 @@
     {{ form_errors(form.difficulty) }}
 </div>
 <div class="mb-3">
+    {{ form_label(form.preparation_time, 'Temps de préparation (en minutes)', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.preparation_time, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.preparation_time) }}
+</div>
+<div class="mb-3">
     {{ form_label(form.cooking_time, 'Temps de cuisson (en minutes)', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.cooking_time, {'attr': {'class': 'form-control'}}) }}
     {{ form_errors(form.cooking_time) }}
