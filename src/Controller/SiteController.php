@@ -34,6 +34,15 @@ class SiteController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/species', name: 'our_species')]
+    public function species(): Response
+    {
+        return $this->render('site/our_species.html.twig', [
+            'controller_name' => 'HomeController',
+        ]);
+    }
+
     #[Route('/recipes', name: 'recipe_all', methods: ['GET'])]
     public function allRecipes(RecipeRepository $recipeRepository): Response
     {
@@ -52,4 +61,5 @@ class SiteController extends AbstractController
             'recipe' => $recipe,
         ]);
     }
+
 }
