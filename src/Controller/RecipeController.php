@@ -15,6 +15,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mime\Address;
 
 #[Route('/profile/recipes')]
 class RecipeController extends AbstractController
@@ -23,13 +26,17 @@ class RecipeController extends AbstractController
     private $security;
     private $serializer;
     private $recipeService;
+    private $mailer;
+    private $adminEmail;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security, SerializerInterface $serializer, RecipeService $recipeService)
+    public function __construct(EntityManagerInterface $entityManager, Security $security, SerializerInterface $serializer, RecipeService $recipeService, MailerInterface $mailer, string $adminEmail)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
         $this->serializer = $serializer;
         $this->recipeService = $recipeService;
+        $this->mailer = $mailer;
+        $this->adminEmail = $adminEmail;
     }
 
     #[Route('', name: 'recipe_index', methods: ['GET'])]
@@ -64,6 +71,33 @@ class RecipeController extends AbstractController
             $this->recipeService->handleImageUpload($recipe);
             $this->entityManager->persist($recipe);
             $this->entityManager->flush();
+
+            // Envoyer un email à l'administrateur
+            $adminEmail = (new TemplatedEmail())
+                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->to($this->adminEmail)
+                ->subject('Nouvelle recette ajoutée')
+                ->htmlTemplate('recipe/admin_notification_email.html.twig')
+                ->context([
+                    'title' => $recipe->getTitle(),
+                    'description' => $recipe->getDescription(),
+                    'profile_name' => $profile->getName(),
+                ]);
+
+            $this->mailer->send($adminEmail);
+
+            // Envoyer un email de confirmation à l'utilisateur
+            $userEmail = (new TemplatedEmail())
+                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->to($user->getEmail())
+                ->subject('Confirmation de l\'ajout de votre recette')
+                ->htmlTemplate('recipe/user_confirmation_email.html.twig')
+                ->context([
+                    'title' => $recipe->getTitle(),
+                    'profile_name' => $profile->getName(),
+                ]);
+
+            $this->mailer->send($userEmail);
 
             $responseData = $this->serializer->serialize($recipe, 'json', ['groups' => 'recipe']);
             return new JsonResponse($responseData, JsonResponse::HTTP_CREATED, [], true);

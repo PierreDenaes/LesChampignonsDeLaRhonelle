@@ -1,0 +1,15 @@
+{# templates/registration/admin_notification_email.html.twig #}
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Nouvelle inscription sur Les Champignons de La Rhonelle</h1>
+        <p>Un nouvel utilisateur vient de s'inscrire sur le site.</p>
+        <p>Voici les détails de l'utilisateur :</p>
+        <ul>
+            <li><strong>Email:</strong> {{ user.email }}</li>
+            <!-- Ajoute d'autres détails si nécessaire -->
+        </ul>
+        <p>Merci de vérifier et de valider cette inscription si nécessaire.</p>
+    </body>
+</html>

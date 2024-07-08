@@ -13,14 +13,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier)
+    private $emailVerifier;
+    private $adminEmail;
+    private $mailer;
+
+    public function __construct(EmailVerifier $emailVerifier, string $adminEmail, MailerInterface $mailer)
     {
+        $this->emailVerifier = $emailVerifier;
+        $this->adminEmail = $adminEmail;
+        $this->mailer = $mailer;
     }
 
     #[Route('/register', name: 'app_register')]
@@ -51,7 +59,17 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // do anything else you need here, like send an email
+            // send email to the admin
+            $adminEmail = (new TemplatedEmail())
+                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->to($this->adminEmail)
+                ->subject('New User Registration')
+                ->htmlTemplate('registration/admin_notification_email.html.twig')
+                ->context([
+                    'user' => $user,
+                ]);
+
+            $this->mailer->send($adminEmail);
 
             return $this->redirectToRoute('app_home');
         }

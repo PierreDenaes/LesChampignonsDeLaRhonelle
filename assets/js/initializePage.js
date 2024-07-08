@@ -24,7 +24,7 @@ export function initializePage() {
         }).then(response => {
             if (response.ok) {
                 resetForm(recipeFormNew); // Appeler la fonction pour réinitialiser le formulaire
-                showNotification(notification, 'Recette créée avec succès!');
+                showNotification(notification, 'Votre recette a été ajoutée et est en attente de vérification par l\'administrateur.');
                 loadRecipes(recipesList, attachDeleteHandlers);
                 const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
                 tabTrigger.show();

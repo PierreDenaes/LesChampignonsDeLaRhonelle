@@ -72,6 +72,7 @@ class Recipe
     private Collection $ingredients;
 
     #[ORM\Column]
+    #[Groups(['recipe'])]
     private ?bool $isActive = null;
 
     #[ORM\Column]

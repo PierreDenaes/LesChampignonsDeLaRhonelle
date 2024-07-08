@@ -9,21 +9,24 @@ export function loadRecipes(recipesList, attachDeleteHandlers) {
         .then(data => {
             recipesList.innerHTML = '';
             data.forEach(recipe => {
-                const recipeCard = document.createElement('div');
-                recipeCard.classList.add('col-md-4');
-                recipeCard.innerHTML = `
-                    <div class="card mb-3">
-                        <img src="/images/recipes/${recipe.imageName || 'default/default-recipe.webp'}" class="card-img-top" alt="${recipe.title}">
-                        <div class="card-body">
-                            <h5 class="card-title">${recipe.title}</h5>
-                            <p class="card-text">${recipe.description}</p>
-                            <button class="btn btn-primary" onclick="viewRecipe(${recipe.id})">Voir</button>
-                            <button class="btn btn-secondary" onclick="editRecipe(${recipe.id})">Modifier</button>
-                            <button class="btn btn-danger" data-id="${recipe.id}" data-image-name="${recipe.imageName}">Supprimer</button>
+                // Vérifie si la recette est active avant de l'afficher
+                if (recipe.isActive) {
+                    const recipeCard = document.createElement('div');
+                    recipeCard.classList.add('col-md-4');
+                    recipeCard.innerHTML = `
+                        <div class="card mb-3">
+                            <img src="/images/recipes/${recipe.imageName || 'default/default-recipe.webp'}" class="card-img-top" alt="${recipe.title}">
+                            <div class="card-body">
+                                <h5 class="card-title">${recipe.title}</h5>
+                                <p class="card-text">${recipe.description}</p>
+                                <button class="btn btn-primary" onclick="viewRecipe(${recipe.id})">Voir</button>
+                                <button class="btn btn-secondary" onclick="editRecipe(${recipe.id})">Modifier</button>
+                                <button class="btn btn-danger" data-id="${recipe.id}" data-image-name="${recipe.imageName}">Supprimer</button>
+                            </div>
                         </div>
-                    </div>
-                `;
-                recipesList.appendChild(recipeCard);
+                    `;
+                    recipesList.appendChild(recipeCard);
+                }
             });
             attachDeleteHandlers();
         });

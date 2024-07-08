@@ -17,16 +17,21 @@ use App\Form\IngredientType;
 use App\Form\RecipeStepType;
 use App\Service\RecipeService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mime\Address;
 
 class RecipeCrudController extends AbstractCrudController
 {
     private $recipeService;
     private $entityManager;
+    private $mailer;
 
-    public function __construct(RecipeService $recipeService, EntityManagerInterface $entityManager)
+    public function __construct(RecipeService $recipeService, EntityManagerInterface $entityManager, MailerInterface $mailer)
     {
         $this->recipeService = $recipeService;
         $this->entityManager = $entityManager;
+        $this->mailer = $mailer;
     }
 
     public static function getEntityFqcn(): string
@@ -70,6 +75,37 @@ class RecipeCrudController extends AbstractCrudController
         ];
     }
 
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Recipe) return;
+
+        // Check if the entity was active before and now is inactive
+        $oldRecipe = $entityManager->getUnitOfWork()->getOriginalEntityData($entityInstance);
+        $wasActive = $oldRecipe['isActive'] ?? false;
+        $isActive = $entityInstance->isIsActive();
+
+        // Handle the image upload
+        $this->recipeService->handleImageUpload($entityInstance);
+
+        parent::updateEntity($entityManager, $entityInstance);
+
+        // Send email if the recipe has just been activated
+        if (!$wasActive && $isActive) {
+            $user = $entityInstance->getProfile()->getIdUser();
+            $userEmail = (new TemplatedEmail())
+                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->to($user->getEmail())
+                ->subject('Votre recette est validée')
+                ->htmlTemplate('recipe/user_recipe_approved_email.html.twig')
+                ->context([
+                    'recipe' => $entityInstance,
+                    'profile_name' => $entityInstance->getProfile()->getName(),
+                ]);
+
+            $this->mailer->send($userEmail);
+        }
+    }
+
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if (!$entityInstance instanceof Recipe) return;
@@ -78,16 +114,6 @@ class RecipeCrudController extends AbstractCrudController
         $this->recipeService->handleImageUpload($entityInstance);
 
         parent::persistEntity($entityManager, $entityInstance);
-    }
-
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        if (!$entityInstance instanceof Recipe) return;
-
-        // Handle the image upload
-        $this->recipeService->handleImageUpload($entityInstance);
-
-        parent::updateEntity($entityManager, $entityInstance);
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void

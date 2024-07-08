@@ -1,0 +1,17 @@
+{# templates/recipe/admin_notification_email.html.twig #}
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Nouvelle recette ajoutée</h1>
+        <p>Un utilisateur a ajouté une nouvelle recette sur le site.</p>
+        <p>Voici les détails de la recette :</p>
+        <ul>
+            <li><strong>Titre:</strong> {{ title }}</li>
+            <li><strong>Description:</strong> {{ description }}</li>
+            <li><strong>Ajouté par:</strong> {{ profile_name }}</li>
+            <!-- Ajoute d'autres détails si nécessaire -->
+        </ul>
+        <p>Merci de vérifier et de valider cette recette si nécessaire.</p>
+    </body>
+</html>
