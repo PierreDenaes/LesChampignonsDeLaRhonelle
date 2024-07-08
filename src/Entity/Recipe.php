@@ -83,7 +83,6 @@ class Recipe
     {
         $this->steps = new ArrayCollection();
         $this->ingredients = new ArrayCollection();
-        $this->isActive = false;
     }
 
     // Getters and setters...
@@ -273,12 +272,12 @@ class Recipe
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function isIsActive(): ?bool
     {
         return $this->isActive;
     }
 
-    public function setActive(bool $isActive): static
+    public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
 

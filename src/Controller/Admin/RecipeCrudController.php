@@ -2,8 +2,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Recipe;
-use App\Entity\Ingredient;
-use App\Entity\RecipeStep;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -53,7 +51,7 @@ class RecipeCrudController extends AbstractCrudController
             IntegerField::new('cooking_time', 'Temps de cuisson (min)'),
             IntegerField::new('rest_time', 'Temps de repos (min)'),
             AssociationField::new('profile', 'Profil'),
-            BooleanField::new('isActive', 'Active'),
+            BooleanField::new('isActive', 'Active')->setRequired(true),
             IntegerField::new('nbGuest', 'Nombre de convives'),
             DateTimeField::new('updatedAt', 'Mis à jour le')->hideOnForm(),
 

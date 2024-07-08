@@ -55,6 +55,7 @@ class RecipeController extends AbstractController
 
         $recipe = new Recipe();
         $recipe->setProfile($profile);
+        $recipe->setIsActive(false);
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
