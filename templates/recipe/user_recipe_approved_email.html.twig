@@ -6,7 +6,7 @@
         <h1>Votre recette est validée</h1>
         <p>Bonjour {{ profile_name }},</p>
         <p>Nous avons le plaisir de vous informer que votre recette intitulée <strong>{{ recipe.title }}</strong> a été validée par notre équipe d'administration et est maintenant disponible sur le site.</p>
-        <p>Vous pouvez la consulter en cliquant <a href="{{ path('recipe_show', {'id': recipe.id}) }}">ici</a>.</p>
+        <p>Vous pouvez la consulter en cliquant <a href="{{ recipe_url }}">ici</a>.</p>
         <p>Merci pour votre contribution et à bientôt sur Les Champignons de La Rhonelle !</p>
         <p>Cordialement,</p>
         <p>L'équipe de Les Champignons de La Rhonelle</p>

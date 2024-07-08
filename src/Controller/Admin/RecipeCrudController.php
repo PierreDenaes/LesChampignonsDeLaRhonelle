@@ -2,36 +2,39 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Recipe;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 use App\Form\IngredientType;
 use App\Form\RecipeStepType;
 use App\Service\RecipeService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class RecipeCrudController extends AbstractCrudController
 {
     private $recipeService;
     private $entityManager;
     private $mailer;
+    private $router;
 
-    public function __construct(RecipeService $recipeService, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    public function __construct(RecipeService $recipeService, EntityManagerInterface $entityManager, MailerInterface $mailer, UrlGeneratorInterface $router)
     {
         $this->recipeService = $recipeService;
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
+        $this->router = $router;
     }
 
     public static function getEntityFqcn(): string
@@ -92,6 +95,7 @@ class RecipeCrudController extends AbstractCrudController
         // Send email if the recipe has just been activated
         if (!$wasActive && $isActive) {
             $user = $entityInstance->getProfile()->getIdUser();
+            $recipeUrl = $this->router->generate('recipe_show_public', ['id' => $entityInstance->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
             $userEmail = (new TemplatedEmail())
                 ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
                 ->to($user->getEmail())
@@ -100,6 +104,7 @@ class RecipeCrudController extends AbstractCrudController
                 ->context([
                     'recipe' => $entityInstance,
                     'profile_name' => $entityInstance->getProfile()->getName(),
+                    'recipe_url' => $recipeUrl,
                 ]);
 
             $this->mailer->send($userEmail);
