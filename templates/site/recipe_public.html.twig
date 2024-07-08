@@ -25,7 +25,7 @@
 							<div class="card-body">
 								<h2 class="card-title fs-3 fw-bold text-blue">{{ recipe.title }}</h2>
 								<p class="card-text">{{ recipe.description | raw }}</p>
-								<a href="{{ path('recipe_show', {'id': recipe.id}) }}" class="btn btn-blue viewRecetteBtn">Voir
+								<a href="{{ path('recipe_show_public', {'id': recipe.id}) }}" class="btn btn-blue viewRecetteBtn">Voir
 									<i class="fas fa-eye ms-1"></i>
 								</a>
 
