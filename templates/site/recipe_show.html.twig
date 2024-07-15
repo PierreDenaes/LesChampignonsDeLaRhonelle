@@ -2,98 +2,205 @@
 
 {% block title %}{{ recipe.title }} - Recette{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* custom.css */
+.text-primary {
+    color: var(--blue);
+}
+
+.text-secondary {
+    color: var(--gold);
+}
+
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.card-title {
+    margin-bottom: 1rem;
+}
+
+.list-group-item {
+    border: none;
+    padding: 0.75rem 1.25rem;
+}
+
+.list-group-item:not(:last-child) {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.list-group-item:last-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.mushroom-rating {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+i.fas {
+    font-size: 36px; /* Augmentation de la taille des icônes */
+    margin-bottom: 5px;
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    background-color: var(--gold); /* Couleur personnalisée */
+    color: white;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly; /* Répartition égale */
+    align-items: center;
+}
+
+.detail-item {
+    margin: 10px 0;
+}
+
+.img-landscape {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9; /* Assurer un format 16/9 */
+    object-fit: cover; /* Recadrer l'image au format paysage */
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="container mt-5">
     <div class="row">
-        <!-- Title -->
-        <div class="col-12 mb-4">
-            <h1 class="text-blue fw-bold border-bottom border-gold border-5">{{ recipe.title }}</h1>
-        </div>
-        
-        <!-- Image and Description -->
-        <div class="col-12 mb-4">
-            <div class="card shadow-sm">
-                <img src="{{ asset('images/recipes/' ~ recipe.imageName) }}" alt="{{ recipe.title }}" class="card-img-top">
-                <div class="card-body">
-                    <p class="card-text text-muted">{{ recipe.description }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row text-center mb-4">
-        <div class="col-6 col-md-2 mb-3">
-            <p><i class="fas fa-tachometer-alt"></i></p>
-            <p><strong>Difficulté</strong></p>
-            <span class="badge bg-primary">{{ recipe.difficulty }}</span>
-        </div>
-        <div class="col-6 col-md-2 mb-3">
-            <p><i class="fas fa-users"></i></p>
-            <p><strong>Quantité</strong></p>
-            <span class="badge bg-success">{{ recipe.nbGuest }} pers</span>
-        </div>
-        <div class="col-6 col-md-2 mb-3">
-            <p><i class="fas fa-clock"></i></p>
-            <p><strong>Préparation</strong></p>
-            <span class="badge bg-warning">{{ recipe.preparationTime }} min</span>
-        </div>
-        <div class="col-6 col-md-2 mb-3">
-            <p><i class="fas fa-fire"></i></p>
-            <p><strong>Cuisson</strong></p>
-            <span class="badge bg-danger">{{ recipe.cookingTime }} min</span>
-        </div>
-        <div class="col-6 col-md-2 mb-3">
-            <p><i class="fas fa-hourglass-half"></i></p>
-            <p><strong>Temps total</strong></p>
-            <span class="badge bg-info">{{ recipe.preparationTime + recipe.cookingTime + recipe.restTime }} min</span>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Ingredients -->
-        <div class="col-12 col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h3 class="card-title fs-4 fw-bold text-secondary">Ingrédients</h3>
-                    <ul class="list-group list-group-flush">
-                        {% for ingredient in recipe.ingredients %}
-                            <li class="list-group-item">{{ ingredient.quantity }} {{ ingredient.unit }} - {{ ingredient.name }}</li>
-                        {% else %}
-                            <li class="list-group-item">Aucun ingrédient spécifié.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+        <!-- Sidebar for Latest Recipes -->
+        <div class="col-md-3 mb-4">
+            <div class="list-group">
+                <h4 class="text-blue mb-3">Dernières recettes</h4>
+                {% for latestRecipe in latestRecipes %}
+                    <a href="{{ path('recipe_show_public', {'id': latestRecipe.id}) }}" class="list-group-item list-group-item-action">
+                        {{ latestRecipe.title }}
+                    </a>
+                {% else %}
+                    <p class="list-group-item">Aucune recette disponible.</p>
+                {% endfor %}
             </div>
         </div>
 
-        <!-- Steps -->
-        <div class="col-12 col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h3 class="card-title fs-4 fw-bold text-secondary">Étapes</h3>
-                    <ol class="list-group list-group-numbered">
-                        {% for step in recipe.steps %}
-                            <li class="list-group-item">{{ step.description }}</li>
-                        {% else %}
-                            <li class="list-group-item">Aucune étape spécifiée.</li>
-                        {% endfor %}
-                    </ol>
+        <!-- Main content -->
+        <div class="col-md-9">
+            <!-- Title -->
+            <div class="col-12 mb-4">
+                <h1 class="text-blue fw-bold">{{ recipe.title }}</h1>
+            </div>
+            
+            <div class="row">
+                <!-- Image and Details -->
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-0 d-flex">
+                            <img src="{{ asset('images/recipes/' ~ recipe.imageName) }}" alt="{{ recipe.title }}" class="card-img-top w-75 img-landscape">
+                            <div class="details w-25 d-flex flex-column justify-content-evenly align-items-center p-3">
+                                <div class="detail-item text-center">
+                                    <i class="fas fa-tachometer-alt text-blue fa-3x"></i>
+                                    <p class="mb-0"><strong>Difficulté</strong></p>
+                                    <span class="badge bg-gold">{{ recipe.difficulty }}</span>
+                                </div>
+                                <div class="detail-item text-center">
+                                    <i class="fas fa-clock text-blue fa-3x"></i>
+                                    <p class="mb-0"><strong>Préparation</strong></p>
+                                    <span class="badge bg-gold">{{ recipe.preparationTime }} min</span>
+                                </div>
+                                <div class="detail-item text-center">
+                                    <i class="fas fa-fire text-blue fa-3x"></i>
+                                    <p class="mb-0"><strong>Cuisson</strong></p>
+                                    <span class="badge bg-gold">{{ recipe.cookingTime }} min</span>
+                                </div>
+                                <div class="detail-item text-center">
+                                    <i class="fas fa-hourglass-half text-blue fa-3x"></i>
+                                    <p class="mb-0"><strong>Temps total</strong></p>
+                                    <span class="badge bg-gold">{{ recipe.preparationTime + recipe.cookingTime + recipe.restTime }} min</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted">{{ recipe.description | raw }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h3 class="card-title fs-4 fw-bold text-secondary">Notez cette recette</h3>
-                    <p class="card-text">Avez-vous aimé cette recette ?</p>
-                    <!-- Rating system with mushrooms -->
-                    <div>
-                        {% for i in 1..5 %}
-                            <img src="{{ asset('images/vote/mushroom-gold-min.png') }}" alt="Mushroom rating" class="mushroom-rating" data-rating="{{ i }}">
-                        {% endfor %}
+            <div class="row">
+                <!-- Ingredients -->
+                <div class="col-12 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-users text-blue me-2 fa-2x"></i>
+                                <h3 class="card-title fs-4 fw-bold text-gold mb-0">Ingrédients</h3>
+                                <span class="ms-auto badge bg-gold">{{ recipe.nbGuest }} pers</span>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                {% for ingredient in recipe.ingredients %}
+                                    <li class="list-group-item"><span class="text-blue fs-5 fw-bold">{{ ingredient.quantity }}</span> {{ ingredient.unit }} - {{ ingredient.name }}</li>
+                                {% else %}
+                                    <li class="list-group-item">Aucun ingrédient spécifié.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Steps -->
+                <div class="col-12 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h3 class="card-title fs-4 fw-bold text-gold">Étapes</h3>
+                            <ol class="list-group list-group-numbered">
+                                {% for step in recipe.steps %}
+                                    <li class="list-group-item">{{ step.description }}</li>
+                                {% else %}
+                                    <li class="list-group-item">Aucune étape spécifiée.</li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h3 class="card-title fs-4 fw-bold text-gold">Notez cette recette</h3>
+                            <p class="card-text">Avez-vous aimé cette recette ?</p>
+                            <!-- Rating system with mushrooms -->
+                            <div>
+                                {% for i in 1..5 %}
+                                    <img src="{{ asset('images/vote/mushroom-gold-min.png') }}" alt="Mushroom rating" class="mushroom-rating" data-rating="{{ i }}">
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

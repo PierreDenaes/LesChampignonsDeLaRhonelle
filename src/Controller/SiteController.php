@@ -57,8 +57,12 @@ class SiteController extends AbstractController
     {
         $recipe = $recipeRepository->find($id);
 
+        // Récupérer les dernières recettes, triées par date de mise à jour
+        $latestRecipes = $recipeRepository->findBy(['isActive' => true], ['updatedAt' => 'DESC'], 5);
+
         return $this->render('site/recipe_show.html.twig', [
             'recipe' => $recipe,
+            'latestRecipes' => $latestRecipes,
         ]);
     }
 
