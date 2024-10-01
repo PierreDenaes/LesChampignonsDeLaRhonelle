@@ -182,19 +182,19 @@
 								<h3 class="card-title fs-4 fw-bold text-gold">Notez cette recette</h3>
 								<p class="card-text">Avez-vous aimé cette recette ?</p>
 								<!-- Rating system with mushrooms -->
-								<form method="post" action="{{ path('submit_rating', {id: recipe.id}) }}">
-    <div class="rating-group">
-    {% for i in [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5] %}
-        <input class="rating__input" type="radio" name="score" id="rating-{{ i }}" value="{{ i }}">
-        <label aria-label="{{ i }} champignon(s)" 
-               class="rating__label {% if (i * 10) % 10 != 0 %} rating__label--half {% endif %}" 
-               for="rating-{{ i }}">
-            <img src="{{ asset('images/mushrooms/mushroom-' ~ ((i * 10) % 10 != 0 ? 'half' : 'empty') ~ '.webp') }}" alt="{{ i }} Champignon" class="mushroom-rating">
-        </label>
-    {% endfor %}
-</div>
-    <button type="submit">Envoyer votre note</button>
-</form>
+								<form method="post" action="#" id="ratingForm" data-recipe-id="{{ recipe.id }}" {% if app.user %}
+									data-profile-id="{{ app.user.profile.id }}"
+									{% endif %}>
+									<input type="hidden" name="_csrf_token" value="{{ csrf_token('rate_recipe') }}">
+									<div class="rating-group">
+										{% for i in [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5] %}
+											<input class="rating__input" type="radio" name="score" id="rating-{{ i }}" value="{{ i }}" {% if existingRating and existingRating.score == i %} checked {% endif %}>
+											<label aria-label="{{ i }} champignon(s)" class="rating__label {% if (i * 10) % 10 != 0 %} rating__label--half {% endif %}" for="rating-{{ i }}">
+												<img src="{{ asset('images/mushrooms/mushroom-' ~ ((i * 10) % 10 != 0 ? 'half' : 'empty') ~ '.webp') }}" alt="{{ i }} Champignon" class="mushroom-rating">
+											</label>
+										{% endfor %}
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -203,4 +203,3 @@
 		</div>
 	</div>
 {% endblock %}
-

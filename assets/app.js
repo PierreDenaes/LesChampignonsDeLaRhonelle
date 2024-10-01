@@ -7,6 +7,7 @@
 require('bootstrap');
 require('@fortawesome/fontawesome-free/css/all.min.css');
 // any CSS you import will output into a single css file (app.css in this case)
+import * as bootstrap from 'bootstrap';
 import './styles/app.scss';
 const navbarBrand = document.querySelector('.navbar-brand');
 window.addEventListener('scroll', () => {
@@ -16,5 +17,24 @@ window.addEventListener('scroll', () => {
     } else {
         navbarBrand.classList.add('visible');
         navbarBrand.classList.remove('hidden');
+    }
+});
+// Ce script sera chargé sur toutes les pages du site
+document.addEventListener('DOMContentLoaded', function() {
+    let notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    let notificationContainer = document.getElementById('notificationModal').querySelector('.modal-body');
+    
+    // Récupérer les messages de notification présents dans la page
+    let notificationMessages = document.querySelectorAll('.alert');
+
+    // Si des notifications sont présentes, on les affiche dans la modale
+    if (notificationMessages.length > 0) {
+        notificationContainer.innerHTML = ''; // Nettoyer la modale
+
+        notificationMessages.forEach(function(message) {
+            notificationContainer.append(message.cloneNode(true)); // Ajouter chaque message à la modale
+        });
+
+        notificationModal.show(); // Afficher la modale
     }
 });

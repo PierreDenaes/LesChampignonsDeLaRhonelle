@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Rating;
 use App\Entity\Recipe;
 use App\Form\RatingType;
+use App\Repository\RatingRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\SponsorRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,51 +59,94 @@ class SiteController extends AbstractController
         ]);
     }
     #[Route('/recipe/{id}', name: 'recipe_show_public', methods: ['GET'])]
-    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, $id): Response
+    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, RatingRepository $ratingRepository, $id): Response
     {
         $recipe = $recipeRepository->find($id);
 
         // Récupérer les dernières recettes, triées par date de mise à jour
         $latestRecipes = $recipeRepository->findBy(['isActive' => true], ['updatedAt' => 'DESC'], 5);
 
+        // Obtenir l'utilisateur actuel
+        $userProfile = $this->getUser() ? $this->getUser()->getProfile() : null;
+
+        // Chercher la note existante de l'utilisateur pour la recette
+        $existingRating = $userProfile ? $ratingRepository->findOneBy([
+            'recipe' => $recipe,
+            'profile' => $userProfile,
+        ]) : null;
+
         // Obtenir l'erreur et le dernier nom d'utilisateur pour la modale de connexion
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
+
         return $this->render('site/recipe_show.html.twig', [
             'recipe' => $recipe,
             'latestRecipes' => $latestRecipes,
             'last_username' => $lastUsername,  // Ajouté pour la modale de connexion
-            'error' => $error,  
+            'error' => $error,
+            'existingRating' => $existingRating,  // Ajouté pour la note existante
         ]);
     }
     #[Route('/recipe/{id}/rate', name: 'submit_rating', methods: ['POST'])]
-    public function submitRating(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
+    public function submitRating(Request $request, Recipe $recipe, EntityManagerInterface $entityManager, RatingRepository $ratingRepository): Response
     {
         // Vérifier si l'utilisateur est connecté
         if (!$this->getUser()) {
-            $this->addFlash('error', 'Vous devez être connecté pour noter cette recette. Veuillez vous connecter ou vous inscrire.');
-            return $this->redirectToRoute('app_login'); // Ou une autre route vers la page de connexion
+            return new JsonResponse(['error' => 'Vous devez être connecté pour noter cette recette.'], 403);
         }
 
-        $rating = new Rating();
-        $ratingForm = $this->createForm(RatingType::class, $rating);
-        $ratingForm->handleRequest($request);
+        $userProfile = $this->getUser()->getProfile();
+        $content = json_decode($request->getContent(), true);
+        $newScore = $content['score'] ?? null;
 
-        if ($ratingForm->isSubmitted() && $ratingForm->isValid()) {
-            // Associer la recette et l'utilisateur actuel
+        if ($newScore === null) {
+            return new JsonResponse(['error' => 'Note invalide.'], 400);
+        }
+
+        // Chercher s'il y a déjà une note pour cette recette et cet utilisateur
+        $existingRating = $ratingRepository->findOneBy([
+            'recipe' => $recipe,
+            'profile' => $userProfile,
+        ]);
+
+        if ($existingRating) {
+            // Mise à jour de la note existante
+            $existingRating->setScore($newScore);
+            $entityManager->flush();
+            return new JsonResponse(['message' => 'Note mise à jour avec succès.']);
+        } else {
+            // Création d'une nouvelle note
+            $rating = new Rating();
             $rating->setRecipe($recipe);
-            $rating->setProfile($this->getUser()->getProfile());
+            $rating->setProfile($userProfile);
+            $rating->setScore($newScore);
+
             $entityManager->persist($rating);
             $entityManager->flush();
+            return new JsonResponse(['message' => 'Note enregistrée avec succès.',
+            'newScore' => $newScore
+            ]);
+        }
+    }
+    #[Route('/recipe/{id}/current-rating', name: 'get_current_rating', methods: ['GET'])]
+    public function getCurrentRating(RatingRepository $ratingRepository, Recipe $recipe): JsonResponse
+    {
+        $userProfile = $this->getUser() ? $this->getUser()->getProfile() : null;
 
-            return $this->redirectToRoute('recipe_show', ['id' => $recipe->getId()]);
+        // Si l'utilisateur n'est pas connecté, on retourne une réponse vide
+        if (!$userProfile) {
+            return new JsonResponse(['currentRating' => null]);
         }
 
-        return $this->render('recipe_show.html.twig', [
+        // Chercher la note existante de l'utilisateur pour la recette
+        $existingRating = $ratingRepository->findOneBy([
             'recipe' => $recipe,
-            'ratingForm' => $ratingForm->createView(),
-            'isUserLoggedIn' => $this->getUser() !== null,
+            'profile' => $userProfile,
         ]);
+
+        $currentRating = $existingRating ? $existingRating->getScore() : null;
+
+        return new JsonResponse(['currentRating' => $currentRating]);
     }
     #[Route('/api/check-login', name: 'check_login_status', methods: ['GET'])]
     public function checkLoginStatus(): JsonResponse
