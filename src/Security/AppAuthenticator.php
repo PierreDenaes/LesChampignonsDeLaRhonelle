@@ -43,35 +43,32 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
-        }
-
-        // Récupérez l'utilisateur
-        $user = $token->getUser();
-        
-        // Vérifiez si l'email de l'utilisateur est vérifié
-        if (!$user->isVerified()) {
-            // Ajoutez un message flash pour informer l'utilisateur de vérifier son e-mail
-            $request->getSession()->getFlashBag()->add('warning', 'Veuillez confirmer votre adresse e-mail.');
-
-            // Redirigez l'utilisateur vers la page d'accueil
-            return new RedirectResponse($this->urlGenerator->generate('app_home')); // Remplacez 'home_route' par le nom de votre route d'accueil
-        }
-
-        // Récupérez les rôles de l'utilisateur
-        $roles = $token->getUser()->getRoles();
-
-        // Redirigez les utilisateurs en fonction de leurs rôles
-        if (in_array('ROLE_ADMIN', $roles, true)) {
-            return new RedirectResponse($this->urlGenerator->generate('admin'));  // Remplacez 'admin_route' par le nom de votre route admin
-        } elseif (in_array('ROLE_USER', $roles, true)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_profile'));  // Remplacez 'profile_route' par le nom de votre route profil
-        } else {
-            throw new \Exception('No route found for user role.');
-        }
+{
+    if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+        return new RedirectResponse($targetPath);
     }
+
+    $user = $token->getUser();
+    
+    if (!$user->isVerified()) {
+        $request->getSession()->getFlashBag()->add('warning', 'Veuillez confirmer votre adresse e-mail.');
+        
+        return new RedirectResponse($this->urlGenerator->generate('app_logout'));
+    }
+
+    $roles = $token->getUser()->getRoles();
+
+    if (in_array('ROLE_ADMIN', $roles, true)) {
+        return new RedirectResponse($this->urlGenerator->generate('admin'));
+    } elseif (in_array('ROLE_USER', $roles, true)) {
+        // Ajout du message flash de bienvenue
+        $request->getSession()->getFlashBag()->add('success', 'Bonjour ' . $user->getProfile()->getFirstname() . ', bienvenue sur votre profil !');
+
+        return new RedirectResponse($this->urlGenerator->generate('app_profile'));
+    } else {
+        throw new \Exception('No route found for user role.');
+    }
+}
 
     protected function getLoginUrl(Request $request): string
     {

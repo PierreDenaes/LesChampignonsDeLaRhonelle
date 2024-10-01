@@ -71,6 +71,10 @@ class RegistrationController extends AbstractController
 
             $this->mailer->send($adminEmail);
 
+            // Ajouter un message flash pour informer l'utilisateur
+            $this->addFlash('success', 'Votre compte a été créé avec succès. Veuillez vérifier votre e-mail pour confirmer votre compte avant de vous connecter.');
+
+
             return $this->redirectToRoute('app_home');
         }
 
