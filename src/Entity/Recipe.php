@@ -79,11 +79,18 @@ class Recipe
     #[Groups(['recipe'])]
     private ?int $nbGuest = null;
 
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'recipe', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $ratings;
+
 
     public function __construct()
     {
         $this->steps = new ArrayCollection();
         $this->ingredients = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     // Getters and setters...
@@ -295,6 +302,49 @@ class Recipe
         $this->nbGuest = $nbGuest;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getRecipe() === $this) {
+                $rating->setRecipe(null);
+            }
+        }
+
+        return $this;
+    }
+    public function getAverageRating(): ?float
+    {
+        $totalRatings = count($this->ratings);
+        if ($totalRatings === 0) {
+            return null; // Si aucune note n'est présente
+        }
+
+        $sum = array_reduce($this->ratings->toArray(), function ($carry, $rating) {
+            return $carry + $rating->getScore();
+        }, 0);
+
+        return $sum / $totalRatings;
     }
 
 }
