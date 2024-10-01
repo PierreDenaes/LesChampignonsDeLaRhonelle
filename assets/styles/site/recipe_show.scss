@@ -1,0 +1,124 @@
+.text-primary {
+    color: var(--blue);
+}
+
+.text-secondary {
+    color: var(--gold);
+}
+
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.card-title {
+    margin-bottom: 1rem;
+}
+
+.list-group-item {
+    border: none;
+    padding: 0.75rem 1.25rem;
+}
+
+.list-group-item:not(:last-child) {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.list-group-item:last-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+i.fas {
+    font-size: 36px; /* Augmentation de la taille des icônes */
+    margin-bottom: 5px;
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    background-color: var(--gold); /* Couleur personnalisée */
+    color: white;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly; /* Répartition égale */
+    align-items: center;
+}
+
+.detail-item {
+    margin: 10px 0;
+}
+
+.img-landscape {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9; /* Assurer un format 16/9 */
+    object-fit: cover; /* Recadrer l'image au format paysage */
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.rating-group {
+    display: inline-flex;
+    direction: rtl; /* Inverse l'ordre de sélection des étoiles */
+}
+
+.rating__input {
+    position: absolute;
+    left: -9999px; /* Cache les boutons radio */
+}
+
+.rating__label {
+    cursor: pointer;
+    padding: 0 7px; /* Augmente légèrement la zone de clic */
+    font-size: 2rem;
+}
+
+.rating__label--half {
+    padding-right: 0;
+    margin-right: -47px; /* Ajuste pour éviter la superposition */
+    z-index: 2;
+    width: 50%; /* Demi-champignon doit occuper la moitié de l'espace */
+}
+.mushroom-rating {
+    width: 40px;
+    height: auto;
+    transition: opacity 0.3s;
+}
+
+/* Par défaut, tous les champignons sont vides */
+.rating__label img {
+    content: url('../images/mushrooms/mushroom-empty.webp');
+}
+
+/* Demi-champignon sélectionné ou survolé */
+.rating__label--half:hover img, 
+.rating__input:checked + .rating__label--half img {
+    content: url('../images/mushrooms/mushroom-half.webp') !important;
+}
+
+/* Champignons remplis au survol */
+.rating__label:hover img,
+.rating__label:hover ~ .rating__label img {
+    content: url('../images/mushrooms/mushroom-full.webp');
+}
+
+/* Champignons pleins sélectionnés */
+.rating__input:checked + .rating__label img,
+.rating__input:checked ~ .rating__label img {
+    content: url('../images/mushrooms/mushroom-full.webp');
+}
