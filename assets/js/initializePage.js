@@ -23,13 +23,27 @@ export function initializePage() {
             body: formData,
         }).then(response => {
             if (response.ok) {
-                resetForm(recipeFormNew); // Appeler la fonction pour réinitialiser le formulaire
-                showNotification(notification, 'Votre recette a été ajoutée et est en attente de vérification par l\'administrateur.');
+                resetForm(recipeFormNew); // Réinitialiser le formulaire
+                // Appeler le contrôleur pour le message flash
+                fetch('/add-flash-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        
+                    },
+                    body: JSON.stringify({ message: 'Votre recette a été ajoutée et est en attente de vérification.', type: 'success' })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message, 'success'); // Afficher la notification
+                    }
+                });
                 loadRecipes(recipesList, attachDeleteHandlers);
                 const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
                 tabTrigger.show();
             } else {
-                alert('Erreur lors de la création de la recette.');
+                showNotification('Erreur lors de la création de la recette.', 'danger');
             }
         });
     });
