@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RecipeStepRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecipeStepRepository::class)]
 class RecipeStep
@@ -15,7 +16,11 @@ class RecipeStep
     private ?int $id = null;
 
     #[ORM\Column(type: 'text')]
-    #[Groups(['recipe'])]
+    #[Assert\NotBlank(message: "La description est obligatoire.")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "La description doit faire au moins {{ limit }} caractères."
+    )]
     private ?string $description = null;
 
     #[ORM\Column(type: 'integer')]

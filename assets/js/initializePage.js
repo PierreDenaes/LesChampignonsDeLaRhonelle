@@ -14,6 +14,16 @@ export function initializePage() {
 
     recipeFormNew.addEventListener('submit', function(event) {
         event.preventDefault();
+        // Mettre à jour les numéros d'étapes si nécessaire avant la soumission
+        document.querySelectorAll('.step-list').forEach(list => {
+            const steps = list.querySelectorAll('li');
+            steps.forEach((step, index) => {
+                const stepNumberInput = step.querySelector('input[name*="[stepNumber]"]');
+                if (stepNumberInput) {
+                    stepNumberInput.value = index + 1;  // Assigner correctement les numéros d'étape
+                }
+            });
+        });
         const formData = new FormData(recipeFormNew);
         const url = recipeFormNew.action;
 

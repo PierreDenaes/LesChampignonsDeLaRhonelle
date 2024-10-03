@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\IngredientRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 class Ingredient
@@ -15,12 +16,13 @@ class Ingredient
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['recipe'])]
+    #[Assert\NotBlank(message: 'Le nom de l\'ingrédient est obligatoire.', groups: ['create', 'update'])]
     private ?string $name = null;
 
-    #[ORM\Column]
-    #[Groups(['recipe'])]
-    private ?float $quantity = null;
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: 'La quantité est obligatoire.', groups: ['create', 'update'])]
+    #[Assert\GreaterThan(0, message: 'La quantité doit être supérieure à 0.', groups: ['create', 'update'])]
+    private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     #[ORM\JoinColumn(nullable: false)]
