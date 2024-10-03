@@ -42,19 +42,13 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName ): ?Response
 {
     if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
         return new RedirectResponse($targetPath);
     }
 
     $user = $token->getUser();
-    
-    if (!$user->isVerified()) {
-        $request->getSession()->getFlashBag()->add('warning', 'Veuillez confirmer votre adresse e-mail.');
-        
-        return new RedirectResponse($this->urlGenerator->generate('app_logout'));
-    }
 
     $roles = $token->getUser()->getRoles();
 

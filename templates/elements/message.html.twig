@@ -11,7 +11,7 @@
         <!-- Le contenu de la notification sera injecté ici via JavaScript -->
       <div id="flash-messages">
           {% for label, messages in app.flashes %}
-              <div class="alert alert-{{ label }}">
+              <div class="alert alert-{{ label|alert_class }}">
                   {% for message in messages %}
                       {{ message }}
                   {% endfor %}

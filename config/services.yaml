@@ -43,4 +43,6 @@ services:
             $adminEmail: '%admin_email%'
     App\Controller\RecipeController:
         arguments:
-            $adminEmail: '%admin_email%'         
+            $adminEmail: '%admin_email%'  
+    App\Twig\AppExtension:
+        tags: [ 'twig.extension' ]       
