@@ -15,17 +15,14 @@
 {% endblock %}
 
 {% block body %}
-	<div
-		class="container mt-5">
+	<div class="container mt-5">
 		<!-- Modale pour connexion/inscription avec formulaire de login intégré -->
 		<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="loginModalLabel">Merci de vous identifier</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<form method="post" action="{{ path('app_login') }}">
@@ -48,7 +45,7 @@
 
 							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-							<button class="btn btn-primary btn-block mt-3" type="submit">
+							<button class="btn btn-lg btn-gold text-blue mt-3 fw-bold" type="submit">
 								Connexion
 							</button>
 						</form>
