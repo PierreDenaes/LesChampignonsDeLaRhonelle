@@ -6,7 +6,6 @@ import { Tab } from 'bootstrap';
 export function initializePage() {
     const recipesList = document.getElementById('recipes-list');
     const recipeFormNew = document.getElementById('recipe-form-new');
-    const notification = document.getElementById('notification');
 
     loadRecipes(recipesList, attachDeleteHandlers);
 
