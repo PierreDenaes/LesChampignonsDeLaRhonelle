@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use App\Entity\Ingredient;
+use App\Entity\RecipeStep;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -21,34 +24,64 @@ class Recipe
     #[Groups(['recipe'])]
     private ?int $id = null;
 
+    // Titre: Ne peut être vide, limite de 255 caractères
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre est obligatoire.", groups: ['create', 'update'])]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères.",
+        groups: ['create', 'update']
+    )]
     #[Groups(['recipe'])]
     private ?string $title = null;
 
+    // Description: Ne peut être vide
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: "La description est obligatoire.", groups: ['create', 'update'])]
     #[Groups(['recipe'])]
     private ?string $description = null;
 
     #[Vich\UploadableField(mapping: 'recipes', fileNameProperty: 'imageName')]
+    #[Assert\File(
+        maxSize: "2M",
+        maxSizeMessage: "L'image ne doit pas dépasser 2 Mo.",
+        mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG ou WEBP).",
+        groups: ['create', 'update']
+    )]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['recipe'])]
     private ?string $imageName = null;
 
+    // Difficulté: Valeur entre 1 et 5 (par exemple)
     #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: "La difficulté est obligatoire.", groups: ['create', 'update'])]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: "La difficulté doit être entre {{ min }} et {{ max }}.",
+        groups: ['create', 'update']
+    )]
     #[Groups(['recipe'])]
     private ?int $difficulty = null;
 
+    // Temps de préparation: Valeur positive
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Assert\PositiveOrZero(message: "Le temps de préparation doit être un nombre positif.", groups: ['create', 'update'])]
     #[Groups(['recipe'])]
     private ?int $preparation_time = null;
 
+    // Temps de cuisson: Valeur positive
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Assert\PositiveOrZero(message: "Le temps de cuisson doit être un nombre positif.", groups: ['create', 'update'])]
     #[Groups(['recipe'])]
     private ?int $cooking_time = null;
 
+    // Temps de repos: Valeur positive ou nulle
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Assert\PositiveOrZero(message: "Le temps de repos doit être un nombre positif.", groups: ['create', 'update'])]
     #[Groups(['recipe'])]
     private ?int $rest_time = null;
 
@@ -75,7 +108,10 @@ class Recipe
     #[Groups(['recipe'])]
     private ?bool $isActive = null;
 
-    #[ORM\Column]
+    // Nombre de personnes: Nombre supérieur à 0
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: "Le nombre de personnes est obligatoire.", groups: ['create', 'update'])]
+    #[Assert\Positive(message: "Le nombre de personnes doit être supérieur à 0.", groups: ['create', 'update'])]
     #[Groups(['recipe'])]
     private ?int $nbGuest = null;
 
