@@ -126,6 +126,9 @@ class RecipeController extends AbstractController
     {
         $this->denyAccessUnlessGranted('edit', $recipe);
 
+        // Stocker les étapes actuelles
+        $existingSteps = $recipe->getSteps()->toArray();
+
         $form = $this->createForm(RecipeType::class, $recipe, [
             'method' => 'POST',
             'attr' => ['enctype' => 'multipart/form-data']
@@ -134,6 +137,13 @@ class RecipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->recipeService->handleImageUpload($recipe);
+            // Suppression des étapes qui ne sont plus présentes dans le formulaire
+            foreach ($existingSteps as $existingStep) {
+                if (!$recipe->getSteps()->contains($existingStep)) {
+                    $this->entityManager->remove($existingStep);
+                }
+            }
+
             $this->entityManager->flush();
 
             $responseData = $this->serializer->serialize($recipe, 'json', ['groups' => 'recipe']);
