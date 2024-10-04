@@ -2,6 +2,7 @@
 import { showNotification } from './notificationHandlers';
 import { Modal, Tab } from 'bootstrap';
 import { handleAddIngredient, handleAddStep } from './formHandlers'; // Importer les fonctions nécessaires
+import * as bootstrap from 'bootstrap';
 
 export function loadRecipes(recipesList, attachDeleteHandlers) {
     fetch('/profile/recipes')
@@ -147,23 +148,42 @@ export function attachDeleteHandlers() {
             const imageName = this.getAttribute('data-image-name');
             const csrfToken = document.getElementById('recipes-list').getAttribute('data-csrf-token');
 
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
-                fetch(`/profile/recipes/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({ imageName: imageName })
-                }).then(response => {
-                    if (response.ok) {
-                        showNotification(document.getElementById('notification'), 'Recette supprimée avec succès!');
-                        loadRecipes(document.getElementById('recipes-list'), attachDeleteHandlers); // Rafraîchit la liste des recettes
-                    } else {
-                        alert('Erreur lors de la suppression de la recette.');
+            showNotification('Êtes-vous sûr de vouloir supprimer cette recette ?', 'warning', [
+                { 
+                    label: 'Annuler', 
+                    classes: ['btn-secondary'], 
+                    dismiss: true 
+                },
+                { 
+                    label: 'Supprimer', 
+                    classes: ['btn-danger'], 
+                    onClick: function() {
+                        fetch(`/profile/recipes/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({ imageName: imageName })
+                        }).then(response => {
+                            if (response.ok) {
+                                // Afficher le message de succès
+                                showNotification('Recette supprimée avec succès!', 'success');
+                                loadRecipes(document.getElementById('recipes-list'), attachDeleteHandlers); 
+                                
+                                // S'assurer que la modal est fermée complètement après l'affichage du message
+                                const notificationModalElement = document.getElementById('notificationModal');
+                                const modalInstance = bootstrap.Modal.getInstance(notificationModalElement);
+                                if (modalInstance) {
+                                    modalInstance.hide();
+                                }
+                            } else {
+                                showNotification('Erreur lors de la suppression de la recette.', 'danger');
+                            }
+                        });
                     }
-                });
-            }
+                }
+            ]);
         });
     });
 }

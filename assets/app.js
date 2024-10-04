@@ -19,7 +19,6 @@ window.addEventListener('scroll', () => {
         navbarBrand.classList.remove('hidden');
     }
 });
-// Ce script sera chargé sur toutes les pages du site
 document.addEventListener('DOMContentLoaded', function() {
     let notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
     let notificationContainer = document.getElementById('notificationModal').querySelector('.modal-body');
@@ -37,4 +36,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         notificationModal.show(); // Afficher la modale
     }
+
+    // S'assurer que la modale se ferme complètement
+    document.getElementById('notificationModal').addEventListener('hidden.bs.modal', function () {
+        document.body.classList.remove('modal-open');
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove(); // Supprimer le fond de la modale
+        }
+    });
 });
