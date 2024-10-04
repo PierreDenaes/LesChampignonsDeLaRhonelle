@@ -78,6 +78,14 @@
 				<!-- Title -->
 				<div class="col-12 mb-4">
 					<h1 class="text-blue fw-bold">{{ recipe.title }}</h1>
+					<div class="mushrooms-average" id="average-rating" data-average="{{ averageRating }}">
+						<span class="mushroom" data-score="1"></span>
+						<span class="mushroom" data-score="2"></span>
+						<span class="mushroom" data-score="3"></span>
+						<span class="mushroom" data-score="4"></span>
+						<span class="mushroom" data-score="5"></span>
+					</div>
+					<p>{{ ratingCount }} votant(s)</p>
 				</div>
 
 				<div

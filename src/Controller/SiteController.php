@@ -75,6 +75,11 @@ class SiteController extends AbstractController
             'profile' => $userProfile,
         ]) : null;
 
+        // Calculer la note moyenne de la recette
+        $ratings = $ratingRepository->findBy(['recipe' => $recipe]);
+        $ratingCount = count($ratings);
+        $averageRating = $ratingCount > 0 ? round(array_sum(array_map(fn($r) => $r->getScore(), $ratings)) / $ratingCount * 2) / 2 : null;
+
         // Obtenir l'erreur et le dernier nom d'utilisateur pour la modale de connexion
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -82,9 +87,11 @@ class SiteController extends AbstractController
         return $this->render('site/recipe_show.html.twig', [
             'recipe' => $recipe,
             'latestRecipes' => $latestRecipes,
-            'last_username' => $lastUsername,  // Ajouté pour la modale de connexion
+            'last_username' => $lastUsername,
             'error' => $error,
-            'existingRating' => $existingRating,  // Ajouté pour la note existante
+            'existingRating' => $existingRating,
+            'averageRating' => $averageRating,
+            'ratingCount' => $ratingCount,
         ]);
     }
     #[Route('/recipe/{id}/rate', name: 'submit_rating', methods: ['POST'])]
@@ -147,6 +154,27 @@ class SiteController extends AbstractController
         $currentRating = $existingRating ? $existingRating->getScore() : null;
 
         return new JsonResponse(['currentRating' => $currentRating]);
+    }
+    #[Route('/recipe/{id}/average-rating', name: 'get_average_rating', methods: ['GET'])]
+    public function getAverageRating(RatingRepository $ratingRepository, Recipe $recipe): JsonResponse
+    {
+        // Récupérer toutes les notes pour la recette
+        $ratings = $ratingRepository->findBy(['recipe' => $recipe]);
+
+        // Calculer la moyenne
+        $total = 0;
+        $count = count($ratings);
+
+        if ($count > 0) {
+            foreach ($ratings as $rating) {
+                $total += $rating->getScore();
+            }
+            $averageRating = round($total / $count * 2) / 2; // Arrondir à la demi-étape
+        } else {
+            $averageRating = null; // Pas encore de notes
+        }
+
+        return new JsonResponse(['averageRating' => $averageRating, 'ratingCount' => $count]);
     }
     #[Route('/api/check-login', name: 'check_login_status', methods: ['GET'])]
     public function checkLoginStatus(): JsonResponse

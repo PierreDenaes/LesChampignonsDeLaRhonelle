@@ -10,7 +10,27 @@ function displayNotification(message, type) {
     notificationContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
     notificationModal.show();
 }
-
+document.addEventListener('DOMContentLoaded', function() {
+    let averageRatingElement = document.getElementById('average-rating');
+    if (averageRatingElement) {
+        let averageRating = parseFloat(averageRatingElement.getAttribute('data-average'));
+        renderMushroomRating(averageRating);  // Appelle la fonction pour afficher la moyenne
+    }
+});
+// Fonction pour afficher les notes des champignons
+function renderMushroomRating(rating) {
+    const mushrooms = document.querySelectorAll('.mushrooms-average .mushroom');
+    mushrooms.forEach((mushroom, index) => {
+        const mushroomScore = index + 1;
+        if (rating >= mushroomScore) {
+            mushroom.classList.add('full');
+        } else if (rating >= mushroomScore - 0.5) {
+            mushroom.classList.add('half');
+        } else {
+            mushroom.classList.add('empty');
+        }
+    });
+}
 // Mettre à jour l'affichage des notes après soumission
 function updateRatingDisplay(recipeId) {
     fetch(`/recipe/${recipeId}/current-rating`)

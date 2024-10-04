@@ -118,3 +118,26 @@
 .rating__input:checked ~ .rating__label img {
     content: url('../images/mushrooms/mushroom-full.webp');
 }
+.mushrooms-average {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.mushroom {
+    width: 40px; /* Ajuste la taille selon tes besoins */
+    height: 40px;
+    background-size: cover;
+}
+
+.mushroom.full {
+    background-image: url('../images/mushrooms/mushroom-full.webp');
+}
+
+.mushroom.half {
+    background-image: url('../images/mushrooms/mushroom-half-average.webp');
+}
+
+.mushroom.empty {
+    background-image: url('../images/mushrooms/mushroom-empty.webp');
+}
