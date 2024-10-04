@@ -24,36 +24,45 @@ export function initializePage() {
                 }
             });
         });
+
         const formData = new FormData(recipeFormNew);
         const url = recipeFormNew.action;
 
         fetch(url, {
             method: 'POST',
             body: formData,
-        }).then(response => {
-            if (response.ok) {
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
                 resetForm(recipeFormNew); // Réinitialiser le formulaire
-                // Appeler le contrôleur pour le message flash
-                fetch('/add-flash-message', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        
-                    },
-                    body: JSON.stringify({ message: 'Votre recette a été ajoutée et est en attente de vérification.', type: 'success' })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification(data.message, 'success'); // Afficher la notification
-                    }
-                });
+                showNotification(data.message, 'success'); // Afficher la notification de succès
+
+                // Charger les nouvelles recettes
                 loadRecipes(recipesList, attachDeleteHandlers);
+
+                // Changer l'onglet actif vers la liste des recettes
                 const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
                 tabTrigger.show();
+            } else if (data.errors) {
+                // Afficher les erreurs de validation pour chaque champ
+                Object.keys(data.errors).forEach(field => {
+                    const inputField = recipeFormNew.querySelector(`[name*="[${field}]"]`);
+                    if (inputField) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.classList.add('invalid-feedback');
+                        errorDiv.innerText = data.errors[field];
+                        inputField.classList.add('is-invalid');
+                        inputField.parentElement.appendChild(errorDiv);
+                    }
+                });
             } else {
                 showNotification('Erreur lors de la création de la recette.', 'danger');
             }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la soumission:', error);
+            showNotification('Erreur technique. Réessayez plus tard.', 'danger');
         });
     });
 

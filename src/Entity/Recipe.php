@@ -38,6 +38,11 @@ class Recipe
     // Description: Ne peut être vide
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank(message: "La description est obligatoire.", groups: ['create', 'update'])]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "La description doit faire au moins {{ limit }} caractères.",
+        groups: ['create', 'update']
+    )]
     #[Groups(['recipe'])]
     private ?string $description = null;
 

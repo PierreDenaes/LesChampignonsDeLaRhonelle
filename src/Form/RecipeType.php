@@ -30,6 +30,7 @@ class RecipeType extends AbstractType
                         'maxMessage' => 'Le titre ne doit pas dépasser {{ limit }} caractères.',
                     ]),
                 ],
+                'empty_data' => '', 
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
@@ -38,6 +39,7 @@ class RecipeType extends AbstractType
                         'message' => 'La description est obligatoire.',
                     ]),
                 ],
+                'empty_data' => '', 
             ])
             ->add('imageFile', VichImageType::class, [
                 'required' => false,
@@ -133,6 +135,7 @@ class RecipeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Recipe::class,
+            'validation_groups' => ['create', 'update'], 
         ]);
     }
 }

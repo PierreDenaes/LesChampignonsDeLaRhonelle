@@ -77,24 +77,46 @@ function initializeEditForm() {
             const formData = new FormData(recipeFormEdit);
             const url = recipeFormEdit.action;
 
+            // Supprimer les messages d'erreur existants avant la nouvelle soumission
+            const errorFields = recipeFormEdit.querySelectorAll('.is-invalid');
+            errorFields.forEach(field => {
+                field.classList.remove('is-invalid');
+                const errorDiv = field.parentElement.querySelector('.invalid-feedback');
+                if (errorDiv) {
+                    errorDiv.remove();
+                }
+            });
+
             fetch(url, {
-                method: 'POST', // Utiliser POST pour supporter multipart/form-data
+                method: 'POST',
                 body: formData,
             }).then(response => {
                 if (response.ok) {
-                    recipeFormEdit.reset();
-                    showNotification(document.getElementById('notification'), 'Recette mise à jour avec succès!');
-                    loadRecipes(document.getElementById('recipes-list'), attachDeleteHandlers);
-                    const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
-                    tabTrigger.show();
-                    const editRecipeModalElement = document.getElementById('editRecipeModal');
-                    const editRecipeModal = Modal.getInstance(editRecipeModalElement);
-                    if (editRecipeModal) {
-                        editRecipeModal.hide(); // Fermer la modale
-                    }
+                    response.json().then(data => {
+                        showNotification(data.message, 'success'); // Afficher la notification de succès
+                        recipeFormEdit.reset();
+                        loadRecipes(document.getElementById('recipes-list'), attachDeleteHandlers);
+                        const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
+                        tabTrigger.show();
+                        const editRecipeModalElement = document.getElementById('editRecipeModal');
+                        const editRecipeModal = Modal.getInstance(editRecipeModalElement);
+                        if (editRecipeModal) {
+                            editRecipeModal.hide(); // Fermer la modale
+                        }
+                    });
                 } else {
                     response.json().then(data => {
-                        alert('Erreur lors de la mise à jour de la recette: ' + data.details);
+                        // Affichage des erreurs de validation
+                        Object.keys(data.errors).forEach(field => {
+                            const inputField = recipeFormEdit.querySelector(`[name*="[${field}]"]`);
+                            if (inputField) {
+                                const errorDiv = document.createElement('div');
+                                errorDiv.classList.add('invalid-feedback');
+                                errorDiv.innerText = data.errors[field].join(', ');
+                                inputField.classList.add('is-invalid');
+                                inputField.parentElement.appendChild(errorDiv);
+                            }
+                        });
                     });
                 }
             }).catch(error => {
