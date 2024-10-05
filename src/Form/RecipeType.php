@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class RecipeType extends AbstractType
@@ -58,8 +59,8 @@ class RecipeType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('difficulty', IntegerType::class, [
-                'label' => 'Difficulté',
+            ->add('difficulty', HiddenType::class, [
+                
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'La difficulté est obligatoire.',

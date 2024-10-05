@@ -10,3 +10,12 @@
 .is-invalid {
     border-color: red;
 }
+.icon-difficulty {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #ccc;
+}
+
+.icon-difficulty.selected {
+    color: #DDB65B;
+}

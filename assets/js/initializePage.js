@@ -12,8 +12,22 @@ export function initializePage() {
     window.viewRecipe = viewRecipe;
     window.editRecipe = editRecipe;
 
+    handleDifficultyIcons();
+
     recipeFormNew.addEventListener('submit', function(event) {
         event.preventDefault();
+
+        // Créer formData avant toute utilisation
+        const formData = new FormData(recipeFormNew);
+
+        // Log de la donnée difficulté dans formData
+        console.log('FormData difficulté :', formData.get('recipe[difficulty]'));
+         // Log complet des paires clé-valeur du formData
+         for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+
         // Mettre à jour les numéros d'étapes si nécessaire avant la soumission
         document.querySelectorAll('.step-list').forEach(list => {
             const steps = list.querySelectorAll('li');
@@ -25,7 +39,6 @@ export function initializePage() {
             });
         });
 
-        const formData = new FormData(recipeFormNew);
         const url = recipeFormNew.action;
 
         fetch(url, {
@@ -69,7 +82,6 @@ export function initializePage() {
     handleAddIngredient(); // Initialiser les gestionnaires d'événements pour les ingrédients
     handleAddStep(); // Initialiser les gestionnaires d'événements pour les étapes
 }
-
 // Fonction pour réinitialiser le formulaire et ses éléments dynamiques
 function resetForm(form) {
     form.reset();
@@ -86,3 +98,30 @@ function resetForm(form) {
     handleAddIngredient();
     handleAddStep();
 }
+// Fonction pour gérer la sélection des niveaux de difficulté
+function handleDifficultyIcons() {
+    document.querySelectorAll('.icon-difficulty').forEach((icon) => {
+        icon.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            
+            // Mettre à jour l'input caché avec la valeur choisie
+            const difficultyInput = document.getElementById('recipe_difficulty');
+            difficultyInput.value = value;
+            console.log(difficultyInput.value);
+            
+            // Déclencher l'événement 'change' sur l'input pour que la validation Symfony soit activée
+            difficultyInput.dispatchEvent(new Event('change'));
+
+            // Mettre à jour les icônes sélectionnées
+            document.querySelectorAll('.icon-difficulty').forEach((icon) => {
+                icon.classList.remove('selected');
+            });
+            for (let i = 0; i < value; i++) {
+                document.querySelectorAll('.icon-difficulty')[i].classList.add('selected');
+            }
+        });
+    });
+}
+
+// Appeler la fonction pour gérer les icônes de difficulté lors de l'initialisation
+handleDifficultyIcons();

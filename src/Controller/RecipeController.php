@@ -57,6 +57,8 @@ class RecipeController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function new(Request $request): JsonResponse
     {
+        dump($request->request->all());
+        
         $user = $this->getUser();
         $profile = $user->getProfile();
 
@@ -74,7 +76,7 @@ class RecipeController extends AbstractController
                 $field = $error->getOrigin()->getName();
                 $errors[$field][] = $error->getMessage();
             }
-    
+
             // Renvoyer une réponse JSON avec les détails des erreurs
             return new JsonResponse([
                 'success' => false,
@@ -115,15 +117,15 @@ class RecipeController extends AbstractController
             $this->mailer->send($userEmail);
 
             $responseData = $this->serializer->serialize($recipe, 'json', ['groups' => 'recipe']);
-                return new JsonResponse([
-                    'success' => true,
-                    'message' => '🎉 Félicitations ! Votre recette a été ajoutée avec succès et sera modérée dans un délai de 48 heures maximum. Merci beaucoup pour votre précieuse contribution ! 🎉',
-                    'data' => json_decode($responseData, true)
-                ], JsonResponse::HTTP_CREATED);
-            }
+            return new JsonResponse([
+                'success' => true,
+                'message' => '🎉 Félicitations ! Votre recette a été ajoutée avec succès et sera modérée dans un délai de 48 heures maximum. Merci beaucoup pour votre précieuse contribution ! 🎉',
+                'data' => json_decode($responseData, true)
+            ], JsonResponse::HTTP_CREATED);
+        }
 
-            return new JsonResponse(['error' => 'Invalid data'], JsonResponse::HTTP_BAD_REQUEST);
-            }
+        return new JsonResponse(['error' => 'Invalid data'], JsonResponse::HTTP_BAD_REQUEST);
+    }
 
     #[Route('/{id<\d+>}/show', name: 'recipe_show', methods: ['GET'])]
     public function show(Recipe $recipe): JsonResponse
@@ -139,16 +141,16 @@ class RecipeController extends AbstractController
     public function edit(Request $request, Recipe $recipe): JsonResponse
     {
         $this->denyAccessUnlessGranted('edit', $recipe);
-    
+
         // Stocker les étapes actuelles
         $existingSteps = $recipe->getSteps()->toArray();
-    
+
         $form = $this->createForm(RecipeType::class, $recipe, [
             'method' => 'POST',
             'attr' => ['enctype' => 'multipart/form-data']
         ]);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && !$form->isValid()) {
             // Collecter les erreurs de chaque champ
             $errors = [];
@@ -156,35 +158,35 @@ class RecipeController extends AbstractController
                 $field = $error->getOrigin()->getName();
                 $errors[$field][] = $error->getMessage();
             }
-    
+
             // Renvoyer une réponse JSON avec les détails des erreurs
             return new JsonResponse([
                 'success' => false,
                 'errors' => $errors
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->recipeService->handleImageUpload($recipe);
-    
+
             // Suppression des étapes qui ne sont plus présentes dans le formulaire
             foreach ($existingSteps as $existingStep) {
                 if (!$recipe->getSteps()->contains($existingStep)) {
                     $this->entityManager->remove($existingStep);
                 }
             }
-    
+
             $this->entityManager->flush();
-    
+
             $responseData = $this->serializer->serialize($recipe, 'json', ['groups' => 'recipe']);
-    
+
             return new JsonResponse([
                 'success' => true,
                 'message' => '🎉 Félicitations ! Votre recette a été modifiée avec succès et sera modérée dans un délai de 48 heures maximum. Merci beaucoup pour votre précieuse contribution ! 🎉',
                 'data' => json_decode($responseData, true)
             ], JsonResponse::HTTP_OK);
         }
-    
+
         return new JsonResponse(['error' => 'Invalid data'], JsonResponse::HTTP_BAD_REQUEST);
     }
 
@@ -192,17 +194,17 @@ class RecipeController extends AbstractController
     public function editForm(Recipe $recipe): Response
     {
         $this->denyAccessUnlessGranted('edit', $recipe);
-  
+
 
         $form = $this->createForm(RecipeType::class, $recipe);
 
         return $this->render('recipe/edit.html.twig', [
             'form' => $form->createView(),
             'recipe' => $recipe,
-            
+
         ]);
     }
-    
+
     #[Route('/{id<\d+>}', name: 'recipe_delete', methods: ['DELETE'])]
     public function delete(Request $request, Recipe $recipe): JsonResponse
     {
