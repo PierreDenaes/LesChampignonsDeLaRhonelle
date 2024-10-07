@@ -17,11 +17,13 @@ class Ingredient
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le nom de l\'ingrédient est obligatoire.', groups: ['create', 'update'])]
+
     private ?string $name = null;
 
     #[ORM\Column(type: 'integer')]
     #[Assert\NotBlank(message: 'La quantité est obligatoire.', groups: ['create', 'update'])]
     #[Assert\GreaterThan(0, message: 'La quantité doit être supérieure à 0.', groups: ['create', 'update'])]
+    
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'ingredients')]

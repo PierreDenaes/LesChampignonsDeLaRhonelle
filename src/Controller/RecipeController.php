@@ -68,21 +68,61 @@ class RecipeController extends AbstractController
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
+       
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            // Collecter les erreurs de chaque champ
             $errors = [];
+        
+            // Collecter les erreurs globales (hors formulaires imbriqués)
             foreach ($form->getErrors(true) as $error) {
-                $field = $error->getOrigin()->getName();
-                $errors[$field][] = $error->getMessage();
+                $origin = $error->getOrigin();
+                if ($origin !== null) {
+                    $field = (string)$origin->getPropertyPath();
+                    
+                    // Vérifier si l'erreur n'appartient pas aux sous-formulaires imbriqués pour éviter les doublons
+                    if (!preg_match('/^ingredients\[\d+\]|steps\[\d+\]/', $field)) {
+                        $errors[$field][] = $error->getMessage();
+                    }
+                } else {
+                    // Ajouter les erreurs globales si aucune origine n'est trouvée
+                    $errors['global'][] = $error->getMessage();
+                }
             }
-
-            // Renvoyer une réponse JSON avec les détails des erreurs
+        
+            // Collecter les erreurs des ingrédients
+            foreach ($form->get('ingredients') as $index => $ingredientForm) {
+                foreach ($ingredientForm->getErrors(true) as $error) {
+                    $origin = $error->getOrigin();
+                    if ($origin !== null) {
+                        $field = 'ingredients[' . $index . '].' . $origin->getName();
+                        $errors[$field][] = $error->getMessage();
+                    }
+                }
+            }
+        
+            // Collecter les erreurs des étapes
+            foreach ($form->get('steps') as $index => $stepForm) {
+                foreach ($stepForm->getErrors(true) as $error) {
+                    $origin = $error->getOrigin();
+                    if ($origin !== null) {
+                        $field = 'steps[' . $index . '].' . $origin->getName();
+                        $errors[$field][] = $error->getMessage();
+                    }
+                }
+            }
+        
+            // Renvoyer une réponse JSON avec les erreurs
             return new JsonResponse([
                 'success' => false,
-                'errors' => $errors
+                'errors' => $errors,
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
+        
+        
+        
+        
+        
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->recipeService->handleImageUpload($recipe);
@@ -152,20 +192,36 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            // Collecter les erreurs de chaque champ
             $errors = [];
+        
+            // Collecter les erreurs globales
             foreach ($form->getErrors(true) as $error) {
                 $field = $error->getOrigin()->getName();
                 $errors[$field][] = $error->getMessage();
             }
-
-            // Renvoyer une réponse JSON avec les détails des erreurs
+        
+            // Collecter les erreurs pour chaque ingrédient
+            foreach ($form->get('ingredients') as $index => $ingredientForm) {
+                foreach ($ingredientForm->getErrors(true) as $error) {
+                    $field = 'ingredients[' . $index . '].' . $error->getOrigin()->getName();
+                    $errors[$field][] = $error->getMessage();
+                }
+            }
+        
+            // Collecter les erreurs pour chaque étape
+            foreach ($form->get('steps') as $index => $stepForm) {
+                foreach ($stepForm->getErrors(true) as $error) {
+                    $field = 'steps[' . $index . '].' . $error->getOrigin()->getName();
+                    $errors[$field][] = $error->getMessage();
+                }
+            }
+        
+            // Renvoyer une réponse JSON avec les erreurs
             return new JsonResponse([
                 'success' => false,
                 'errors' => $errors
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->recipeService->handleImageUpload($recipe);
 

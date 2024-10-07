@@ -30,6 +30,7 @@ class RecipeStepType extends AbstractType
                         'minMessage' => 'La description doit faire au moins {{ limit }} caractères.',
                     ]),
                 ],
+                'empty_data' => '', 
             ]);
     }
 
@@ -37,6 +38,7 @@ class RecipeStepType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RecipeStep::class,
+            'validation_groups' => ['create', 'update'],
         ]);
     }
 }

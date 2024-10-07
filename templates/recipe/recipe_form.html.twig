@@ -52,8 +52,11 @@
 		{% for ingredient in form.ingredients %}
 			<li class="list-group-item">
 				{{ form_row(ingredient.name) }}
+				{{ form_errors(ingredient.name) }} <!-- Affiche les erreurs pour le champ name -->
 				{{ form_row(ingredient.quantity) }}
+				{{ form_errors(ingredient.quantity) }} <!-- Affiche les erreurs pour le champ quantity -->
 				{{ form_row(ingredient.unit) }}
+				{{ form_errors(ingredient.unit) }} <!-- Affiche les erreurs pour le champ unit -->
 				<button type="button" class="remove-ingredient btn btn-danger">Supprimer</button>
 			</li>
 		{% endfor %}
@@ -66,6 +69,7 @@
 		{% for step in form.steps %}
 			<li class="list-group-item">
 				{{ form_row(step) }}
+				{{ form_errors(step) }} <!-- Affiche les erreurs pour l'étape -->
 				<button type="button" class="remove-step btn btn-danger">Supprimer</button>
 			</li>
 		{% endfor %}

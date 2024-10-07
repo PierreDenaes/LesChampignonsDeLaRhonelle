@@ -17,24 +17,23 @@ export function initializePage() {
     recipeFormNew.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        // Créer formData avant toute utilisation
+        // Remove old errors
+        const errorDivs = document.querySelectorAll('.invalid-feedback');
+        errorDivs.forEach(div => div.remove());
+
+        const fields = document.querySelectorAll('.is-invalid');
+        fields.forEach(field => field.classList.remove('is-invalid'));
+
+        // Create FormData before use
         const formData = new FormData(recipeFormNew);
 
-        // Log de la donnée difficulté dans formData
-        console.log('FormData difficulté :', formData.get('recipe[difficulty]'));
-         // Log complet des paires clé-valeur du formData
-         for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
-
-        // Mettre à jour les numéros d'étapes si nécessaire avant la soumission
+        // Update step numbers if necessary before submission
         document.querySelectorAll('.step-list').forEach(list => {
             const steps = list.querySelectorAll('li');
             steps.forEach((step, index) => {
                 const stepNumberInput = step.querySelector('input[name*="[stepNumber]"]');
                 if (stepNumberInput) {
-                    stepNumberInput.value = index + 1;  // Assigner correctement les numéros d'étape
+                    stepNumberInput.value = index + 1;  // Correct step numbers
                 }
             });
         });
@@ -48,25 +47,73 @@ export function initializePage() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                resetForm(recipeFormNew); // Réinitialiser le formulaire
-                showNotification(data.message, 'success'); // Afficher la notification de succès
-
-                // Charger les nouvelles recettes
+                resetForm(recipeFormNew); // Reset the form
+                showNotification(data.message, 'success'); // Show success notification
+        
+                // Reload recipes and attach delete handlers
                 loadRecipes(recipesList, attachDeleteHandlers);
-
-                // Changer l'onglet actif vers la liste des recettes
+        
+                // Change active tab to recipe list
                 const tabTrigger = new Tab(document.querySelector('.nav-link[href="#recipes"]'));
                 tabTrigger.show();
             } else if (data.errors) {
-                // Afficher les erreurs de validation pour chaque champ
+                console.log(data.errors);
+                // Loop through each error field
                 Object.keys(data.errors).forEach(field => {
-                    const inputField = recipeFormNew.querySelector(`[name*="[${field}]"]`);
-                    if (inputField) {
-                        const errorDiv = document.createElement('div');
-                        errorDiv.classList.add('invalid-feedback');
-                        errorDiv.innerText = data.errors[field];
-                        inputField.classList.add('is-invalid');
-                        inputField.parentElement.appendChild(errorDiv);
+                    // Ignorer les erreurs globales sur "name" et "quantity"
+                    if (field === 'name' || field === 'quantity') {
+                        return; // Passer à l'erreur suivante
+                    }
+        
+                    // Vérifier si le champ est un ingrédient ou une étape avec un index
+                    if (field.startsWith('ingredients[') || field.startsWith('steps[')) {
+                        const parts = field.match(/^(\w+)\[(\d+)\]\.(\w+)$/);
+                        if (parts) {
+                            const fieldType = parts[1];  // 'ingredients' or 'steps'
+                            const fieldIndex = parts[2]; // Collection index
+                            const fieldName = parts[3];  // Field name
+        
+                            // Sélectionner le champ correspondant
+                            const inputField = recipeFormNew.querySelector(`[name="recipe[${fieldType}][${fieldIndex}][${fieldName}]"]`);
+        
+                            if (inputField) {
+                                const errorId = `error-${fieldType}-${fieldIndex}-${fieldName}`;
+        
+                                // Supprimer le message d'erreur existant
+                                let existingError = document.getElementById(errorId);
+                                if (existingError) {
+                                    existingError.remove();
+                                }
+        
+                                // Créer et ajouter le message d'erreur
+                                const errorDiv = document.createElement('div');
+                                errorDiv.classList.add('invalid-feedback');
+                                errorDiv.setAttribute('id', errorId);  // Assigner un ID unique pour l'erreur
+                                errorDiv.innerText = data.errors[field].join(', ');
+                                inputField.classList.add('is-invalid');  // Marquer le champ comme invalide
+                                inputField.insertAdjacentElement('afterend', errorDiv);  // Insérer le message d'erreur après le champ input
+                            }
+                        }
+                    } else {
+                        // Gérer les erreurs globales (non imbriquées)
+                        const inputField = recipeFormNew.querySelector(`[name*="[${field}]"]`);
+                        if (inputField) {
+                            const errorId = `error-${field}-global`;
+        
+                            // Supprimer l'erreur existante
+                            let existingError = document.getElementById(errorId);
+                            if (existingError) {
+                                existingError.remove();
+                            }
+        
+                            // Créer et ajouter le message d'erreur
+                            const errorDiv = document.createElement('div');
+                            errorDiv.classList.add('invalid-feedback');
+                            errorDiv.setAttribute('id', errorId);
+                            errorDiv.innerText = data.errors[field].join(', ');
+                            inputField.classList.add('is-invalid');
+                            inputField.insertAdjacentElement('afterend', errorDiv);
+                        }
                     }
                 });
             } else {
@@ -77,10 +124,11 @@ export function initializePage() {
             console.error('Erreur lors de la soumission:', error);
             showNotification('Erreur technique. Réessayez plus tard.', 'danger');
         });
+        
     });
 
-    handleAddIngredient(); // Initialiser les gestionnaires d'événements pour les ingrédients
-    handleAddStep(); // Initialiser les gestionnaires d'événements pour les étapes
+    handleAddIngredient();
+    handleAddStep();
 }
 // Fonction pour réinitialiser le formulaire et ses éléments dynamiques
 function resetForm(form) {

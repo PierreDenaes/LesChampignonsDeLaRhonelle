@@ -109,13 +109,37 @@ function initializeEditForm() {
                     response.json().then(data => {
                         // Affichage des erreurs de validation
                         Object.keys(data.errors).forEach(field => {
-                            const inputField = recipeFormEdit.querySelector(`[name*="[${field}]"]`);
-                            if (inputField) {
-                                const errorDiv = document.createElement('div');
-                                errorDiv.classList.add('invalid-feedback');
-                                errorDiv.innerText = data.errors[field].join(', ');
-                                inputField.classList.add('is-invalid');
-                                inputField.parentElement.appendChild(errorDiv);
+                            // Ignorer les erreurs globales pour "name" et "quantity"
+                            if (field === 'name' || field === 'quantity') {
+                                return; // Passer à l'erreur suivante
+                            }
+
+                            const parts = field.match(/^(\w+)\[(\d+)\]\.(\w+)$/);
+                            if (parts) {
+                                const fieldType = parts[1];  // 'ingredients' or 'steps'
+                                const fieldIndex = parts[2]; // Collection index
+                                const fieldName = parts[3];  // Field name
+
+                                // Sélectionner le champ correspondant
+                                const inputField = recipeFormEdit.querySelector(`[name="recipe[${fieldType}][${fieldIndex}][${fieldName}]"]`);
+
+                                if (inputField) {
+                                    const errorId = `error-${fieldType}-${fieldIndex}-${fieldName}`;
+
+                                    // Supprimer le message d'erreur existant
+                                    let existingError = document.getElementById(errorId);
+                                    if (existingError) {
+                                        existingError.remove();
+                                    }
+
+                                    // Créer et ajouter le message d'erreur
+                                    const errorDiv = document.createElement('div');
+                                    errorDiv.classList.add('invalid-feedback');
+                                    errorDiv.setAttribute('id', errorId);
+                                    errorDiv.innerText = data.errors[field].join(', ');
+                                    inputField.classList.add('is-invalid');
+                                    inputField.insertAdjacentElement('afterend', errorDiv);
+                                }
                             }
                         });
                     });
@@ -139,6 +163,7 @@ function initializeEditForm() {
         console.error('Element with ID "recipe-form-edit" not found.');
     }
 }
+
 
 export function attachDeleteHandlers() {
     const deleteButtons = document.querySelectorAll('.btn-danger[data-id]');

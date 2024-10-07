@@ -24,6 +24,7 @@ class IngredientType extends AbstractType
                         'message' => 'Le nom de l\'ingrédient est obligatoire.',
                     ]),
                 ],
+                'empty_data' => '', 
             ])
             ->add('quantity', IntegerType::class, [
                 'label' => 'Quantité',
@@ -36,13 +37,14 @@ class IngredientType extends AbstractType
                         'message' => 'La quantité doit être supérieure à 0.',
                     ]),
                 ],
+                'empty_data' => '', 
             ])
             ->add('unit', EntityType::class, [
                 'class' => Unit::class,
                 'label' => 'Unité',
                 'choice_label' => 'name',
                 'placeholder' => 'Choisir une unité',
-                'required' => true,
+                'required' => false,
             ])
         ;
     }
@@ -51,6 +53,7 @@ class IngredientType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Ingredient::class,
+            'validation_groups' => ['create', 'update'], 
         ]);
     }
 }
