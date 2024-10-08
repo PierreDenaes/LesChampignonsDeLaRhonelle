@@ -155,7 +155,7 @@ function handleDifficultyIcons() {
             // Mettre à jour l'input caché avec la valeur choisie
             const difficultyInput = document.getElementById('recipe_difficulty');
             difficultyInput.value = value;
-            console.log(difficultyInput.value);
+            
             
             // Déclencher l'événement 'change' sur l'input pour que la validation Symfony soit activée
             difficultyInput.dispatchEvent(new Event('change'));

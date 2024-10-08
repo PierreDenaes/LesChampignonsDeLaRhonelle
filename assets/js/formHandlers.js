@@ -35,6 +35,7 @@ export function handleAddStep() {
 
             // Insérer le widget de formulaire et ajouter un champ stepNumber
             newLi.innerHTML = newWidget.replace(/__name__/g, index);
+            
             const stepNumberField = newLi.querySelector('input[name$="[stepNumber]"]');
             if (stepNumberField) {
                 stepNumberField.value = index + 1; // Remplir automatiquement la valeur
@@ -43,6 +44,7 @@ export function handleAddStep() {
             newLi.innerHTML += '<button type="button" class="remove-step btn btn-danger mt-1">Supprimer</button>';
             list.appendChild(newLi);
             index++;
+            
 
             // Mettre à jour les numéros d'étapes
             updateStepNumbers(list);

@@ -67,10 +67,12 @@ class RecipeController extends AbstractController
         $recipe->setIsActive(false);
 
         $form = $this->createForm(RecipeType::class, $recipe);
+        dump($form);
         $form->handleRequest($request);
-       
+
 
         if ($form->isSubmitted() && !$form->isValid()) {
+            dump($request->request->all());
             $errors = [];
         
             // Collecter les erreurs globales (hors formulaires imbriqués)
@@ -117,13 +119,6 @@ class RecipeController extends AbstractController
                 'errors' => $errors,
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
-        
-        
-        
-        
-        
-        
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->recipeService->handleImageUpload($recipe);
             $this->entityManager->persist($recipe);

@@ -12,18 +12,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class RecipeStepType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('stepNumber', IntegerType::class, [
                 'label' => 'Étape',
-                'attr' => ['readonly' => true],
+                
             ])
-            ->add('description', TextareaType::class, [
+            ->add('stepDescription', TextareaType::class, [
                 'label' => 'Description de l\'étape',
                 'constraints' => [
                     new Assert\NotBlank([
-                        'message' => 'La description est obligatoire.',
+                        'message' => 'La description de l\'étape est obligatoire.',
                     ]),
                     new Assert\Length([
                         'min' => 10,

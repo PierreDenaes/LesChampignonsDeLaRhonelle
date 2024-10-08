@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class RecipeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class, [
@@ -129,7 +129,9 @@ class RecipeType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
+                'error_bubbling' => false,
                 'label' => false,
+                'constraints' => [new Assert\Valid()]
             ]);
     }
 

@@ -68,8 +68,10 @@
 	<ul class="step-list list-group" data-prototype="{{ form_widget(form.steps.vars.prototype)|e('html_attr') }}">
 		{% for step in form.steps %}
 			<li class="list-group-item">
-				{{ form_row(step) }}
-				{{ form_errors(step) }} <!-- Affiche les erreurs pour l'étape -->
+			{{ form_row(step.stepNumber) }}
+				{{ form_errors(step.stepNumber) }} <!-- Affiche les erreurs pour le champ stepNumber -->
+				{{ form_row(step.stepDescription) }}
+				{{ form_errors(step.stepDescription) }} <!-- Affiche les erreurs pour l'étape -->
 				<button type="button" class="remove-step btn btn-danger">Supprimer</button>
 			</li>
 		{% endfor %}

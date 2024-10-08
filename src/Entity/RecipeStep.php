@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RecipeStepRepository;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecipeStepRepository::class)]
@@ -16,20 +15,19 @@ class RecipeStep
     private ?int $id = null;
 
     #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank(message: "La description est obligatoire.")]
+    #[Assert\NotBlank(message: "La description de l'étape est obligatoire." , groups: ['create', 'update'])]
     #[Assert\Length(
         min: 10,
-        minMessage: "La description doit faire au moins {{ limit }} caractères."
+        minMessage: "La description de l'étape doit faire au moins {{ limit }} caractères.",
+        groups: ['create', 'update']
     )]
-    private ?string $description = null;
+    private ?string $stepDescription = null;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['recipe'])]
     private ?int $stepNumber = null;
 
-    #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'steps')]
+    #[ORM\ManyToOne(inversedBy: 'steps')]
     #[ORM\JoinColumn(nullable: false)]
-    
     private ?Recipe $recipe = null;
 
     public function getId(): ?int
@@ -37,14 +35,14 @@ class RecipeStep
         return $this->id;
     }
 
-    public function getDescription(): ?string
+    public function getStepDescription(): ?string
     {
-        return $this->description;
+        return $this->stepDescription;
     }
 
-    public function setDescription(string $description): self
+    public function setStepDescription(string $stepDescription): self
     {
-        $this->description = $description;
+        $this->stepDescription = $stepDescription;
 
         return $this;
     }

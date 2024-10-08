@@ -95,7 +95,10 @@ class Recipe
     #[Groups(['recipe'])]
     private ?Profile $profile = null;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeStep::class, cascade: ['persist', 'remove'])]
+    /**
+     * @var Collection<int, RecipeStep>
+     */
+    #[ORM\OneToMany(targetEntity: RecipeStep::class,mappedBy: 'recipe', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[Assert\Valid(groups: ['create', 'update'])]
     #[Groups(['recipe'])]
     private Collection $steps;
