@@ -17,7 +17,7 @@ class RecipeStepType extends AbstractType
         $builder
             ->add('stepNumber', IntegerType::class, [
                 'label' => 'Étape',
-                
+                'attr' => ['readonly' => true],
             ])
             ->add('stepDescription', TextareaType::class, [
                 'label' => 'Description de l\'étape',

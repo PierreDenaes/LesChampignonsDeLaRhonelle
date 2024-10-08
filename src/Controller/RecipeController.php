@@ -57,7 +57,7 @@ class RecipeController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function new(Request $request): JsonResponse
     {
-        dump($request->request->all());
+        
         
         $user = $this->getUser();
         $profile = $user->getProfile();
@@ -67,12 +67,12 @@ class RecipeController extends AbstractController
         $recipe->setIsActive(false);
 
         $form = $this->createForm(RecipeType::class, $recipe);
-        dump($form);
+    
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            dump($request->request->all());
+            
             $errors = [];
         
             // Collecter les erreurs globales (hors formulaires imbriqués)

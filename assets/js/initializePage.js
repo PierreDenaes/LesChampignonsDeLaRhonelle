@@ -61,7 +61,7 @@ export function initializePage() {
                 // Loop through each error field
                 Object.keys(data.errors).forEach(field => {
                     // Ignorer les erreurs globales sur "name" et "quantity"
-                    if (field === 'name' || field === 'quantity') {
+                    if (field === 'name' || field === 'quantity' || field === 'stepDescription') {
                         return; // Passer à l'erreur suivante
                     }
         
