@@ -44,9 +44,7 @@ class RecipeType extends AbstractType
             ])
             ->add('imageFile', VichImageType::class, [
                 'required' => false,
-                'allow_delete' => true,
-                'delete_label' => 'Supprimer',
-                'download_label' => 'Télécharger',
+                'label' => 'Image de votre recette',
                 'download_uri' => true,
                 'image_uri' => true,
                 'asset_helper' => true,
