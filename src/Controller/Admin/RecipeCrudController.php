@@ -97,7 +97,7 @@ class RecipeCrudController extends AbstractCrudController
             $user = $entityInstance->getProfile()->getIdUser();
             $recipeUrl = $this->router->generate('recipe_show_public', ['id' => $entityInstance->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
             $userEmail = (new TemplatedEmail())
-                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->from(new Address('admin@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
                 ->to($user->getEmail())
                 ->subject('Votre recette est validée')
                 ->htmlTemplate('recipe/user_recipe_approved_email.html.twig')

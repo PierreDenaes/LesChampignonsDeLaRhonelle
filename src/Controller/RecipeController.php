@@ -5,19 +5,20 @@ namespace App\Controller;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Service\RecipeService;
+use Symfony\Component\Mime\Address;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mime\Address;
 
 #[Route('/profile/recipes')]
 class RecipeController extends AbstractController
@@ -55,7 +56,7 @@ class RecipeController extends AbstractController
 
     #[Route('/new', name: 'recipe_new', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function new(Request $request): JsonResponse
+    public function new(Request $request, UrlGeneratorInterface $urlGenerator): JsonResponse
     {
         
         
@@ -124,9 +125,15 @@ class RecipeController extends AbstractController
             $this->entityManager->persist($recipe);
             $this->entityManager->flush();
 
+            // Générer l'URL de la recette dans l'admin
+            $adminRecipeUrl = $urlGenerator->generate('admin', [
+                'crudAction' => 'edit',  // Action (edit, show, delete, etc.)
+                'crudControllerFqcn' => 'App\Controller\Admin\RecipeCrudController',  // Controller FQCN
+                'entityId' => $recipe->getId(),  // ID de la recette
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
             // Envoyer un email à l'administrateur
             $adminEmail = (new TemplatedEmail())
-                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->from(new Address('admin@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
                 ->to($this->adminEmail)
                 ->subject('Nouvelle recette ajoutée')
                 ->htmlTemplate('recipe/admin_notification_email.html.twig')
@@ -134,13 +141,14 @@ class RecipeController extends AbstractController
                     'title' => $recipe->getTitle(),
                     'description' => $recipe->getDescription(),
                     'profile_name' => $profile->getName(),
+                    'admin_recipe_url' => $adminRecipeUrl,  // URL de la recette
                 ]);
 
             $this->mailer->send($adminEmail);
 
             // Envoyer un email de confirmation à l'utilisateur
             $userEmail = (new TemplatedEmail())
-                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->from(new Address('admin@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
                 ->to($user->getEmail())
                 ->subject('Confirmation de l\'ajout de votre recette')
                 ->htmlTemplate('recipe/user_confirmation_email.html.twig')

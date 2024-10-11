@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                    ->from(new Address('admin@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
@@ -61,7 +61,7 @@ class RegistrationController extends AbstractController
 
             // send email to the admin
             $adminEmail = (new TemplatedEmail())
-                ->from(new Address('contact@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
+                ->from(new Address('admin@leschampignonsdelarhonelle.com', 'Les Champignons de La Rhonelle'))
                 ->to($this->adminEmail)
                 ->subject('New User Registration')
                 ->htmlTemplate('registration/admin_notification_email.html.twig')
