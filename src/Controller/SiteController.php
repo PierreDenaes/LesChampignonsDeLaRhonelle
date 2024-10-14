@@ -7,11 +7,14 @@ use App\Entity\Recipe;
 use App\Entity\Comment;
 use App\Form\RatingType;
 use App\Form\CommentType;
+use Symfony\Component\Mime\Address;
 use App\Repository\RatingRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\SponsorRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,7 +67,7 @@ class SiteController extends AbstractController
         ]);
     }
     #[Route('/recipe/{id}', name: 'recipe_show_public', methods: ['GET', 'POST'])]
-    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, RatingRepository $ratingRepository, Request $request, $id): Response
+    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, RatingRepository $ratingRepository, Request $request,MailerInterface $mailer, $id): Response
     {
         $recipe = $recipeRepository->find($id);
         // Obtenir l'utilisateur actuel et son profil
@@ -107,16 +110,19 @@ class SiteController extends AbstractController
                 if (!$user) {
                     throw new AccessDeniedException('Vous devez être connecté pour ajouter un commentaire.');
                 }
-
+        
                 // Relier le commentaire à la recette et à l'auteur (le profil de l'utilisateur connecté)
                 $comment->setRecipe($recipe);
                 $comment->setAuthor($userProfile);
-
+        
                 $this->entityManager->persist($comment);
                 $this->entityManager->flush();
-
+        
+                // Envoi de l'email à l'auteur de la recette
+                $this->sendNewCommentNotification($mailer, $recipe);
+        
                 $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
-                
+        
                 return $this->redirectToRoute('recipe_show_public', ['id' => $recipe->getId()]);
             }
         }
@@ -287,6 +293,30 @@ class SiteController extends AbstractController
 
         return $this->redirectToRoute('recipe_show_public', ['id' => $comment->getRecipe()->getId()]);
     }
+    /**
+     * Envoie un email de notification à l'auteur de la recette pour un nouveau commentaire.
+     */
+    private function sendNewCommentNotification(MailerInterface $mailer, Recipe $recipe)
+    {
+        // Vérifier si l'auteur de la recette a un email valide
+        $author = $recipe->getProfile();
+        if (!$author || !$author->getIdUser()->getEmail()) {
+            return;
+        }
 
+        // Créer l'email de notification
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@monsite.com', 'Les Champignons de La Rhonelle'))
+            ->to(new Address($author->getIdUser()->getEmail(), $author->getFirstname()))
+            ->subject('Nouveau commentaire sur votre recette')
+            ->htmlTemplate('emails/new_comment_notification.html.twig') // Template d'email
+            ->context([
+                'recipe' => $recipe,
+                'author' => $author,
+            ]);
+
+        // Envoyer l'email
+        $mailer->send($email);
+    }
 
 }

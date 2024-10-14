@@ -1,0 +1,19 @@
+{# templates/emails/new_comment_notification.html.twig #}
+
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Nouveau commentaire sur votre recette !</h1>
+
+        <p>Bonjour {{ author.firstname }},</p>
+
+        <p>Un utilisateur a posté un nouveau commentaire sur votre recette intitulée <strong>{{ recipe.title }}</strong>.</p>
+
+        <p>Vous pouvez consulter la recette en cliquant <a href="{{ url('recipe_show_public', { id: recipe.id }) }}">ici</a>.</p>
+
+        <p>Merci pour votre contribution et à bientôt sur Les Champignons de La Rhonelle !</p>
+
+        <p>Cordialement,</p>
+        <p>L'équipe de Les Champignons de La Rhonelle</p>
+    </body>
+</html>
