@@ -1,0 +1,4 @@
+{{ form_start(editCommentForm, { 'attr': { 'class': 'edit-comment-form', 'data-comment-id': comment.id } }) }}
+{{ form_row(editCommentForm.content) }}
+<button type="submit" class="btn btn-primary btn-sm">Mettre à jour</button>
+{{ form_end(editCommentForm) }}

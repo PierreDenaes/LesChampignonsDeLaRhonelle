@@ -1,0 +1,38 @@
+<div class="list-group-item mb-3 d-flex align-items-start" id="comment-{{ comment.id }}">
+    <!-- Badge photo de profil -->
+    {% set avatarPath = comment.author.avatarName is not null 
+        ? 'images/avatars/160/' ~ comment.author.avatarName 
+        : 'images/avatars/default/default-avatar.png' %}
+    <img
+    src="{{ asset(avatarPath) }}" alt="Avatar de {{ comment.author.firstname }} {{ comment.author.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #000;">
+
+    <!-- Détails du commentaire -->
+    <div>
+        <strong>{{ comment.author.pseudo }}</strong>
+        <span class="text-muted">({{ comment.createdAt|date('d/m/Y H:i') }})</span>
+        <p class="mt-2">{{ comment.content }}</p>
+
+        <!-- Récupérer et afficher la note de l'utilisateur si elle existe -->
+        {% set userRating = comment.author.ratings|filter(r => r.recipe.id == recipe.id)|first %}
+        {% if userRating %}
+            <div class="mushrooms-average mb-3" id="user-rating-{{ comment.id }}" data-average="{{ userRating.score }}">
+                <span class="mushroom mushroom-comment" data-score="1"></span>
+                <span class="mushroom mushroom-comment" data-score="2"></span>
+                <span class="mushroom mushroom-comment" data-score="3"></span>
+                <span class="mushroom mushroom-comment" data-score="4"></span>
+                <span class="mushroom mushroom-comment" data-score="5"></span>
+            </div>
+        {% else %}
+            <p class="text-muted">Aucune note attribuée.</p>
+        {% endif %}
+
+        {% if is_granted('ROLE_USER') and comment.author == app.user.profile %}
+            <!-- Boutons "Modifier" et "Supprimer" seulement pour le propriétaire du commentaire -->
+            <a href="#" class="btn btn-primary btn-sm edit-comment-button" data-comment-id="{{ comment.id }}">Modifier</a>
+            <form method="post" action="{{ path('comment_delete', {id: comment.id}) }}" style="display:inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+            </form>
+        {% endif %}
+    </div>
+</div>

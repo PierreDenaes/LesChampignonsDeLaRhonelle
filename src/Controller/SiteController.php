@@ -216,10 +216,77 @@ class SiteController extends AbstractController
 
         return new JsonResponse(['averageRating' => $averageRating, 'ratingCount' => $count]);
     }
+    #[Route('/comment/{id}/edit-inline', name: 'comment_edit_inline', methods: ['GET'])]
+    public function editCommentInline(Request $request, Comment $comment): JsonResponse
+    {
+        // Vérification si l'utilisateur est bien le propriétaire du commentaire
+        if ($comment->getAuthor() !== $this->getUser()->getProfile()) {
+            throw new AccessDeniedException('Vous ne pouvez pas modifier ce commentaire.');
+        }
+
+        // Créer le formulaire de modification
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        
+        // Renvoyer le HTML du formulaire de modification
+        return new JsonResponse([
+            'formHtml' => $this->renderView('site/_edit_comment_form.html.twig', [
+                'editCommentForm' => $commentForm->createView(),
+                'comment' => $comment
+            ]),
+        ]);
+    }
     #[Route('/api/check-login', name: 'check_login_status', methods: ['GET'])]
     public function checkLoginStatus(): JsonResponse
     {
         return new JsonResponse(['isUserLoggedIn' => $this->getUser() !== null]);
     }
+    #[Route('/comment/{id}/edit-ajax', name: 'comment_edit_ajax', methods: ['POST'])]
+    public function editCommentAjax(Request $request, Comment $comment): JsonResponse
+    {
+        // Vérification si l'utilisateur est bien le propriétaire du commentaire
+        if ($comment->getAuthor() !== $this->getUser()->getProfile()) {
+            return new JsonResponse(['error' => 'Vous ne pouvez pas modifier ce commentaire.'], 403);
+        }
+
+        // Traiter le formulaire de modification
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        $commentForm->handleRequest($request);
+
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $this->entityManager->flush();
+
+            // Renvoyer l'intégralité du commentaire mis à jour avec le HTML
+            $updatedCommentHtml = $this->renderView('site/_comment_item.html.twig', [
+                'comment' => $comment,
+                'recipe' => $comment->getRecipe(),
+            ]);
+
+            return new JsonResponse([
+                'message' => 'Commentaire mis à jour avec succès.',
+                'updatedCommentHtml' => $updatedCommentHtml,
+            ]);
+        }
+
+        // Retourner les erreurs s'il y a des erreurs de validation
+        return new JsonResponse([
+            'error' => 'Données invalides.',
+        ], 400);
+    }
+    #[Route('/comment/{id}/delete', name: 'comment_delete', methods: ['POST'])]
+    public function deleteComment(Request $request, Comment $comment): Response
+    {
+        // Vérification si l'utilisateur est bien le propriétaire du commentaire
+        if ($comment->getAuthor() !== $this->getUser()->getProfile()) {
+            throw new AccessDeniedException('Vous ne pouvez pas supprimer ce commentaire.');
+        }
+
+        $this->entityManager->remove($comment);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', 'Votre commentaire a été supprimé avec succès.');
+
+        return $this->redirectToRoute('recipe_show_public', ['id' => $comment->getRecipe()->getId()]);
+    }
+
 
 }

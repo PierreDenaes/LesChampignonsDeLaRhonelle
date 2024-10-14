@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             targetPathInput.value = window.location.href;  // Définit l'URL actuelle
         }
     });
+    
     // Vérifier si l'utilisateur doit se connecter pour commenter
     let commentLoginButton = document.getElementById('commentLoginButton');
     if (commentLoginButton) {
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loginModal.show();  // Ouvre la modale de connexion déjà définie pour les ratings
         });
     }
+
     // Affichage de la note moyenne de la recette
     let averageRatingElement = document.getElementById('average-rating');
     if (averageRatingElement) {
@@ -39,6 +41,74 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.mushrooms-average').forEach(container => {
         let userRating = parseFloat(container.getAttribute('data-average'));
         renderMushroomRating(userRating, container);  // Appelle la fonction pour chaque note utilisateur dans les commentaires
+    });
+
+    // Logique AJAX pour modifier un commentaire en direct
+    document.querySelectorAll('.edit-comment-button').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            // Récupérer l'ID du commentaire à modifier
+            const commentId = this.getAttribute('data-comment-id');
+
+            // Faire une requête AJAX pour obtenir le formulaire d'édition
+            fetch(`/comment/${commentId}/edit-inline`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Vérifier que le conteneur du commentaire existe
+                const commentContainer = document.querySelector(`#comment-${commentId}`);
+                if (!commentContainer) {
+                    console.error(`Comment container #comment-${commentId} introuvable dans le DOM`);
+                    return;
+                }
+
+                // Remplacer le contenu du commentaire par le formulaire de modification
+                commentContainer.innerHTML = data.formHtml;
+            })
+            .catch(error => console.error('Erreur lors de la récupération du formulaire de modification:', error));
+        });
+    });
+    // Soumission du formulaire de modification en AJAX
+    document.addEventListener('submit', function (event) {
+        if (event.target.classList.contains('edit-comment-form')) {
+            event.preventDefault(); // Empêcher la soumission classique du formulaire
+
+            // Récupérer les données du formulaire
+            const form = event.target;
+            const formData = new FormData(form);
+            const commentId = form.getAttribute('data-comment-id');
+            
+            // Envoyer la requête AJAX
+            fetch(`/comment/${commentId}/edit-ajax`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.updatedCommentHtml) {
+                    // Mettre à jour l'intégralité du conteneur du commentaire avec le nouveau contenu
+                    const commentContainer = document.querySelector(`#comment-${commentId}`);
+                    commentContainer.outerHTML = data.updatedCommentHtml;
+
+                    // Optionnel : Afficher un message de succès
+                    displayNotification('Commentaire mis à jour avec succès.', 'success');
+                } else if (data.error) {
+                    displayNotification('Erreur : ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la soumission AJAX :', error);
+                displayNotification('Erreur lors de la mise à jour du commentaire.', 'danger');
+            });
+        }
     });
 });
 

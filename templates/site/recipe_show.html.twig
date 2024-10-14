@@ -44,9 +44,10 @@
 								</label>
 							</div>
 
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<input
+							type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 							<!-- Champ caché pour l'URL de redirection -->
-    						<input type="hidden" name="_target_path" id="targetPath" value="">
+							<input type="hidden" name="_target_path" id="targetPath" value="">
 
 							<button class="btn btn-lg btn-gold text-blue mt-3 fw-bold" type="submit">
 								Connexion
@@ -88,7 +89,8 @@
 						<span class="mushroom" data-score="4"></span>
 						<span class="mushroom" data-score="5"></span>
 					</div>
-					<p class="h6 text-muted">(basé sur {{ ratingCount }}
+					<p class="h6 text-muted">(basé sur
+						{{ ratingCount }}
 						avis)</p>
 				</div>
 
@@ -207,21 +209,24 @@
 					</div>
 					<div class="col-12">
 						<div class="card shadow-sm">
-							<div class="card-body">
+							<div
+								class="card-body">
 								<!-- Section des commentaires -->
 								<h3 class="card-title fs-4 fw-bold text-gold">Vos Avis :</h3>
 								<div class="list-group mb-4">
 									{% for comment in recipe.comments %}
 										{% set avatarPath = comment.author.avatarName is not null 
-											? 'images/avatars/160/' ~ comment.author.avatarName 
-											: 'images/avatars/default/default-avatar.png' %}
-										<div class="list-group-item mb-3 d-flex align-items-start">
+            								? 'images/avatars/160/' ~ comment.author.avatarName 
+            								: 'images/avatars/default/default-avatar.png' %}
+										<div
+											class="list-group-item mb-3 d-flex align-items-start" id="comment-{{ comment.id }}">
 											<!-- Badge photo de profil -->
-											<img src="{{ asset(avatarPath) }}" alt="Avatar de {{ comment.author.firstname }} {{ comment.author.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #000;">
-											
+											<img
+											src="{{ asset(avatarPath) }}" alt="Avatar de {{ comment.author.firstname }} {{ comment.author.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #000;">
+
 											<!-- Détails du commentaire -->
 											<div>
-												<strong>{{ comment.author.pseudo }}</strong> 
+												<strong>{{ comment.author.pseudo }}</strong>
 												<span class="text-muted">({{ comment.createdAt|date('d/m/Y H:i') }})</span>
 												<p class="mt-2">{{ comment.content }}</p>
 
@@ -239,6 +244,15 @@
 												{% else %}
 													<p class="text-muted">Aucune note attribuée.</p>
 												{% endif %}
+
+												{% if app.user and comment.author == app.user.profile %}
+													<!-- Boutons "Modifier" et "Supprimer" seulement pour le propriétaire du commentaire -->
+													<a href="#" class="btn btn-primary btn-sm edit-comment-button" data-comment-id="{{ comment.id }}">Modifier</a>
+													<form method="post" action="{{ path('comment_delete', {id: comment.id}) }}" style="display:inline;">
+														<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+														<button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+													</form>
+												{% endif %}
 											</div>
 										</div>
 									{% else %}
@@ -250,13 +264,13 @@
 
 								{% if app.user %}
 									{% if commentForm is not null %}
-									<!-- Formulaire d'ajout de commentaire pour les utilisateurs connectés -->
-									{{ form_start(commentForm, {'attr': {'id': 'commentForm'}}) }}
-									<div class="form-group mb-3">
-										{{ form_row(commentForm.content, {'attr': {'class': 'form-control', 'placeholder': 'Votre commentaire...'}}) }}
-									</div>
-									<button type="submit" class="btn btn-blue text-gold fw-bold">Ajouter un commentaire</button>
-									{{ form_end(commentForm) }}
+										<!-- Formulaire d'ajout de commentaire pour les utilisateurs connectés -->
+										{{ form_start(commentForm, {'attr': {'id': 'commentForm'}}) }}
+										<div class="form-group mb-3">
+											{{ form_row(commentForm.content, {'attr': {'class': 'form-control', 'placeholder': 'Votre commentaire...'}}) }}
+										</div>
+										<button type="submit" class="btn btn-blue text-gold fw-bold">Ajouter un commentaire</button>
+										{{ form_end(commentForm) }}
 									{% else %}
 										<p>Vous avez déjà commenté cette recette.</p>
 									{% endif %}
