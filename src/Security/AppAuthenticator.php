@@ -28,41 +28,45 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $email = $request->getPayload()->getString('email');
+        $email = $request->get('email');
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials($request->getPayload()->getString('password')),
+            new PasswordCredentials($request->get('password')),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
+                new CsrfTokenBadge('authenticate', $request->get('_csrf_token')),
                 new RememberMeBadge(),
             ]
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName ): ?Response
-{
-    if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-        return new RedirectResponse($targetPath);
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    {
+        // Vérification de l'URL de redirection stockée dans la session ou dans la requête
+        $targetPath = $request->get('_target_path') ?? $this->getTargetPath($request->getSession(), $firewallName);
+
+        // Si une URL cible est trouvée, redirection prioritaire vers cette URL
+        if ($targetPath) {
+            return new RedirectResponse($targetPath);
+        }
+
+        $user = $token->getUser();
+        $roles = $token->getUser()->getRoles();
+
+        // Redirection selon les rôles si aucune URL cible n'est définie
+        if (in_array('ROLE_ADMIN', $roles, true)) {
+            return new RedirectResponse($this->urlGenerator->generate('admin'));
+        } elseif (in_array('ROLE_USER', $roles, true)) {
+            // Ajout du message flash de bienvenue
+            $request->getSession()->getFlashBag()->add('success', 'Bonjour ' . $user->getProfile()->getFirstname() . ', bienvenue sur votre profil !');
+            
+            return new RedirectResponse($this->urlGenerator->generate('app_profile'));
+        } else {
+            throw new \Exception('No route found for user role.');
+        }
     }
-
-    $user = $token->getUser();
-
-    $roles = $token->getUser()->getRoles();
-
-    if (in_array('ROLE_ADMIN', $roles, true)) {
-        return new RedirectResponse($this->urlGenerator->generate('admin'));
-    } elseif (in_array('ROLE_USER', $roles, true)) {
-        // Ajout du message flash de bienvenue
-        $request->getSession()->getFlashBag()->add('success', 'Bonjour ' . $user->getProfile()->getFirstname() . ', bienvenue sur votre profil !');
-
-        return new RedirectResponse($this->urlGenerator->generate('app_profile'));
-    } else {
-        throw new \Exception('No route found for user role.');
-    }
-}
 
     protected function getLoginUrl(Request $request): string
     {

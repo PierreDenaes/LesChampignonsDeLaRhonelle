@@ -45,6 +45,8 @@
 							</div>
 
 							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							<!-- Champ caché pour l'URL de redirection -->
+    						<input type="hidden" name="_target_path" id="targetPath" value="">
 
 							<button class="btn btn-lg btn-gold text-blue mt-3 fw-bold" type="submit">
 								Connexion
@@ -247,16 +249,20 @@
 								</div>
 
 								{% if app.user %}
-									<!-- Formulaire d'ajout de commentaire -->
-									{{ form_start(commentForm) }}
+									{% if commentForm is not null %}
+									<!-- Formulaire d'ajout de commentaire pour les utilisateurs connectés -->
+									{{ form_start(commentForm, {'attr': {'id': 'commentForm'}}) }}
 									<div class="form-group mb-3">
 										{{ form_row(commentForm.content, {'attr': {'class': 'form-control', 'placeholder': 'Votre commentaire...'}}) }}
 									</div>
 									<button type="submit" class="btn btn-blue text-gold fw-bold">Ajouter un commentaire</button>
 									{{ form_end(commentForm) }}
+									{% else %}
+										<p>Vous avez déjà commenté cette recette.</p>
+									{% endif %}
 								{% else %}
 									<p>Vous devez être connecté pour laisser un commentaire.</p>
-									<a href="{{ path('app_login') }}" class="btn btn-blue text-gold fw-bold">Se connecter</a>
+									<a href="#" class="btn btn-blue text-gold fw-bold" id="commentLoginButton">Se connecter</a>
 								{% endif %}
 							</div>
 						</div>

@@ -64,7 +64,7 @@ class SiteController extends AbstractController
         ]);
     }
     #[Route('/recipe/{id}', name: 'recipe_show_public', methods: ['GET', 'POST'])]
-    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, RatingRepository $ratingRepository,Request $request, $id): Response
+    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, RatingRepository $ratingRepository, Request $request, $id): Response
     {
         $recipe = $recipeRepository->find($id);
         // Obtenir l'utilisateur actuel et son profil
@@ -73,9 +73,6 @@ class SiteController extends AbstractController
 
         // Récupérer les dernières recettes, triées par date de mise à jour
         $latestRecipes = $recipeRepository->findBy(['isActive' => true], ['updatedAt' => 'DESC'], 5);
-
-        // Obtenir l'utilisateur actuel
-        $userProfile = $this->getUser() ? $this->getUser()->getProfile() : null;
 
         // Chercher la note existante de l'utilisateur pour la recette
         $existingRating = $userProfile ? $ratingRepository->findOneBy([
@@ -94,37 +91,48 @@ class SiteController extends AbstractController
 
         // Gestion des commentaires
         $comment = new Comment();
-        $commentForm = $this->createForm(CommentType::class, $comment);
-        $commentForm->handleRequest($request);
+        // Vérification s'il existe déjà un commentaire pour cet utilisateur et cette recette
+        $existingComment = $userProfile ? $this->entityManager->getRepository(Comment::class)->findOneBy([
+            'recipe' => $recipe,
+            'author' => $userProfile,
+        ]) : null;
 
-        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            if (!$user) {
-                throw new AccessDeniedException('Vous devez être connecté pour ajouter un commentaire.');
+        $commentForm = null;
+        if (!$existingComment) {
+            // Si l'utilisateur n'a pas encore commenté, on affiche le formulaire
+            $commentForm = $this->createForm(CommentType::class, $comment);
+            $commentForm->handleRequest($request);
+
+            if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+                if (!$user) {
+                    throw new AccessDeniedException('Vous devez être connecté pour ajouter un commentaire.');
+                }
+
+                // Relier le commentaire à la recette et à l'auteur (le profil de l'utilisateur connecté)
+                $comment->setRecipe($recipe);
+                $comment->setAuthor($userProfile);
+
+                $this->entityManager->persist($comment);
+                $this->entityManager->flush();
+
+                $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
+                
+                return $this->redirectToRoute('recipe_show_public', ['id' => $recipe->getId()]);
             }
-    
-            // Relier le commentaire à la recette et à l'auteur (le profil de l'utilisateur connecté)
-            $comment->setRecipe($recipe);
-            $comment->setAuthor($userProfile);
-    
-            $this->entityManager->persist($comment);
-            $this->entityManager->flush();
-    
-            $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
-            
-            return $this->redirectToRoute('recipe_show_public', ['id' => $recipe->getId()]);
         }
 
         // Renvoyer à la vue
-            return $this->render('site/recipe_show.html.twig', [
-                'recipe' => $recipe,
-                'latestRecipes' => $latestRecipes,
-                'last_username' => $lastUsername,
-                'error' => $error,
-                'existingRating' => $existingRating,
-                'averageRating' => $averageRating,
-                'ratingCount' => $ratingCount,
-                'commentForm' => $commentForm->createView(),  // Formulaire de commentaire
-            ]);
+        return $this->render('site/recipe_show.html.twig', [
+            'recipe' => $recipe,
+            'latestRecipes' => $latestRecipes,
+            'last_username' => $lastUsername,
+            'error' => $error,
+            'existingRating' => $existingRating,
+            'averageRating' => $averageRating,
+            'ratingCount' => $ratingCount,
+            'commentForm' => $commentForm ? $commentForm->createView() : null,  // Formulaire de commentaire ou null
+            'existingComment' => $existingComment, // Passer l'information du commentaire existant
+        ]);
     }
     #[Route('/recipe/{id}/rate', name: 'submit_rating', methods: ['POST'])]
     public function submitRating(Request $request, Recipe $recipe, EntityManagerInterface $entityManager, RatingRepository $ratingRepository): Response

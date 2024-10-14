@@ -12,6 +12,22 @@ function displayNotification(message, type) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Gestion de l'ouverture de la modale pour définir l'URL actuelle
+    let loginModalElement = document.getElementById('loginModal');
+    loginModalElement.addEventListener('shown.bs.modal', function() {
+        let targetPathInput = document.getElementById('targetPath');
+        if (targetPathInput) {
+            targetPathInput.value = window.location.href;  // Définit l'URL actuelle
+        }
+    });
+    // Vérifier si l'utilisateur doit se connecter pour commenter
+    let commentLoginButton = document.getElementById('commentLoginButton');
+    if (commentLoginButton) {
+        commentLoginButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            loginModal.show();  // Ouvre la modale de connexion déjà définie pour les ratings
+        });
+    }
     // Affichage de la note moyenne de la recette
     let averageRatingElement = document.getElementById('average-rating');
     if (averageRatingElement) {
