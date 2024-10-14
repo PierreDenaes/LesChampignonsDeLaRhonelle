@@ -121,12 +121,16 @@
 .mushrooms-average {
     display: flex;
     justify-content: flex-start;
-    gap: 5px;
 }
 
 .mushroom {
     width: 40px; /* Ajuste la taille selon tes besoins */
     height: 40px;
+    background-size: cover;
+}
+.mushroom-comment {
+    width: 20px !important; /* Ajuste la taille selon tes besoins */
+    height: 20px !important;
     background-size: cover;
 }
 

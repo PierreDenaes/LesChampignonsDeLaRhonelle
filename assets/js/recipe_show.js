@@ -10,16 +10,25 @@ function displayNotification(message, type) {
     notificationContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
     notificationModal.show();
 }
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Affichage de la note moyenne de la recette
     let averageRatingElement = document.getElementById('average-rating');
     if (averageRatingElement) {
         let averageRating = parseFloat(averageRatingElement.getAttribute('data-average'));
-        renderMushroomRating(averageRating);  // Appelle la fonction pour afficher la moyenne
+        renderMushroomRating(averageRating, averageRatingElement);  // Appelle la fonction pour afficher la moyenne
     }
+
+    // Affichage des notes dans les commentaires
+    document.querySelectorAll('.mushrooms-average').forEach(container => {
+        let userRating = parseFloat(container.getAttribute('data-average'));
+        renderMushroomRating(userRating, container);  // Appelle la fonction pour chaque note utilisateur dans les commentaires
+    });
 });
+
 // Fonction pour afficher les notes des champignons
-function renderMushroomRating(rating) {
-    const mushrooms = document.querySelectorAll('.mushrooms-average .mushroom');
+function renderMushroomRating(rating, container) {
+    const mushrooms = container.querySelectorAll('.mushroom');
     mushrooms.forEach((mushroom, index) => {
         const mushroomScore = index + 1;
         if (rating >= mushroomScore) {
@@ -31,6 +40,7 @@ function renderMushroomRating(rating) {
         }
     });
 }
+
 // Mettre à jour l'affichage des notes après soumission
 function updateRatingDisplay(recipeId) {
     fetch(`/recipe/${recipeId}/current-rating`)
@@ -39,7 +49,6 @@ function updateRatingDisplay(recipeId) {
             if (data.currentRating !== null) {
                 // Mettre à jour l'affichage de la note dans l'interface
                 let score = data.currentRating;
-                // Remplacer les points par des tirets pour l'ID
                 let ratingElement = document.querySelector(`#rating-${score.toString().replace('.', '-')}`);
                 if (ratingElement) {
                     ratingElement.checked = true;

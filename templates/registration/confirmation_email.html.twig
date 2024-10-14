@@ -1,11 +1,95 @@
-<h1>Hi! Please confirm your email!</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .email-container {
+        background-color: #ffffff;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+      }
 
-<p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
+      .email-header {
+        text-align: center;
+        padding-bottom: 20px;
+      }
 
-<p>
-    Cheers!
-</p>
+      .email-header img {
+        width: 120px;
+        height: auto;
+      }
+
+      .email-body {
+        padding: 10px 20px;
+        text-align: left;
+      }
+
+      .email-body p {
+        line-height: 1.6;
+        color: #333;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #27ae60;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 12px;
+        color: #999;
+      }
+
+      /* Responsive design */
+      @media (max-width: 600px) {
+        .email-container {
+          padding: 10px;
+        }
+        .cta-button {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <img src="https://i.ibb.co/Fq0RhLT/logo-100.png" alt="Logo Les Champignons de La Rhonelle"/>
+      </div>
+
+      <div class="email-body">
+        <h1>Confirmez votre email !</h1>
+
+        <p>
+          Bonjour, bienvenue sur Les Champignons de La Rhonelle !
+        </p>
+        <p>
+          Veuillez confirmer votre adresse email en cliquant sur le lien suivant :
+        </p>
+
+        <a href="{{ signedUrl|raw }}" class="cta-button">Confirmer mon email</a>
+
+        <p>
+          Ce lien expirera dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>Merci et à bientôt !</p>
+      </div>
+    </div>
+  </body>
+</html>

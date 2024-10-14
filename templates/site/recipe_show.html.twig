@@ -15,7 +15,8 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
+	<div
+		class="container mt-5">
 		<!-- Modale pour connexion/inscription avec formulaire de login intégré -->
 		<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -78,14 +79,15 @@
 				<!-- Title -->
 				<div class="col-12 mb-4">
 					<h1 class="text-blue fw-bold">{{ recipe.title }}</h1>
-					<div class="mushrooms-average" id="average-rating" data-average="{{ averageRating }}">
+					<div class="mushrooms-average mb-3" id="average-rating" data-average="{{ averageRating }}">
 						<span class="mushroom" data-score="1"></span>
 						<span class="mushroom" data-score="2"></span>
 						<span class="mushroom" data-score="3"></span>
 						<span class="mushroom" data-score="4"></span>
 						<span class="mushroom" data-score="5"></span>
 					</div>
-					<p>{{ ratingCount }} votant(s)</p>
+					<p class="h6 text-muted">(basé sur {{ ratingCount }}
+						avis)</p>
 				</div>
 
 				<div
@@ -170,7 +172,7 @@
 								<h3 class="card-title fs-4 fw-bold text-gold">Étapes</h3>
 								<ol class="list-group list-group-numbered">
 									{% for step in recipe.steps %}
-										<li class="list-group-item">{{ step.description }}</li>
+										<li class="list-group-item">{{ step.stepDescription }}</li>
 									{% else %}
 										<li class="list-group-item">Aucune étape spécifiée.</li>
 									{% endfor %}
@@ -181,15 +183,13 @@
 				</div>
 
 				<div class="row mb-4">
-					<div class="col-12">
+					<div class="col-12 mb-4">
 						<div class="card shadow-sm">
 							<div class="card-body text-center">
 								<h3 class="card-title fs-4 fw-bold text-gold">Notez cette recette</h3>
 								<p class="card-text">Avez-vous aimé cette recette ?</p>
 								<!-- Rating system with mushrooms -->
-								<form method="post" action="#" id="ratingForm" data-recipe-id="{{ recipe.id }}" {% if app.user %}
-									data-profile-id="{{ app.user.profile.id }}"
-									{% endif %}>
+								<form method="post" action="#" id="ratingForm" data-recipe-id="{{ recipe.id }}" {% if app.user %} data-profile-id="{{ app.user.profile.id }}" {% endif %}>
 									<input type="hidden" name="_csrf_token" value="{{ csrf_token('rate_recipe') }}">
 									<div class="rating-group">
 										{% for i in [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5] %}
@@ -200,6 +200,64 @@
 										{% endfor %}
 									</div>
 								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="card shadow-sm">
+							<div class="card-body">
+								<!-- Section des commentaires -->
+								<h3 class="card-title fs-4 fw-bold text-gold">Vos Avis :</h3>
+								<div class="list-group mb-4">
+									{% for comment in recipe.comments %}
+										{% set avatarPath = comment.author.avatarName is not null 
+											? 'images/avatars/160/' ~ comment.author.avatarName 
+											: 'images/avatars/default/default-avatar.png' %}
+										<div class="list-group-item mb-3 d-flex align-items-start">
+											<!-- Badge photo de profil -->
+											<img src="{{ asset(avatarPath) }}" alt="Avatar de {{ comment.author.firstname }} {{ comment.author.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #000;">
+											
+											<!-- Détails du commentaire -->
+											<div>
+												<strong>{{ comment.author.pseudo }}</strong> 
+												<span class="text-muted">({{ comment.createdAt|date('d/m/Y H:i') }})</span>
+												<p class="mt-2">{{ comment.content }}</p>
+
+												<!-- Récupérer et afficher la note de l'utilisateur si elle existe -->
+												{% set userRating = comment.author.ratings|filter(r => r.recipe.id == recipe.id)|first %}
+												{% if userRating %}
+													<!-- Réutilisation de la structure pour afficher la note de l'utilisateur -->
+													<div class="mushrooms-average mb-3" id="user-rating-{{ comment.id }}" data-average="{{ userRating.score }}">
+														<span class="mushroom mushroom-comment" data-score="1"></span>
+														<span class="mushroom mushroom-comment" data-score="2"></span>
+														<span class="mushroom mushroom-comment" data-score="3"></span>
+														<span class="mushroom mushroom-comment" data-score="4"></span>
+														<span class="mushroom mushroom-comment" data-score="5"></span>
+													</div>
+												{% else %}
+													<p class="text-muted">Aucune note attribuée.</p>
+												{% endif %}
+											</div>
+										</div>
+									{% else %}
+										<div class="list-group-item">
+											<p>Aucun commentaire pour le moment.</p>
+										</div>
+									{% endfor %}
+								</div>
+
+								{% if app.user %}
+									<!-- Formulaire d'ajout de commentaire -->
+									{{ form_start(commentForm) }}
+									<div class="form-group mb-3">
+										{{ form_row(commentForm.content, {'attr': {'class': 'form-control', 'placeholder': 'Votre commentaire...'}}) }}
+									</div>
+									<button type="submit" class="btn btn-blue text-gold fw-bold">Ajouter un commentaire</button>
+									{{ form_end(commentForm) }}
+								{% else %}
+									<p>Vous devez être connecté pour laisser un commentaire.</p>
+									<a href="{{ path('app_login') }}" class="btn btn-blue text-gold fw-bold">Se connecter</a>
+								{% endif %}
 							</div>
 						</div>
 					</div>

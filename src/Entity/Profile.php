@@ -59,11 +59,18 @@ class Profile
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'profile', orphanRemoval: true)]
+    private Collection $ratings;
+
     public function __construct()
     {
         $this->isActive = true;
         $this->recipes = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -258,5 +265,28 @@ class Profile
 
         return $this;
     }
-    
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setProfile($this);
+        }
+
+        return $this;
+    }
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getProfile() === $this) {
+                $rating->setProfile(null);
+            }
+        }
+
+        return $this;
+    }
 }
