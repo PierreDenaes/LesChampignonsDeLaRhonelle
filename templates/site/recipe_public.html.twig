@@ -12,30 +12,28 @@
 			<p class="lead display-6">Partagez et retrouvez toutes vos recettes
 				<img src="{{ asset('images/elements/shroom.png') }}" alt="Nos espèces" width="50" height="50"></p>
 		</div>
-
 	</div>
 	<div class="container">
 		<div class="row">
 			{% for recipe in recipes %}
-				{# Vérification si la recipe appartient à l'utilisateur connecté #}
 				{% if recipe.isActive == 1 %}
 					<div class="col-12 col-sm-6 col-md-4 mb-4">
 						<div class="card shadow-sm">
-							<img src="{{ asset('images/recipes/' ~ recipe.imageName) }}" alt="{{ recipe.title }}" class="card-img-top">
+							{# Vérification de l'existence de l'image, sinon afficher une image par défaut #}
+							<img src="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" alt="{{ recipe.title }}" class="card-img-top">
 							<div class="card-body">
 								<h2 class="card-title fs-3 fw-bold text-blue">{{ recipe.title }}</h2>
 								<p class="card-text">{{ recipe.description | raw }}</p>
 								<a href="{{ path('recipe_show_public', {'id': recipe.id}) }}" class="btn btn-blue viewRecetteBtn">Voir
 									<i class="fas fa-eye ms-1"></i>
 								</a>
-
 							</div>
 						</div>
 					</div>
 				{% endif %}
 			{% else %}
 				<div class="col-12">
-					<p class="text-center">Aucune recipe trouvée</p>
+					<p class="text-center">Aucune recette trouvée</p>
 				</div>
 			{% endfor %}
 		</div>
