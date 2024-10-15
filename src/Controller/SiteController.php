@@ -237,21 +237,4 @@ class SiteController extends AbstractController
         return $this->redirectToRoute('recipe_show_public', ['id' => $comment->getRecipe()->getId()]);
     }
 
-    /**
-     * Calcule la note moyenne d'une recette.
-     */
-    private function calculateAverageRating(Recipe $recipe): array
-    {
-        $ratings = $this->ratingRepository->findBy(['recipe' => $recipe]);
-        $ratingCount = count($ratings);
-
-        if ($ratingCount > 0) {
-            $totalScore = array_sum(array_map(fn($r) => $r->getScore(), $ratings));
-            $averageRating = round($totalScore / $ratingCount * 2) / 2;
-        } else {
-            $averageRating = null;
-        }
-
-        return ['averageRating' => $averageRating, 'ratingCount' => $ratingCount];
-    }
 }

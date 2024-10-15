@@ -1,155 +1,150 @@
+// custom.scss
 
-// Custom.scss
-@import '~@fortawesome/fontawesome-free/css/all.css';
-// Option A: Include all of Bootstrap
+// **Variables**
+$theme-colors: map-merge(("primary": #007bff,
+            "secondary": #6c757d,
+            "success": #28a745,
+            "info": #17a2b8,
+            "warning": #ffc107,
+            "danger": #dc3545,
+            "light": #f8f9fa,
+            "dark": #343a40),
+        ("gold": #DDB65B,
+            "semigold": #efdcaf,
+            "blue": #14274E));
 
-// Include any default variable overrides here (though functions won't be available)
-$theme-colors: map-merge(
-  (
-    "primary": #007bff,
-    "secondary": #6c757d,
-    "success": #28a745,
-    "info": #17a2b8,
-    "warning": #ffc107,
-    "danger": #dc3545,
-    "light": #f8f9fa,
-    "dark": #343a40
-  ), 
-  (
-    "gold": #DDB65B,
-    "semigold": #efdcaf,
-    "blue": #14274E
-  )
-);
-.navbar {
-    border-bottom: 5px solid map-get($theme-colors, "gold" );
-}
-footer {
-    border-top: 5px solid map-get($theme-colors, "gold" );
+// **Mixins**
+@mixin shadow-bottom {
+    box-shadow: 0px 15px 10px -15px #111;
 }
 
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgb(221, 182, 91)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='4' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-    width: 2.5em;
-    height: 2.5em;
+// **Imports**
+@import "~bootstrap/scss/bootstrap";
+@import "~@fortawesome/fontawesome-free/css/all.css";
+
+// **Base Styles**
+body {
+    font-family: 'Old Standard TT', serif;
+    font-size: 100%;
 }
-.navbar-toggler {
-    margin: auto;
-    &:focus{
-        box-shadow: 0 0 0 var(--bs-navbar-toggler-focus-width) map-get($theme-colors, "gold" );
+
+a {
+    text-decoration: none;
+}
+
+p {
+    font-size: 1.2em;
+}
+
+// **Responsive Adjustments**
+@media screen and (max-width: 70em) {
+    body {
+        font-size: 80%;
+    }
+
+    .divider img {
+        width: 90%;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .bg-section {
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .qui {
+            padding: 4em;
+
+            &-p {
+                text-align: justify;
+            }
+
+            &-b {
+                text-align: center;
+            }
+        }
+    }
+
+    .sponsor-logo {
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+    .section-partenaire {
+        padding: 3rem 1rem;
+    }
+}
+
+// **Navbar Styles**
+.navbar {
+    border-bottom: 5px solid map-get($theme-colors, "gold");
+
+    &-brand {
+        height: 80px;
+        visibility: visible;
+        opacity: 1;
+        transition: height 0.5s ease-in-out, visibility 0.5s ease-in-out, opacity 0.5s ease-in-out;
+
+        &.hidden {
+            height: 0;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out, height 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+
+        &.visible {
+            height: 80px;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+    }
+
+    &-toggler {
+        margin: auto;
+
+        &:focus {
+            box-shadow: 0 0 0 var(--bs-navbar-toggler-focus-width) map-get($theme-colors, "gold");
+        }
+
+        &-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgb(221, 182, 91)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='4' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            width: 2.5em;
+            height: 2.5em;
+        }
+    }
+
+    .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; // Éviter le décalage lors de l'affichage
+    }
+}
+
+// **Footer Styles**
+footer {
+    border-top: 5px solid map-get($theme-colors, "gold");
+    padding: 2em 5em;
+}
+
+// **Other Components**
 .bg-recipe {
     background-image: url('images/vosRecettes-min.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    border-bottom: 5px solid map-get($theme-colors, "gold" );
+    border-bottom: 5px solid map-get($theme-colors, "gold");
     padding: 5rem !important;
-} 
+}
+
 .jumboRecipe {
-    background-color: rgba(0,0,0,0.3);
-    border-left: 10px solid map-get($theme-colors, "gold" );
-}  
-.undeline-gold{
-    background:  map-get($theme-colors, "gold" );
-   
-}
-.navbar-brand {
-    height: 80px;
-    visibility: visible;
-    opacity: 1;
-    transition: height 0.5s ease-in-out, visibility 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-left: 10px solid map-get($theme-colors, "gold");
 }
 
-.navbar-brand.hidden {
-    height: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out, height 0.5s ease-in-out, visibility 0.5s ease-in-out;
-}
-
-.navbar-brand.visible {
-    height: 80px;
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out, visibility 0.5s ease-in-out;
-}
-/* Activer le dropdown au survol (hover) sur les écrans larges */
-.nav-item.dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0; /* Éviter le décalage lors de l'affichage */
-}
-
-@import "~bootstrap/scss/bootstrap";
-
-
-.rating-wrapper {
-    align-self: center;
-    display: inline-flex;
-    direction: rtl !important;
-    padding: 1rem 2rem;
-    margin-left: auto;
-    
-  
-    label {
-      color: #E1E6F6;
-      cursor: pointer;
-      display: inline-flex;
-      font-size: 2rem;
-      padding: 1rem .6rem;
-      transition: color 0.5s;
-    }
-    
-     svg {
-       -webkit-text-fill-color: transparent;
-       -webkit-filter: drop-shadow (4px 1px 6px rgba(198, 206, 237, 1));
-       filter:drop-shadow(5px 1px 3px rgba(198, 206, 237, 1));
-    }
-  
-    input {
-      height: 100%;
-      width: 100%;
-    }
-    
-    input {
-      display: none;
-    }
-  
-    label:hover,
-    label:hover ~ label,
-    input:checked ~ label  {
-      color: map-get($theme-colors, "gold" );
-    }
-  
-    label:hover,
-    label:hover ~ label,
-    input:checked ~ label  {
-      color: map-get($theme-colors, "gold" );
-    }
-  }
-@mixin shadow-bottom {
-	box-shadow: 0px 15px 10px -15px #111;
-}
-body {
-    font-family: 'Old Standard TT', serif;
-    font-size: 100%;  
-}
-a{
-    text-decoration: none;
-}
-p {
-    font-size: 1.2em;
-}
-
-
-@media screen and (max-width: 70em) {
- body {
-      font-size: 80%;
-   }
-   .divider img {
-        width: 90%;
-   }
+.underline-gold {
+    background: map-get($theme-colors, "gold");
 }
 
 .logoChampignon {
@@ -157,13 +152,15 @@ p {
     height: 80px;
     padding: 10px;
     border-radius: 50%;
-    border: 2px solid map-get($theme-colors, "gold" );
+    border: 2px solid map-get($theme-colors, "gold");
 }
+
 .hover-underline-animation {
     display: inline-block;
     position: relative;
-    color: map-get($theme-colors, "gold" );
-    &::after{
+    color: map-get($theme-colors, "gold");
+
+    &::after {
         content: '';
         position: absolute;
         width: 100%;
@@ -171,79 +168,149 @@ p {
         height: 3px;
         bottom: 0;
         left: 0;
-        background-color:map-get($theme-colors, "gold" );
+        background-color: map-get($theme-colors, "gold");
         transform-origin: bottom right;
         transition: transform 0.25s ease-out;
     }
-    &:hover{
-        color:#fff;
-        &::after{
+
+    &:hover {
+        color: #fff;
+
+        &::after {
             transform: scaleX(1);
             transform-origin: bottom left;
         }
     }
-  }
+}
 
 picture img {
-  max-width: 100%;
-  height: auto;
+    max-width: 100%;
+    height: auto;
 }
+
 .bg-section {
-    background-image:url("images/background.webp");
-    border-bottom: 5px solid map-get($theme-colors, "gold" );
-    
+    background-image: url("images/background.webp");
+    border-bottom: 5px solid map-get($theme-colors, "gold");
     background-repeat: no-repeat;
     background-size: cover;
+
     h2 {
         font-size: 4rem;
         letter-spacing: 2px;
     }
+
     .qui {
         padding: 2em 2em 2em 5em;
+
         &-p {
             text-align: justify;
         }
-    } 
+    }
 }
+
 .bg-text {
-    background-color: map-get($theme-colors, "semigold" );
+    background-color: map-get($theme-colors, "semigold");
     padding: 5px 10px 5px 2px;
     border-radius: 5px;
 }
+
 .section-espece {
     padding: 0 5em;
-    picture .espece{
+    border-bottom: 5px solid map-get($theme-colors, "gold");
+    picture .espece {
         border-radius: 20px;
         @include shadow-bottom;
     }
+
     .space {
         margin-top: 4em;
     }
 }
-.section-recettes{
-    padding: 0 5em;
-    img{
+
+.section-recettes {
+    padding: 2em 5em;
+
+    img {
         @include shadow-bottom;
     }
+
+    .card {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .card-img-top {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            object-fit: cover;
+            width: 100%;
+            height: 200px; // Hauteur standard pour les images
+        }
+
+        .card-body {
+            padding: 1rem;
+            text-align: center;
+
+            h3 {
+                font-size: 1.5rem;
+                color: map-get($theme-colors, "blue");
+                margin-bottom: 1rem;
+            }
+
+            p {
+                font-size: 1rem;
+                color: #666;
+                height: 60px; // Pour limiter le dépassement de texte
+                overflow: hidden;
+            }
+
+            .btn {
+                margin-top: auto;
+                background-color: map-get($theme-colors, "blue");
+                color: #fff;
+
+                &:hover {
+                    background-color: map-get($theme-colors, "gold");
+                }
+            }
+        }
+
+        &:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+    }
 }
-.link-recettes{
+
+.link-recettes {
     border-radius: 10px;
     transition: 0.25s;
     transition-timing-function: ease-out;
-    &:hover 
-{
+
+    &:hover {
         transform: scale(1.1);
         transition: 0.25s;
         transition-timing-function: ease-in;
     }
 }
-.section-partenaire{
-    padding: 5em;
-    img{
+
+.section-partenaire {
+    background-color: #f9f9f9;
+    padding: 5rem 2rem;
+    border-top: 5px solid map-get($theme-colors, "gold");
+
+    img {
         @include shadow-bottom;
         border-radius: 50%;
         transition: 0.25s;
         transition-timing-function: ease-out;
+
         &:hover {
             transform: scale(1.1);
             transition: 0.25s;
@@ -251,24 +318,82 @@ picture img {
         }
     }
 }
-footer {
-    padding:2em 5em;
+
+.sponsor-logo {
+    transition: transform 0.3s ease-in-out;
+    max-width: 100px;
+    max-height: 100px;
 }
-.collapsing{height:0;overflow:hidden;transition:height .35s ease}
-@media screen and (max-width: 768px) {
-    .bg-section {
-        h2 {
-            font-size: 2rem;
-            text-align: center;
-        }
-        .qui {
-            padding: 4em;
-            &-p {
-                text-align: justify;
-            }
-            &-b{
-                text-align: center;
-            }
-        } 
+
+.sponsor-logo:hover {
+    transform: scale(1.1);
+}
+
+.partner-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease-in-out;
+}
+
+.partner-link:hover {
+    color: map-get($theme-colors, "gold");
+}
+.divider-partenaire{
+    background-color: #f9f9f9;
+}
+.collapsing {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.35s ease;
+}
+
+// **Mushroom Icons**
+.mushroom {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    background-image: url('images/mushrooms/mushroom-empty.webp'); // Champignon vide par défaut
+
+    &-full {
+        background-image: url('images/mushrooms/mushroom-full.webp'); // Champignon rempli
+    }
+
+    &-half {
+        background-image: url('images/mushrooms/mushroom-half-average.webp'); // Champignon à moitié rempli
+    }
+}
+
+// **Rating Wrapper**
+.rating-wrapper {
+    align-self: center;
+    display: inline-flex;
+    direction: rtl !important;
+    padding: 1rem 2rem;
+    margin-left: auto;
+
+    label {
+        color: #E1E6F6;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 2rem;
+        padding: 1rem 0.6rem;
+        transition: color 0.5s;
+    }
+
+    svg {
+        -webkit-text-fill-color: transparent;
+        -webkit-filter: drop-shadow(4px 1px 6px rgba(198, 206, 237, 1));
+        filter: drop-shadow(5px 1px 3px rgba(198, 206, 237, 1));
+    }
+
+    input {
+        display: none;
+    }
+
+    label:hover,
+    label:hover~label,
+    input:checked~label {
+        color: map-get($theme-colors, "gold");
     }
 }

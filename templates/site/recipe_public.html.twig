@@ -1,41 +1,66 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vos Recettes
-{% endblock %}
+{% block title %}Vos Recettes{% endblock %}
 
 {% block body %}
-	<div class="container-fluid text-white bg-recipe mb-5 shadow">
-		<div class="jumboRecipe p-5">
-			<h1 class="display-4 fw-semibold">
-				<span class="undeline-gold ps-2 pe-5">Le coin Recettes</span>
-			</h1>
-			<p class="lead display-6">Partagez et retrouvez toutes vos recettes
-				<img src="{{ asset('images/elements/shroom.png') }}" alt="Nos espèces" width="50" height="50"></p>
-		</div>
-	</div>
-	<div class="container">
-		<div class="row">
-			{% for recipe in recipes %}
-				{% if recipe.isActive == 1 %}
-					<div class="col-12 col-sm-6 col-md-4 mb-4">
-						<div class="card shadow-sm">
-							{# Vérification de l'existence de l'image, sinon afficher une image par défaut #}
-							<img src="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" alt="{{ recipe.title }}" class="card-img-top">
-							<div class="card-body">
-								<h2 class="card-title fs-3 fw-bold text-blue">{{ recipe.title }}</h2>
-								<p class="card-text">{{ recipe.description | raw }}</p>
-								<a href="{{ path('recipe_show_public', {'id': recipe.id}) }}" class="btn btn-blue viewRecetteBtn">Voir
-									<i class="fas fa-eye ms-1"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-				{% endif %}
-			{% else %}
-				<div class="col-12">
-					<p class="text-center">Aucune recette trouvée</p>
-				</div>
-			{% endfor %}
-		</div>
-	</div>
+    <div class="container-fluid text-white bg-recipe mb-5 shadow">
+        <div class="jumboRecipe p-5">
+            <h1 class="display-4 fw-semibold">
+                <span class="undeline-gold ps-2 pe-5">Le coin Recettes</span>
+            </h1>
+            <p class="lead display-6">Partagez et retrouvez toutes vos recettes 
+                <img src="{{ asset('images/elements/shroom.png') }}" alt="Nos espèces" width="50" height="50">
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12">
+                <p class="text-center lead">
+                    Bienvenue sur le blog de recettes des <strong>Champignons de la Rhônelle</strong> ! 
+                    Ici, vous trouverez des recettes originales, créatives et délicieuses, réalisées à partir de nos champignons bio. 
+                    Que vous soyez amateur de cuisine ou professionnel, partagez vos créations culinaires et inspirez d'autres passionnés de champignons ! 
+                    N'hésitez pas à vous inscrire pour soumettre vos propres recettes et faire partie de notre communauté culinaire.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for recipe in recipes %}
+                {% if recipe.isActive == 1 %}
+                    <div class="col-12 col-sm-6 col-md-4 mb-4">
+                        <div class="card shadow-sm h-100">
+                            {# Vérification de l'existence de l'image, sinon afficher une image par défaut #}
+                            <img src="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" alt="{{ recipe.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            
+                            <div class="card-body d-flex flex-column">
+                                <h2 class="card-title fs-3 fw-bold text-blue">{{ recipe.title }}</h2>
+                                <p class="card-text">{{ recipe.description | slice(0, 100) ~ '...' | raw }}</p>
+                                
+                                {# Affichage des notes sous forme de champignons #}
+                                <div class="mushrooms-average mb-3" data-average="{{ recipe.averageRating }}">
+                                    <span class="mushroom" data-score="1"></span>
+                                    <span class="mushroom" data-score="2"></span>
+                                    <span class="mushroom" data-score="3"></span>
+                                    <span class="mushroom" data-score="4"></span>
+                                    <span class="mushroom" data-score="5"></span>
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    <a href="{{ path('recipe_show_public', {'id': recipe.id}) }}" class="btn btn-blue viewRecetteBtn">Voir
+                                        <i class="fas fa-eye ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center">Aucune recette trouvée</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

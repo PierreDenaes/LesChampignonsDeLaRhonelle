@@ -16,23 +16,23 @@
 				</div>
 			</div>
 		</section>
-		<div class="divider text-center py-3" id="champignon">
+		<div class="divider divider-partenaire text-center py-3" id="champignon">
 			<picture>
 				<source srcset="{{ asset ('images/elements/160/divider-200.webp')}}" media="(max-width: 576px)" width="200" height="34">
 				<source srcset="{{ asset ('images/elements/320/divider-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="67">
 				<img src="{{ asset ('images/elements/divider.png')}}" alt="diviseur champignon" width="487" height="82">
 			</picture>
 		</div>
-		<section class="section-espece">
+		<section class="section-espece divider-partenaire">
 			<h2 class="fw-bold text-blue fs-1 text-center mb-5">No<span class="bg-text">s Espèces</span>
 			</h2>
 			<div class="row space">
 				<div class="col-md-12 col-lg-6">
 					<div class="image-espece text-center px-1 pt-3 pb-5 px-lg-5 pt-lg-3 pb-lg-5 position-relative top-50 start-0 translate-middle-y">
 						<picture>
-							<source srcset="{{asset ('images/elements/160/les-Champignons-de-la-Rhonelle-Pleurote-200.webp') }}" media="(max-width: 576px)" width="200" height="200">
-							<source srcset="{{asset ('images/elements/320/les-Champignons-de-la-Rhonelle-Pleurote-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="400">
-							<source srcset="{{asset ('images/elements/640/les-Champignons-de-la-Rhonelle-Pleurote-800.webp')}}" media="(min-width: 993px) and (max-width: 1260px)" width="800" height="800">
+							<source srcset="{{asset ('images/elements/160/les-Champignons-de-la-Rhonelle-Pleurote-200.webp') }}" media="(max-width: 576px)" width="300" height="300">
+							<source srcset="{{asset ('images/elements/320/les-Champignons-de-la-Rhonelle-Pleurote-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="600" height="600">
+							<source srcset="{{asset ('images/elements/640/les-Champignons-de-la-Rhonelle-Pleurote-800.webp')}}" media="(min-width: 993px) and (max-width: 1260px)" width="900" height="900">
 							<img class="espece" src="{{asset ('images/elements/les-Champignons-de-la-Rhonelle-Pleurote-1200.jpeg')}}" alt="Pleurote Bio Les Champignons de la Rhonelle" width="1200" height="1200">
 						</picture>
 					</div>
@@ -61,8 +61,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="row space">
-				<div class="col-md-12 col-lg-6">
+			<div class="row space ">
+				<div class="col-md-12 col-lg-6 order-2 order-md-1">
 					<div class="text-espece text-center px-1 pt-3 pb-5 px-lg-5 pt-lg-3 pb-lg-5 position-relative top-50 start-0 translate-middle-y">
 						<h3 class="fw-bold mb-3">Le<span class="bg-text">
 								Shiitake</span>
@@ -83,12 +83,12 @@
 						<a href="#" class="btn btn-blue text-light fw-bold fs-6 mt-2">En savoir plus</a>
 					</div>
 				</div>
-				<div class="col-md-12 col-lg-6">
+				<div class="col-md-12 col-lg-6 order-1 order-md-2">
 					<div class="image-espece text-center px-1 pt-3 pb-5 px-lg-5 pt-lg-3 pb-lg-5 position-relative top-50 start-0 translate-middle-y">
 						<picture>
-							<source srcset="{{asset ('images/elements/160/les-Champignons-de-la-Rhonelle-Shiitake-200.webp') }}" media="(max-width: 576px)" width="200" height="200">
-							<source srcset="{{asset ('images/elements/320/les-Champignons-de-la-Rhonelle-Shiitake-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="400">
-							<source srcset="{{asset ('images/elements/680/les-Champignons-de-la-Rhonelle-Shiitake-800.webp')}}" media="(min-width: 993px) and (max-width: 1260px)" width="800" height="800">
+							<source srcset="{{asset ('images/elements/160/les-Champignons-de-la-Rhonelle-Shiitake-200.webp') }}" media="(max-width: 576px)" width="300" height="300">
+							<source srcset="{{asset ('images/elements/320/les-Champignons-de-la-Rhonelle-Shiitake-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="600" height="600">
+							<source srcset="{{asset ('images/elements/640/les-Champignons-de-la-Rhonelle-Shiitake-800.webp')}}" media="(min-width: 993px) and (max-width: 1260px)" width="900" height="900">
 							<img class="espece" src="{{asset ('images/elements/les-Champignons-de-la-Rhonelle-Shiitake-1200.webp')}}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="1200" height="1200">
 						</picture>
 					</div>
@@ -103,23 +103,55 @@
 			</picture>
 		</div>
 		<section class="section-recettes">
-			<h2 class="fw-bold text-blue fs-1 text-center mb-5">le<span class="bg-text">s Recettes</span>
-			</h2>
-			 <div class="row">
+			<h2 class="fw-bold text-blue fs-1 text-center mb-5">Le<span class="bg-text">s Recettes</span></h2>
+			
+			<p class="text-center mb-5">
+				Découvrez nos dernières recettes inspirées de nos champignons frais. Laissez-vous guider dans la création de plats délicieux à base de pleurotes, shiitake et bien d'autres.<br>
+				Envie de partager vos propres recettes ? Inscrivez-vous et rejoignez notre communauté pour publier vos créations culinaires !
+			</p>
+
+			<div class="row gx-0">
 				{% for recipe in recipes|slice(0, 4) %}
-					<div class="col-md-6 col-lg-3 p-4 text-center">
-						<picture>
-							<source srcset="{{ asset(recipe.imageName ? 'images/recipes/160/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(max-width: 576px)" width="200" height="300">
-							<source srcset="{{ asset(recipe.imageName ? 'images/recipes/320/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="600">
-							<source srcset="{{ asset(recipe.imageName ? 'images/recipes/640/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(min-width: 993px) and (max-width: 1260px)" width="800" height="1200">
-							<source srcset="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(min-width: 1261px)" width="1200" height="1800">
-							<img class="link-recettes" src="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" alt="{{ recipe.title }}" width="750" height="1124">
-						</picture>
-						<h3 class="mt-4 mt-xxl-5 fs-4">{{ recipe.title }}</h3>
+					<div class="col-md-6 col-lg-3 mb-4 p-3">
+						<div class="card">
+							<picture>
+								<source srcset="{{ asset(recipe.imageName ? 'images/recipes/160/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(max-width: 576px)" width="200" height="300">
+								<source srcset="{{ asset(recipe.imageName ? 'images/recipes/320/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="600">
+								<source srcset="{{ asset(recipe.imageName ? 'images/recipes/640/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(min-width: 993px) and (max-width: 1260px)" width="800" height="1200">
+								<source srcset="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" media="(min-width: 1261px)" width="1200" height="1800">
+								<img class="card-img-top" src="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" alt="{{ recipe.title }}">
+							</picture>
+							<div class="card-body">
+								<h3>{{ recipe.title }}</h3>
+
+								{# Affichage des champignons pour la note moyenne #}
+								<div class="mushrooms-average mb-3" id="average-rating-{{ recipe.id }}" data-average="{{ recipe.averageRating }}">
+									<span class="mushroom" data-score="1"></span>
+									<span class="mushroom" data-score="2"></span>
+									<span class="mushroom" data-score="3"></span>
+									<span class="mushroom" data-score="4"></span>
+									<span class="mushroom" data-score="5"></span>
+								</div>
+
+								<p>{{ recipe.description|slice(0, 80) ~ '...' }}</p>
+								<a href="{{ path('recipe_show_public', {'id': recipe.id}) }}" class="btn btn-blue">Voir la recette</a>
+							</div>
+						</div>
 					</div>
 				{% endfor %}
-				
-			</div> 
+			</div>
+
+			<div class="text-center mt-4">
+				<a href="{{ path('recipe_all') }}" class="btn btn-blue fs-5">Voir toutes les recettes</a>
+			</div>
+
+			<div class="text-center mt-4">
+				{% if app.user %}
+					<a href="{{ path('recipe_new') }}" class="btn btn-outline-gold fs-5">Publier votre propre recette</a>
+				{% else %}
+					<p class="fs-5">Envie de partager vos recettes ? <a href="{{ path('app_register') }}" class="text-blue">Inscrivez-vous</a> ou <a href="{{ path('app_login') }}" class="text-blue">connectez-vous</a> pour commencer à publier vos créations culinaires !</p>
+				{% endif %}
+			</div>
 		</section>
 		<div class="divider text-center py-3">
 			<picture>
@@ -130,23 +162,28 @@
 		</div>
 
 		<section class="section-partenaire">
-			<h2 class="fw-bold text-blue fs-1 text-center mb-5">No<span class="bg-text">s Partenaires</span>
-			</h2>
-			<div class="row">
-			{% for sponsor in sponsors %}
-				<div class="col-6 col-md-4 col-lg-2 p-3">
-					<a target="_blank" href="{{ sponsor.siteWeb }}" class="link-recettes">
-						<picture>
-							<source srcset="{{ asset('images/sponsors/' ~ sponsor.image) }}" media="(max-width: 576px)" width="200" height="200">
-							<img src="{{ asset('images/sponsors/' ~ sponsor.image) }}" alt="logo {{ sponsor.nom }}" width="300" height="300">
-						</picture>
-					</a>
-				</div>
-			{% endfor %}
+			<h2 class="fw-bold text-blue fs-1 text-center mb-5">No<span class="bg-text">s Partenaires</span></h2>
+
+			<p class="text-center mb-5">
+				Nos partenaires jouent un rôle essentiel dans notre chaîne de valeur. Qu'ils achètent, cuisinent ou distribuent nos champignons, ils contribuent à partager notre passion pour des produits frais et locaux. Découvrez-les ci-dessous !
+			</p>
+
+			<div class="row justify-content-center">
+				{% for sponsor in sponsors %}
+					<div class="col-6 col-md-4 col-lg-2 p-3 d-flex align-items-center justify-content-center">
+						<a target="_blank" href="{{ sponsor.siteWeb }}" class="partner-link d-block text-center">
+							<picture>
+								<source srcset="{{ asset('images/sponsors/' ~ sponsor.image) }}" media="(max-width: 576px)" width="150" height="150">
+								<img src="{{ asset('images/sponsors/' ~ sponsor.image) }}" alt="logo {{ sponsor.nom }}" class="img-fluid sponsor-logo">
+							</picture>
+							<p class="mt-2 fw-semibold text-blue">{{ sponsor.nom }}</p>
+						</a>
+					</div>
+				{% endfor %}
 			</div>
 		</section>
 	</main>
-	<div class="divider text-center py-3">
+	<div class="divider divider-partenaire text-center py-3">
 		<picture>
 			<source srcset="{{ asset ('images/elements/160/divider-200.webp')}}" media="(max-width: 576px)" width="200" height="34">
 			<source srcset="{{ asset ('images/elements/320/divider-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="67">

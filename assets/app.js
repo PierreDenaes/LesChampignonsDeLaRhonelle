@@ -45,4 +45,19 @@ document.addEventListener('DOMContentLoaded', function() {
             backdrop.remove(); // Supprimer le fond de la modale
         }
     });
+    document.querySelectorAll('.mushrooms-average').forEach(function(container) {
+        let average = parseFloat(container.getAttribute('data-average'));
+        let mushrooms = container.querySelectorAll('.mushroom');
+        
+        mushrooms.forEach((mushroom, index) => {
+            let score = index + 1;
+            if (average >= score) {
+                mushroom.classList.add('mushroom-full');
+            } else if (average >= score - 0.5) {
+                mushroom.classList.add('mushroom-half');
+            } else {
+                mushroom.classList.add('mushroom-empty');
+            }
+        });
+    });
 });
