@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Rating;
 use App\Entity\Recipe;
 use App\Entity\Comment;
-use App\Form\RatingType;
 use App\Form\CommentType;
 use Symfony\Component\Mime\Address;
 use App\Repository\RatingRepository;
