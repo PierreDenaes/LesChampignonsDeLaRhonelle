@@ -125,6 +125,14 @@ p {
     --bs-pagination-active-bg: #14274E;
     --bs-pagination-active-border-color: #14274E;
 }
+/* Ajoute cette règle dans ton fichier CSS personnalisé */
+.bg-login, .bg-register {
+    background-image: url('images/frise_11zon.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 52vh;
+}
 
 // **Footer Styles**
 footer {

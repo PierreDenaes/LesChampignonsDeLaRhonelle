@@ -55,13 +55,16 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         $user = $token->getUser();
         $roles = $token->getUser()->getRoles();
 
-        // Redirection selon les rôles si aucune URL cible n'est définie
         if (in_array('ROLE_ADMIN', $roles, true)) {
             return new RedirectResponse($this->urlGenerator->generate('admin'));
         } elseif (in_array('ROLE_USER', $roles, true)) {
-            // Ajout du message flash de bienvenue
-            $request->getSession()->getFlashBag()->add('success', 'Bonjour ' . $user->getProfile()->getFirstname() . ', bienvenue sur votre profil !');
-            
+            // Vérifie que le profil existe avant d'accéder à getFirstname()
+            if ($user->getProfile()) {
+                $request->getSession()->getFlashBag()->add('success', 'Bonjour ' . $user->getProfile()->getFirstname() . ', bienvenue sur votre profil !');
+            } else {
+                $request->getSession()->getFlashBag()->add('success', 'Pour commencer, merci de renseigner votre profil !');
+            }
+        
             return new RedirectResponse($this->urlGenerator->generate('app_profile'));
         } else {
             throw new \Exception('No route found for user role.');

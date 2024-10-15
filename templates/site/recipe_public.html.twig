@@ -4,15 +4,20 @@
 
 {% block body %}
     <div class="container-fluid text-white bg-recipe mb-5 shadow">
-        <div class="jumboRecipe p-5">
-            <h1 class="display-4 fw-semibold">
-                <span class="underline-gold ps-2 pe-5">Le coin Recettes</span>
-            </h1>
-            <p class="lead display-6">Partagez et retrouvez toutes vos recettes 
-                <img src="{{ asset('images/elements/shroom.png') }}" alt="Nos espèces" width="50" height="50">
-            </p>
-        </div>
+    <div class="jumboRecipe p-5">
+        <h1 class="display-4 fw-semibold mb-4">
+            <span class="underline-gold ps-2 pe-5">Le coin Recettes</span>
+        </h1>
+        <p class="lead display-6">Partagez et retrouvez toutes vos recettes 
+            <img src="{{ asset('images/elements/shroom.png') }}" alt="Nos espèces" width="50" height="50">
+        </p>
+        <div class="mt-4">
+        <a href="{{ path('app_register') }}" class="btn btn-blue btn-lg text-white text-uppercase py-3 px-5 fw-bold shadow-lg">
+            Rejoignez-nous, inscrivez-vous !
+        </a>
     </div>
+    </div>
+</div>
 
     <div class="container">
         <div class="row mb-5">
