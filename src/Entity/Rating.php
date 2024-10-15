@@ -22,7 +22,7 @@ class Rating
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $profile = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1)]
+    #[ORM\Column(type: Types::FLOAT)]
     private ?float $score = null;
 
     public function getId(): ?int

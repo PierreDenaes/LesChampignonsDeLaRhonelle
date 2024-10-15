@@ -45,4 +45,7 @@ services:
         arguments:
             $adminEmail: '%admin_email%'  
     App\Twig\AppExtension:
-        tags: [ 'twig.extension' ]       
+        tags: [ 'twig.extension' ] 
+    App\EventListener\CommentCreatedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'comment.created', method: 'onCommentCreated' }      

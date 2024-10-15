@@ -100,7 +100,7 @@
 					<div class="col-12 mb-4">
 						<div class="card shadow-sm">
 							<div class="card-body p-0 d-flex">
-								<img src="{{ asset('images/recipes/' ~ recipe.imageName) }}" alt="{{ recipe.title }}" class="card-img-top w-75 img-landscape">
+								<img src="{{ asset(recipe.imageName ? 'images/recipes/' ~ recipe.imageName : 'images/recipes/default/default-recipe.webp') }}" alt="{{ recipe.title }}" class="card-img-top w-75 img-landscape">
 								<div class="details w-25 d-flex flex-column justify-content-evenly align-items-center p-3">
 									<div class="detail-item text-center">
 										<i class="fas fa-tachometer-alt text-blue fa-3x"></i>
