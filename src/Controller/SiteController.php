@@ -11,6 +11,9 @@ use App\Repository\RecipeRepository;
 use App\Repository\SponsorRepository;
 use App\Service\RatingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -60,12 +63,31 @@ class SiteController extends AbstractController
     }
 
     #[Route('/recipes', name: 'recipe_all', methods: ['GET'])]
-    public function allRecipes(): Response
+    public function allRecipes(RecipeRepository $recipeRepository, Request $request): Response
     {
-        $recipes = $this->recipeRepository->findAll();
+        // Récupérer le numéro de page actuel à partir des paramètres de requête
+        $page = $request->query->getInt('page', 1);
+
+        // Construire la requête DQL pour récupérer les recettes actives
+        $queryBuilder = $recipeRepository->createQueryBuilder('r')
+            ->where('r.isActive = :active')
+            ->setParameter('active', true)
+            ->orderBy('r.updatedAt', 'DESC');
+
+        // Utilisation de QueryAdapter avec Pagerfanta
+        $adapter = new QueryAdapter($queryBuilder);
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage(6); // Limite de résultats par page
+
+        // Vérifier que la page demandée existe
+        try {
+            $pagerfanta->setCurrentPage($page); // Page actuelle
+        } catch (OutOfRangeCurrentPageException $e) {
+            throw $this->createNotFoundException('Page non trouvée.');
+        }
 
         return $this->render('site/recipe_public.html.twig', [
-            'recipes' => $recipes,
+            'pager' => $pagerfanta,
         ]);
     }
 
