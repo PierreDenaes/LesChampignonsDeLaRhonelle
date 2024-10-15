@@ -17,91 +17,91 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SiteController extends AbstractController
 {
-    private $serializer;
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private RecipeRepository $recipeRepository;
+    private RatingRepository $ratingRepository;
 
-    public function __construct(SerializerInterface $serializer, EntityManagerInterface $entityManager)
-    {
-        $this->serializer = $serializer;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        RecipeRepository $recipeRepository,
+        RatingRepository $ratingRepository
+    ) {
         $this->entityManager = $entityManager;
+        $this->recipeRepository = $recipeRepository;
+        $this->ratingRepository = $ratingRepository;
     }
-    
+
     #[Route('/', name: 'app_home')]
-    public function index(SponsorRepository $sponsorRepository, RecipeRepository $recipeRepository): Response
+    public function index(SponsorRepository $sponsorRepository): Response
     {
-        $user = $this->getUser();
-       
+        $user = $this->getUser(); // Conservation de la variable $user
+
         $sponsors = $sponsorRepository->findAll();
-        $recipes = $recipeRepository->findAll();
+        $recipes = $this->recipeRepository->findAll();
+
         return $this->render('site/index.html.twig', [
-            'controller_name' => 'HomeController',
             'sponsors' => $sponsors,
             'recipes' => $recipes,
-            'user' => $user,
+            'user' => $user, // Passage de $user à la vue
         ]);
     }
 
     #[Route('/species', name: 'our_species')]
     public function species(): Response
     {
-        return $this->render('site/our_species.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        return $this->render('site/our_species.html.twig');
     }
 
     #[Route('/recipes', name: 'recipe_all', methods: ['GET'])]
-    public function allRecipes(RecipeRepository $recipeRepository): Response
+    public function allRecipes(): Response
     {
-        $recipes = $recipeRepository->findAll();
+        $recipes = $this->recipeRepository->findAll();
 
         return $this->render('site/recipe_public.html.twig', [
             'recipes' => $recipes,
         ]);
     }
+
     #[Route('/recipe/{id}', name: 'recipe_show_public', methods: ['GET', 'POST'])]
-    public function showRecipe(AuthenticationUtils $authenticationUtils, RecipeRepository $recipeRepository, RatingRepository $ratingRepository, Request $request,MailerInterface $mailer, $id): Response
-    {
-        $recipe = $recipeRepository->find($id);
-        // Obtenir l'utilisateur actuel et son profil
+    public function showRecipe(
+        AuthenticationUtils $authenticationUtils,
+        Request $request,
+        MailerInterface $mailer,
+        Recipe $recipe
+    ): Response {
         $user = $this->getUser();
         $userProfile = $user ? $user->getProfile() : null;
 
-        // Récupérer les dernières recettes, triées par date de mise à jour
-        $latestRecipes = $recipeRepository->findBy(['isActive' => true], ['updatedAt' => 'DESC'], 5);
+        $latestRecipes = $this->recipeRepository->findBy(['isActive' => true], ['updatedAt' => 'DESC'], 5);
 
-        // Chercher la note existante de l'utilisateur pour la recette
-        $existingRating = $userProfile ? $ratingRepository->findOneBy([
+        $existingRating = $userProfile ? $this->ratingRepository->findOneBy([
             'recipe' => $recipe,
             'profile' => $userProfile,
         ]) : null;
 
-        // Calculer la note moyenne de la recette
-        $ratings = $ratingRepository->findBy(['recipe' => $recipe]);
-        $ratingCount = count($ratings);
-        $averageRating = $ratingCount > 0 ? round(array_sum(array_map(fn($r) => $r->getScore(), $ratings)) / $ratingCount * 2) / 2 : null;
+        $averageData = $this->calculateAverageRating($recipe);
 
-        // Obtenir l'erreur et le dernier nom d'utilisateur pour la modale de connexion
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // Gestion des commentaires
-        $comment = new Comment();
-        // Vérification s'il existe déjà un commentaire pour cet utilisateur et cette recette
-        $existingComment = $userProfile ? $this->entityManager->getRepository(Comment::class)->findOneBy([
-            'recipe' => $recipe,
-            'author' => $userProfile,
-        ]) : null;
-
         $commentForm = null;
+        $existingComment = null;
+
+        if ($userProfile) {
+            $existingComment = $this->entityManager->getRepository(Comment::class)->findOneBy([
+                'recipe' => $recipe,
+                'author' => $userProfile,
+            ]);
+        }
+
         if (!$existingComment) {
-            // Si l'utilisateur n'a pas encore commenté, on affiche le formulaire
+            $comment = new Comment();
             $commentForm = $this->createForm(CommentType::class, $comment);
             $commentForm->handleRequest($request);
 
@@ -109,45 +109,43 @@ class SiteController extends AbstractController
                 if (!$user) {
                     throw new AccessDeniedException('Vous devez être connecté pour ajouter un commentaire.');
                 }
-        
-                // Relier le commentaire à la recette et à l'auteur (le profil de l'utilisateur connecté)
+
                 $comment->setRecipe($recipe);
                 $comment->setAuthor($userProfile);
-        
+
                 $this->entityManager->persist($comment);
                 $this->entityManager->flush();
-        
-                // Envoi de l'email à l'auteur de la recette
+
                 $this->sendNewCommentNotification($mailer, $recipe);
-        
+
                 $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
-        
+
                 return $this->redirectToRoute('recipe_show_public', ['id' => $recipe->getId()]);
             }
         }
 
-        // Renvoyer à la vue
         return $this->render('site/recipe_show.html.twig', [
             'recipe' => $recipe,
             'latestRecipes' => $latestRecipes,
             'last_username' => $lastUsername,
             'error' => $error,
             'existingRating' => $existingRating,
-            'averageRating' => $averageRating,
-            'ratingCount' => $ratingCount,
-            'commentForm' => $commentForm ? $commentForm->createView() : null,  // Formulaire de commentaire ou null
-            'existingComment' => $existingComment, // Passer l'information du commentaire existant
+            'averageRating' => $averageData['averageRating'],
+            'ratingCount' => $averageData['ratingCount'],
+            'commentForm' => $commentForm ? $commentForm->createView() : null,
+            'existingComment' => $existingComment,
         ]);
     }
+
     #[Route('/recipe/{id}/rate', name: 'submit_rating', methods: ['POST'])]
-    public function submitRating(Request $request, Recipe $recipe, EntityManagerInterface $entityManager, RatingRepository $ratingRepository): Response
+    public function submitRating(Request $request, Recipe $recipe): JsonResponse
     {
-        // Vérifier si l'utilisateur est connecté
-        if (!$this->getUser()) {
+        $user = $this->getUser();
+        if (!$user) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour noter cette recette.'], 403);
         }
 
-        $userProfile = $this->getUser()->getProfile();
+        $userProfile = $user->getProfile();
         $content = json_decode($request->getContent(), true);
         $newScore = $content['score'] ?? null;
 
@@ -155,43 +153,36 @@ class SiteController extends AbstractController
             return new JsonResponse(['error' => 'Note invalide.'], 400);
         }
 
-        // Chercher s'il y a déjà une note pour cette recette et cet utilisateur
-        $existingRating = $ratingRepository->findOneBy([
+        $existingRating = $this->ratingRepository->findOneBy([
             'recipe' => $recipe,
             'profile' => $userProfile,
         ]);
 
         if ($existingRating) {
-            // Mise à jour de la note existante
             $existingRating->setScore($newScore);
-            $entityManager->flush();
-            return new JsonResponse(['message' => 'Note mise à jour avec succès.']);
         } else {
-            // Création d'une nouvelle note
             $rating = new Rating();
             $rating->setRecipe($recipe);
             $rating->setProfile($userProfile);
             $rating->setScore($newScore);
-
-            $entityManager->persist($rating);
-            $entityManager->flush();
-            return new JsonResponse(['message' => 'Note enregistrée avec succès.',
-            'newScore' => $newScore
-            ]);
+            $this->entityManager->persist($rating);
         }
+
+        $this->entityManager->flush();
+
+        return new JsonResponse(['message' => 'Note enregistrée avec succès.', 'newScore' => $newScore]);
     }
+
     #[Route('/recipe/{id}/current-rating', name: 'get_current_rating', methods: ['GET'])]
-    public function getCurrentRating(RatingRepository $ratingRepository, Recipe $recipe): JsonResponse
+    public function getCurrentRating(Recipe $recipe): JsonResponse
     {
         $userProfile = $this->getUser() ? $this->getUser()->getProfile() : null;
 
-        // Si l'utilisateur n'est pas connecté, on retourne une réponse vide
         if (!$userProfile) {
             return new JsonResponse(['currentRating' => null]);
         }
 
-        // Chercher la note existante de l'utilisateur pour la recette
-        $existingRating = $ratingRepository->findOneBy([
+        $existingRating = $this->ratingRepository->findOneBy([
             'recipe' => $recipe,
             'profile' => $userProfile,
         ]);
@@ -200,67 +191,51 @@ class SiteController extends AbstractController
 
         return new JsonResponse(['currentRating' => $currentRating]);
     }
+
     #[Route('/recipe/{id}/average-rating', name: 'get_average_rating', methods: ['GET'])]
-    public function getAverageRating(RatingRepository $ratingRepository, Recipe $recipe): JsonResponse
+    public function getAverageRating(Recipe $recipe): JsonResponse
     {
-        // Récupérer toutes les notes pour la recette
-        $ratings = $ratingRepository->findBy(['recipe' => $recipe]);
+        $averageData = $this->calculateAverageRating($recipe);
 
-        // Calculer la moyenne
-        $total = 0;
-        $count = count($ratings);
-
-        if ($count > 0) {
-            foreach ($ratings as $rating) {
-                $total += $rating->getScore();
-            }
-            $averageRating = round($total / $count * 2) / 2; // Arrondir à la demi-étape
-        } else {
-            $averageRating = null; // Pas encore de notes
-        }
-
-        return new JsonResponse(['averageRating' => $averageRating, 'ratingCount' => $count]);
+        return new JsonResponse($averageData);
     }
+
     #[Route('/comment/{id}/edit-inline', name: 'comment_edit_inline', methods: ['GET'])]
-    public function editCommentInline(Request $request, Comment $comment): JsonResponse
+    public function editCommentInline(Comment $comment): JsonResponse
     {
-        // Vérification si l'utilisateur est bien le propriétaire du commentaire
         if ($comment->getAuthor() !== $this->getUser()->getProfile()) {
             throw new AccessDeniedException('Vous ne pouvez pas modifier ce commentaire.');
         }
 
-        // Créer le formulaire de modification
         $commentForm = $this->createForm(CommentType::class, $comment);
-        
-        // Renvoyer le HTML du formulaire de modification
+
         return new JsonResponse([
             'formHtml' => $this->renderView('site/_edit_comment_form.html.twig', [
                 'editCommentForm' => $commentForm->createView(),
-                'comment' => $comment
+                'comment' => $comment,
             ]),
         ]);
     }
+
     #[Route('/api/check-login', name: 'check_login_status', methods: ['GET'])]
     public function checkLoginStatus(): JsonResponse
     {
         return new JsonResponse(['isUserLoggedIn' => $this->getUser() !== null]);
     }
+
     #[Route('/comment/{id}/edit-ajax', name: 'comment_edit_ajax', methods: ['POST'])]
     public function editCommentAjax(Request $request, Comment $comment): JsonResponse
     {
-        // Vérification si l'utilisateur est bien le propriétaire du commentaire
         if ($comment->getAuthor() !== $this->getUser()->getProfile()) {
             return new JsonResponse(['error' => 'Vous ne pouvez pas modifier ce commentaire.'], 403);
         }
 
-        // Traiter le formulaire de modification
         $commentForm = $this->createForm(CommentType::class, $comment);
         $commentForm->handleRequest($request);
 
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $this->entityManager->flush();
 
-            // Renvoyer l'intégralité du commentaire mis à jour avec le HTML
             $updatedCommentHtml = $this->renderView('site/_comment_item.html.twig', [
                 'comment' => $comment,
                 'recipe' => $comment->getRecipe(),
@@ -272,15 +247,12 @@ class SiteController extends AbstractController
             ]);
         }
 
-        // Retourner les erreurs s'il y a des erreurs de validation
-        return new JsonResponse([
-            'error' => 'Données invalides.',
-        ], 400);
+        return new JsonResponse(['error' => 'Données invalides.'], 400);
     }
+
     #[Route('/comment/{id}/delete', name: 'comment_delete', methods: ['POST'])]
-    public function deleteComment(Request $request, Comment $comment): Response
+    public function deleteComment(Comment $comment): Response
     {
-        // Vérification si l'utilisateur est bien le propriétaire du commentaire
         if ($comment->getAuthor() !== $this->getUser()->getProfile()) {
             throw new AccessDeniedException('Vous ne pouvez pas supprimer ce commentaire.');
         }
@@ -292,30 +264,45 @@ class SiteController extends AbstractController
 
         return $this->redirectToRoute('recipe_show_public', ['id' => $comment->getRecipe()->getId()]);
     }
+
     /**
      * Envoie un email de notification à l'auteur de la recette pour un nouveau commentaire.
      */
-    private function sendNewCommentNotification(MailerInterface $mailer, Recipe $recipe)
+    private function sendNewCommentNotification(MailerInterface $mailer, Recipe $recipe): void
     {
-        // Vérifier si l'auteur de la recette a un email valide
         $author = $recipe->getProfile();
         if (!$author || !$author->getIdUser()->getEmail()) {
             return;
         }
 
-        // Créer l'email de notification
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@monsite.com', 'Les Champignons de La Rhonelle'))
             ->to(new Address($author->getIdUser()->getEmail(), $author->getFirstname()))
             ->subject('Nouveau commentaire sur votre recette')
-            ->htmlTemplate('emails/new_comment_notification.html.twig') // Template d'email
+            ->htmlTemplate('emails/new_comment_notification.html.twig')
             ->context([
                 'recipe' => $recipe,
                 'author' => $author,
             ]);
 
-        // Envoyer l'email
         $mailer->send($email);
     }
 
+    /**
+     * Calcule la note moyenne d'une recette.
+     */
+    private function calculateAverageRating(Recipe $recipe): array
+    {
+        $ratings = $this->ratingRepository->findBy(['recipe' => $recipe]);
+        $ratingCount = count($ratings);
+
+        if ($ratingCount > 0) {
+            $totalScore = array_sum(array_map(fn($r) => $r->getScore(), $ratings));
+            $averageRating = round($totalScore / $ratingCount * 2) / 2;
+        } else {
+            $averageRating = null;
+        }
+
+        return ['averageRating' => $averageRating, 'ratingCount' => $ratingCount];
+    }
 }
