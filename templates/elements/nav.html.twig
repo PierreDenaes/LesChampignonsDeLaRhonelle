@@ -22,7 +22,6 @@
 						<i class="fa-solid fa-seedling"></i>
 						Nos espèces
 					</a>
-
 				</li>
 				<li class="nav-item">
 					<a class="nav-link fs-4 hover-underline-animation" href="{{ path('recipe_all') }}">
@@ -33,31 +32,49 @@
 				<li class="nav-item">
 					<a class="nav-link fs-4 hover-underline-animation" href="#">
 						<i class="fas fa-info-circle"></i>
-						À propos
+						À propos / Contact
 					</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link fs-4 hover-underline-animation" href="#">
-						<i class="fas fa-envelope"></i>
-						Contact
-					</a>
-				</li>
+
 				{% if app.user %}
-					<li class="nav-item">
-						<a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_profile') }}">
+					<!-- Menu pour Desktop avec Dropdown -->
+					<li class="nav-item dropdown d-none d-lg-block">
+						<a class="nav-link fs-4 hover-underline-animation dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="fas fa-user"></i>
 							Profil
 						</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li>
+								<a class="dropdown-item" href="{{ path('app_profile') }}">Mon profil</a>
+							</li>
+							{% if is_granted('ROLE_ADMIN') %}
+								<li>
+									<a class="dropdown-item" href="{{ path('admin') }}">Administration</a>
+								</li>
+							{% endif %}
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+							</li>
+						</ul>
+					</li>
+
+					<!-- Menu pour tablettes et smartphones sans Dropdown -->
+					<li class="nav-item d-lg-none">
+						<a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_profile') }}">
+							<i class="fas fa-user"></i>
+							Mon profil
+						</a>
 					</li>
 					{% if is_granted('ROLE_ADMIN') %}
-						<li class="nav-item">
+						<li class="nav-item d-lg-none">
 							<a class="nav-link fs-4 hover-underline-animation" href="{{ path('admin') }}">
 								<i class="fa-solid fa-screwdriver-wrench"></i>
 								Administration
 							</a>
 						</li>
 					{% endif %}
-					<li class="nav-item">
+					<li class="nav-item d-lg-none">
 						<a class="nav-link fs-4 hover-underline-animation" href="{{ path('app_logout') }}">
 							<i class="fas fa-sign-out-alt"></i>
 							Déconnexion
