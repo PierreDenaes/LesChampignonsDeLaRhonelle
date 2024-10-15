@@ -20,6 +20,17 @@ window.addEventListener('scroll', () => {
     }
 });
 document.addEventListener('DOMContentLoaded', function() {
+    // Sélectionner tous les éléments avec la classe "page-link"
+    let pageLinks = document.querySelectorAll('.page-link');
+
+    // Parcourir les liens et modifier leur texte si nécessaire
+    pageLinks.forEach(function(link) {
+        if (link.textContent.includes('Previous')) {
+            link.textContent = 'Précédent';
+        } else if (link.textContent.includes('Next')) {
+            link.textContent = 'Suivant';
+        }
+    });
     let notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
     let notificationContainer = document.getElementById('notificationModal').querySelector('.modal-body');
     

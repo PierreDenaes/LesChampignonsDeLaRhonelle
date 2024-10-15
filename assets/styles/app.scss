@@ -121,6 +121,10 @@ p {
         margin-top: 0; // Éviter le décalage lors de l'affichage
     }
 }
+.pagination {
+    --bs-pagination-active-bg: #14274E;
+    --bs-pagination-active-border-color: #14274E;
+}
 
 // **Footer Styles**
 footer {
