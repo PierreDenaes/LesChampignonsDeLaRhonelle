@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container-fluid bg-login">
         <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4 p-4 shadow bg-light rounded mt-5 mb-5">
+            <div class="col-md-6 col-lg-4 p-4 shadow bg-light rounded my-5">
                 {% for flash_error in app.flashes('verify_email_error') %}
                     <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
                 {% endfor %}

@@ -1,9 +1,100 @@
-<h1>Hi!</h1>
-
-<p>To reset your password, please visit the following link</p>
-
-<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
-
-<p>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
-
-<p>Cheers!</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        p {
+            color: #000 !important;
+        }
+        .email-container {
+            background-color: #ffffff;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+        .email-header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .email-header img {
+            width: 120px;
+            height: auto;
+        }
+        .email-body {
+            padding: 10px 20px;
+            text-align: left;
+        }
+        .email-body h1 {
+            color: #2c3e50;
+        }
+        .email-body p {
+            line-height: 1.6;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #14274E;
+            color: #DDB65B !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+        .social-icons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .social-icons img {
+            width: 32px;
+            height: 32px;
+            margin: 0 10px;
+        }
+        @media(max-width: 600px) {
+            .email-container {
+                padding: 10px;
+            }
+            .cta-button {
+                width: 80%;
+                text-align: center;
+                margin: auto;
+            }
+            .email-body {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <img src="https://i.ibb.co/Fq0RhLT/logo-100.png" alt="Logo Les Champignons de La Rhonelle"/>
+        </div>
+        <div class="email-body">
+            <h1>Réinitialisation de votre mot de passe</h1>
+            <p>Bonjour,</p>
+            <p>Pour réinitialiser votre mot de passe, veuillez cliquer sur le lien ci-dessous :</p>
+            <a href="{{ url('app_reset_password', {token: resetToken.token}) }}" class="cta-button">Réinitialiser mon mot de passe</a>
+            <p>Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+            <p>À bientôt,</p>
+            <p>L'équipe des Champignons de La Rhonelle</p>
+        </div>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/p/Les-Champignons-de-La-Rh%C3%B4nelle-100087553144107/"><img src="https://img.icons8.com/?size=100&id=8818&format=png&color=14274E" alt="Facebook"/></a>
+            <a href="tel:+33"><img src="https://img.icons8.com/?size=100&id=16733&format=png&color=14274E" alt="Whatsapp"/></a>
+            <a href="https://www.instagram.com/les.champignons.de.la.rhonelle/"><img src="https://img.icons8.com/?size=100&id=8831&format=png&color=14274E" alt="Instagram"/></a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Les Champignons de La Rhonelle. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>
