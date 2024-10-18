@@ -4,10 +4,44 @@
 {% endblock %}
 
 {% block body %}
+	<div class="container-fluid px-3 px-md-5 text-center divider-partenaire species">
+
+		<h1 class="display-4 fw-semibold pt-5 text-blue">
+			Découvrir
+			<span class="bg-text ps-2 pe-5 shadow-sm">Nos Espèces</span>
+		</h1>
+		<div class="row mb-5">
+			<div class="col-6 text-center p-3 p-md-5">
+				<a href="#pleurote" class="d-block px-md-5">
+					<picture>
+						<source srcset="{{ asset('images/elements/pleurote-badge-150.png') }}" media="(max-width: 576px)" width="150" height="150">
+						<source srcset="{{ asset('images/elements/pleurote-badge-300.png') }}" media="(min-width: 577px) and (max-width: 992px)" width="300" height="300">
+						<source srcset="{{ asset('images/elements/pleurote-badge-600.png') }}" media="(min-width: 993px)" width="600" height="600">
+						<img class="mushroom-shadow" src="{{ asset('images/elements/pleurote-badge-600.png') }}" alt="Pleurote Bio Les Champignons de la Rhonelle" width="600" height="600">
+					</picture>
+                    <h2 class="fw-bold my-3 text-blue">La <span class="ps-2 pe-3 bg-text shadow-sm">Pleurote</span>
+					</h2>
+				</a>
+			</div>
+			<div class="col-6 text-center p-3 p-md-5">
+				<a href="#shiitake" class="d-block px-md-5">
+					<picture>
+						<source srcset="{{ asset('images/elements/shiitake-badge-150.png') }}" media="(max-width: 576px)" width="150" height="150">
+						<source srcset="{{ asset('images/elements/shiitake-badge-300.png') }}" media="(min-width: 577px) and (max-width: 992px)" width="300" height="300">
+						<source srcset="{{ asset('images/elements/shiitake-badge-600.png') }}" media="(min-width: 993px)" width="600" height="600">
+						<img class="mushroom-shadow"  src="{{ asset('images/elements/shiitake-badge-600.png') }}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="600" height="600">
+					</picture>
+                    <h2 class="fw-bold my-3 text-dark">Le <span class="ps-2 pe-3 bg-text shadow-sm">Shiitake</span>
+					</h2>
+				</a>
+			</div>
+		</div>
+
+	</div>
 	<div class="container-fluid p-3 p-md-5">
-		<div class="card mb-4 shadow-sm">
+		<div class="card mb-4 shadow-sm" id="pleurote">
 			<div class="text-center px-3 px-md-5 pt-3 pt-md-5 pb-md-0">
-				<h3 class="fw-bold my-3">La<span class="bg-text">
+				<h3 class="fw-bold my-3">La <span class="bg-text shadow-sm ps-1 pe-3">
 						Pleurote</span>
 					🍄‍🟫 (Pleurotus)</h3>
 				<div class="divider text-center">
@@ -51,9 +85,9 @@
 			</div>
 		</div>
 
-		<div class="card mb-4 shadow-sm ">
+		<div class="card mb-4 shadow-sm" id="shiitake">
 			<div class=" text-center px-3 px-md-5 pt-3 pt-md-5 pb-md-0">
-				<h3 class="fw-bold my-3">Le<span class="bg-text">
+				<h3 class="fw-bold my-3">Le <span class="bg-text shadow-sm ps-1 pe-3">
 						Shiitake</span>
 					🍄‍🟫 (Lentinula edodes)</h3>
 				<div class="divider text-center">
@@ -82,20 +116,20 @@
 						<p>Le Shiitake est également reconnu pour ses propriétés thérapeutiques. Considéré comme un “superaliment”, il est riche en vitamines B, en cuivre et en polysaccharides, qui stimulent le système immunitaire. De plus, des recherches montrent que les composés actifs du Shiitake peuvent contribuer à la réduction du cholestérol et à l’amélioration de la santé cardiaque. Le Shiitake est également une source importante d’antioxydants, ce qui en fait un choix idéal pour une alimentation équilibrée.</p>
 					</div>
 					<div class="col-md-6 p-3 p-md-5 text-center order-1 order-md-2">
-						
-							<picture id="mainImageShiitake">
-								<source srcset="{{ asset('images/elements/shiitake-1-300.webp') }}" media="(max-width: 576px)" width="300" height="300">
-								<source srcset="{{ asset('images/elements/shiitake-1-600.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="600" height="600">
-								<source srcset="{{ asset('images/elements/shiitake-1-900.webp') }}" media="(min-width: 993px)" width="900" height="900">
-								<img class="rounded-4 shadow-sm" src="{{ asset('images/elements/shiitake-1-900.webp') }}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="900" height="900">
-							</picture>
-							<div class="gallery-thumbnails mt-3 d-flex flex-wrap justify-content-between">
-								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-1-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
-								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-2-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
-								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-3-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
-								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-4-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
-							</div>
-						
+
+						<picture id="mainImageShiitake">
+							<source srcset="{{ asset('images/elements/shiitake-1-300.webp') }}" media="(max-width: 576px)" width="300" height="300">
+							<source srcset="{{ asset('images/elements/shiitake-1-600.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="600" height="600">
+							<source srcset="{{ asset('images/elements/shiitake-1-900.webp') }}" media="(min-width: 993px)" width="900" height="900">
+							<img class="rounded-4 shadow-sm" src="{{ asset('images/elements/shiitake-1-900.webp') }}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="900" height="900">
+						</picture>
+						<div class="gallery-thumbnails mt-3 d-flex flex-wrap justify-content-evenly">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-1-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-2-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-3-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-4-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+						</div>
+
 					</div>
 				</div>
 			</div>

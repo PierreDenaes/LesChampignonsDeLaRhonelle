@@ -5,12 +5,12 @@
 
 {% block body %}
 	<main>
-		<section class="bg-section">
+		<section class="bg-section pb-5 pt-3">
 			<div class="row gx-0">
 				<div class="col-12 col-lg-6 qui">
-					<h2 class="fw-bold text-blue mb-3">Qui sommes-nous ?</h2>
+					<h1 class="fw-bold text-blue mb-4 display-2">Qui sommes-nous ?</h1>
 					<p class="qui-p">Nous avons décidé de tout plaquer pour suivre notre voix intérieure et nous consacrer à la culture de champignons bio. Après avoir démissionné de notre travail de fonctionnaires territoriaux, nous nous sommes formés et avons fait des tests dans notre cave avant de nous lancer dans l'aventure. Nous avons saisi l'opportunité d'acquérir du matériel lors d'une vente aux enchères et cultivons désormais des pleurotes et des shiitakes dans deux conteneurs maritimes. C'est une belle histoire de reconversion pour nous, qui avons pris le risque de changer de vie pour nous consacrer à notre passion pour la nature et le vivant.  Notre choix de la culture de champignons bio nous permet de travailler ensemble ...</p>
-					<div class="text-end qui-b">
+					<div class="text-end qui-b mt-4">
 						<a href="#" class="btn btn-blue text-light fw-bold fs-6">En savoir plus</a>
 					</div>
 				</div>
@@ -57,7 +57,7 @@
 								<img src="{{ asset ('images/elements/divider.png')}}" alt="diviseur champignon" width="487" height="82">
 							</picture>
 						</div>
-						<a href="#" class="btn btn-blue text-light fw-bold fs-6 mt-2">En savoir plus</a>
+						<a href="{{ path('our_species')}}/#pleurote" class="btn btn-blue text-light fw-bold fs-6 mt-2">En savoir plus</a>
 					</div>
 				</div>
 			</div>
@@ -80,7 +80,7 @@
 								<img src="{{ asset ('images/elements/divider.png')}}" alt="diviseur champignon" width="487" height="82">
 							</picture>
 						</div>
-						<a href="#" class="btn btn-blue text-light fw-bold fs-6 mt-2">En savoir plus</a>
+						<a href="{{ path('our_species')}}/#shiitake" class="btn btn-blue text-light fw-bold fs-6 mt-2">En savoir plus</a>
 					</div>
 				</div>
 				<div class="col-md-12 col-lg-6 order-1 order-md-2">
@@ -161,14 +161,14 @@
 			</picture>
 		</div>
 
-		<section class="section-partenaire">
+		<section class="section-partenaire gnome">
 			<h2 class="fw-bold text-blue fs-1 text-center mb-5">No<span class="bg-text">s Partenaires</span></h2>
 
 			<p class="text-center mb-5">
 				Nos partenaires jouent un rôle essentiel dans notre chaîne de valeur. Qu'ils achètent, cuisinent ou distribuent nos champignons, ils contribuent à partager notre passion pour des produits frais et locaux. Découvrez-les ci-dessous !
 			</p>
 
-			<div class="row justify-content-center">
+			<div class="row justify-content-center px-5">
 				{% for sponsor in sponsors %}
 					<div class="col-6 col-md-4 col-lg-2 p-3 d-flex align-items-center justify-content-center">
 						<a target="_blank" href="{{ sponsor.siteWeb }}" class="partner-link d-block text-center">
@@ -181,14 +181,15 @@
 					</div>
 				{% endfor %}
 			</div>
-		</section>
-	</main>
-	<div class="divider divider-partenaire text-center py-3">
+		<div class="divider divider-partenaire text-center pt-3 w-50 m-auto">
 		<picture>
 			<source srcset="{{ asset ('images/elements/160/divider-200.webp')}}" media="(max-width: 576px)" width="200" height="34">
 			<source srcset="{{ asset ('images/elements/320/divider-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="67">
 			<img src="{{ asset ('images/elements/divider.png')}}" alt="diviseur champignon" width="487" height="82">
 		</picture>
 	</div>
+		</section>
+	</main>
+	
 	
 {% endblock %}
