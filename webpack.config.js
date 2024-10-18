@@ -24,6 +24,7 @@ Encore
     .addEntry('recipe', './assets/js/recipe.js')
     .addEntry('profil', './assets/js/profil.js')
     .addEntry('recipe_show', './assets/js/recipe_show.js')
+    .addEntry('our_recipes', './assets/js/our_recipes.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
