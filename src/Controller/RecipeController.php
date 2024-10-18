@@ -241,7 +241,7 @@ class RecipeController extends AbstractController
 
             return new JsonResponse([
                 'success' => true,
-                'message' => '🎉 Félicitations ! Votre recette a été modifiée avec succès et sera modérée dans un délai de 48 heures maximum. Merci beaucoup pour votre précieuse contribution ! 🎉',
+                'message' => '🎉 Félicitations ! Votre recette a été modifiée avec succès. Merci beaucoup pour votre précieuse contribution ! 🎉',
                 'data' => json_decode($responseData, true)
             ], JsonResponse::HTTP_OK);
         }

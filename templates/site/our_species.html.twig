@@ -1,8 +1,105 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nos espèces{% endblock %}
-
-{% block body %}
- 
+{% block title %}Nos espèces
 {% endblock %}
 
+{% block body %}
+	<div class="container-fluid p-3 p-md-5">
+		<div class="card mb-4 shadow-sm">
+			<div class="text-center px-3 px-md-5 pt-3 pt-md-5 pb-md-0">
+				<h3 class="fw-bold my-3">La<span class="bg-text">
+						Pleurote</span>
+					🍄‍🟫 (Pleurotus)</h3>
+				<div class="divider text-center">
+					<picture>
+						<source srcset="{{ asset('images/elements/160/divider-200.webp') }}" media="(max-width: 576px)" width="200" height="34">
+						<source srcset="{{ asset('images/elements/320/divider-400.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="67">
+						<img src="{{ asset('images/elements/divider.png') }}" alt="diviseur champignon" width="487" height="82">
+					</picture>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6 p-3 p-md-5 text-center">
+						<picture id="mainImage">
+							<source srcset="{{ asset('images/elements/pleurote-1-300.webp') }}" media="(max-width: 576px)" width="300" height="300">
+							<source srcset="{{ asset('images/elements/pleurote-1-600.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="600" height="600">
+							<source srcset="{{ asset('images/elements/pleurote-1-900.webp') }}" media="(min-width: 993px)" width="900" height="900">
+							<img class="rounded-4 shadow-sm" src="{{ asset('images/elements/pleurote-1-900.webp') }}" alt="Pleurote Bio Les Champignons de la Rhonelle" width="900" height="900">
+						</picture>
+						<div class="gallery-thumbnails mt-4 d-flex flex-wrap justify-content-evenly w-100">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/pleurote-1-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage('pleurote-1')">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/pleurote-2-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage('pleurote-2')">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/pleurote-3-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage('pleurote-3')">
+							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/pleurote-4-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage('pleurote-4')">
+						</div>
+					</div>
+					<div class="col-md-6 p-3 p-md-5">
+						<p>
+							<strong>🌍 Origine :</strong>
+							Zones tempérées</p>
+						<p>
+							<strong>🍽️ Description :</strong>
+							Savoureuse et délicate, la Pleurote est l’un des champignons les plus cultivés au monde. Appréciée pour sa texture charnue et son goût boisé, elle est riche en protéines, vitamines B, zinc et potassium, tout en étant faible en calories. En cuisine, elle est polyvalente et peut être sautée, grillée, ou utilisée dans des soupes.</p>
+						<p>
+							<strong>💪 Bienfaits :</strong>
+							Antioxydante, renforce le système immunitaire, faible en calories.</p>
+						<p>La Pleurote est un champignon savoureux qui fait partie des champignons les plus cultivés au monde. Elle est particulièrement prisée en cuisine pour sa texture délicate et charnue, et son goût subtil aux notes légèrement boisées et noisettées. Ses qualités nutritionnelles sont remarquables : riche en protéines, vitamines B (notamment B2 et B3), minéraux essentiels comme le zinc et le potassium, elle est aussi faible en calories. La culture de la Pleurote est assez accessible, puisqu’elle se développe souvent sur du bois mort, des souches ou des substrats tels que la paille ou le carton. En plus de son goût unique, elle est reconnue pour ses bienfaits sur la santé, notamment ses propriétés antioxydantes et ses effets bénéfiques sur le système immunitaire.</p>
+						<p>La Pleurote est aussi un ingrédient versatile en cuisine : que ce soit sautée, grillée, en sauce ou dans des soupes, elle apporte une touche gourmande à tout plat. Certains chefs aiment même l’utiliser pour remplacer la viande dans des plats végétariens, grâce à sa texture riche et consistante.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card mb-4 shadow-sm ">
+			<div class=" text-center px-3 px-md-5 pt-3 pt-md-5 pb-md-0">
+				<h3 class="fw-bold my-3">Le<span class="bg-text">
+						Shiitake</span>
+					🍄‍🟫 (Lentinula edodes)</h3>
+				<div class="divider text-center">
+					<picture>
+						<source srcset="{{ asset ('images/elements/160/divider-200.webp')}}" media="(max-width: 576px)" width="200" height="34">
+						<source srcset="{{ asset ('images/elements/320/divider-400.webp')}}" media="(min-width: 577px) and (max-width: 992px)" width="400" height="67">
+						<img src="{{ asset ('images/elements/divider.png')}}" alt="diviseur champignon" width="487" height="82">
+					</picture>
+
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="row">
+
+					<div class="col-md-6 p-3 p-md-5 order-2 order-md-1">
+						<p>
+							<strong>🌍 Origine :</strong>
+							Asie de l'Est</p>
+						<p>
+							<strong>🍽️ Description :</strong>
+							Le Shiitake est un champignon très prisé dans la cuisine asiatique, apprécié pour sa texture ferme et sa saveur umami riche. Il est souvent utilisé dans les soupes, sautés, et sauces. Il est cultivé commercialement mais pousse naturellement sur des troncs d’arbres morts.</p>
+						<p>
+							<strong>💪 Bienfaits :</strong>
+							Riche en vitamines B, cuivre, et antioxydants, il renforce le système immunitaire et contribue à la santé cardiaque.</p>
+						<p>Le Shiitake est l’un des champignons les plus emblématiques de la cuisine asiatique. En plus d’être un ingrédient délicieux, il est également réputé pour ses bienfaits médicinaux. Sa texture est ferme et charnue, ce qui le rend particulièrement adapté aux plats mijotés, aux soupes ou aux sautés. En cuisine, il développe une saveur umami intense qui enrichit de nombreux plats, qu’ils soient végétariens ou à base de viande. Le Shiitake se marie bien avec des sauces à base de soja, d’ail et de gingembre, et il est souvent intégré dans les bouillons et les plats de nouilles.</p>
+						<p>Le Shiitake est également reconnu pour ses propriétés thérapeutiques. Considéré comme un “superaliment”, il est riche en vitamines B, en cuivre et en polysaccharides, qui stimulent le système immunitaire. De plus, des recherches montrent que les composés actifs du Shiitake peuvent contribuer à la réduction du cholestérol et à l’amélioration de la santé cardiaque. Le Shiitake est également une source importante d’antioxydants, ce qui en fait un choix idéal pour une alimentation équilibrée.</p>
+					</div>
+					<div class="col-md-6 p-3 p-md-5 text-center order-1 order-md-2">
+						
+							<picture id="mainImageShiitake">
+								<source srcset="{{ asset('images/elements/shiitake-1-300.webp') }}" media="(max-width: 576px)" width="300" height="300">
+								<source srcset="{{ asset('images/elements/shiitake-1-600.webp') }}" media="(min-width: 577px) and (max-width: 992px)" width="600" height="600">
+								<source srcset="{{ asset('images/elements/shiitake-1-900.webp') }}" media="(min-width: 993px)" width="900" height="900">
+								<img class="rounded-4 shadow-sm" src="{{ asset('images/elements/shiitake-1-900.webp') }}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="900" height="900">
+							</picture>
+							<div class="gallery-thumbnails mt-3 d-flex flex-wrap justify-content-between">
+								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-1-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-2-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-3-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+								<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-4-thumbnail.webp') }}" width="100" height="100" onclick="changeMainImage(this.src)">
+							</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
