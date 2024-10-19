@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Recipe;
 use App\Entity\Gallery;
 use App\Entity\Sponsor;
+use App\Entity\DistributionPoint;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -53,6 +54,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Administration');
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Site Web');
+        yield MenuItem::linkToCrud('Points de distribution', 'fa-solid fa-map-marker-alt', DistributionPoint::class);
         yield MenuItem::linkToCrud('Utillisateurs', 'fa-solid fa-user', User::class);
         yield MenuItem::linkToCrud('Galerie Photo', 'fa-solid fa-images', Gallery::class);
         yield MenuItem::linkToCrud('Nos sponsors', 'fa-solid fa-handshake', Sponsor::class);

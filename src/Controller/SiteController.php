@@ -6,19 +6,20 @@ use App\Entity\Rating;
 use App\Entity\Recipe;
 use App\Entity\Comment;
 use App\Form\CommentType;
-use App\Repository\GalleryRepository;
+use Pagerfanta\Pagerfanta;
+use App\Service\RatingService;
 use App\Service\CommentService;
 use App\Repository\RecipeRepository;
+use App\Repository\GalleryRepository;
 use App\Repository\SponsorRepository;
-use App\Service\RatingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Pagerfanta;
-use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repository\DistributionPointRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Pagerfanta\Exception\OutOfRangeCurrentPageException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -62,6 +63,32 @@ class SiteController extends AbstractController
     {
         
         return $this->render('site/our_species.html.twig');
+    }
+    #[Route('/about', name: 'about_us')]
+    public function about(): Response
+    {
+        
+        return $this->render('site/about_us.html.twig');
+    }
+    #[Route('/api/distribution-points', name: 'api_distribution_points')]
+    public function getDistributionPoints(DistributionPointRepository $distributionPointRepository): JsonResponse
+    {
+        // Récupérer tous les points de distribution
+        $distributionPoints = $distributionPointRepository->findAll();
+
+        // Créer un tableau JSON à partir des entités
+        $data = [];
+        foreach ($distributionPoints as $point) {
+            $data[] = [
+                'id' => $point->getId(),
+                'name' => $point->getName(),
+                'address' => $point->getAddress(),
+                'description' => $point->getDescription(),
+            ];
+        }
+
+        // Retourner les données en format JSON
+        return new JsonResponse($data);
     }
     #[Route('/api/gallery', name: 'api_gallery')]
     public function getGalleryImages(GalleryRepository $galleryRepository): JsonResponse

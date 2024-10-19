@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À Propos | Contact{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	
+	
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<!-- Script de Google Maps avec chargement asynchrone -->
+<script type="text/javascript">
+    let map;
+
+    // Initialisation de la carte
+    async function initMap() {
+        // Charger la bibliothèque de repères avancés
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+        // Créer la carte centrée sur Paris (ou tout autre emplacement par défaut)
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 48.8566, lng: 2.3522 }, // Coordonnées de Paris
+            zoom: 12,
+            mapId: 'DEMO_MAP_ID' // Utilisation d'un Map ID (tu peux créer le tien dans la console Google Maps)
+        });
+
+        // Récupérer les points de distribution via l'API
+        fetch('/api/distribution-points')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Points de distribution récupérés :', data);
+
+                // Géocoder chaque adresse et ajouter un repère
+                data.forEach(point => {
+                    console.log('Adresse à géocoder :', point.address);
+                    geocodeAddress(point, AdvancedMarkerElement); // Passer AdvancedMarkerElement
+                });
+            })
+            .catch(error => console.error('Erreur lors de la récupération des points de distribution :', error));
+    }
+
+    // Fonction pour géocoder une adresse et placer un repère sur la carte
+    function geocodeAddress(point, AdvancedMarkerElement) {
+        const geocoder = new google.maps.Geocoder();
+        
+        // Géocoder l'adresse
+        geocoder.geocode({ address: point.address }, function(results, status) {
+            if (status === 'OK') {
+                console.log('Résultat du géocodage :', results);
+
+                // Ajouter un repère avancé
+                const marker = new AdvancedMarkerElement({
+                    map: map,
+                    position: results[0].geometry.location,
+                    title: point.name
+                });
+
+                // Créer une fenêtre d'informations pour le repère
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<h5>${point.name}</h5><p>${point.description}</p><p>${point.address}</p>`
+                });
+
+                // Ouvrir la fenêtre d'informations au clic sur le repère
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+            } else {
+                console.error('Erreur de géocodage pour l\'adresse : ' + point.address + ' - Statut : ' + status);
+            }
+        });
+    }
+
+    // Appel de la fonction d'initialisation lors du chargement de la page
+    window.initMap = initMap;
+</script>
+
+<!-- Inclure l'API Google Maps avec les repères avancés -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb1f0QsWEugwhgjktEpCCizfy2SLHwyjI&callback=initMap&v=weekly&libraries=marker"
+  async defer
+></script>
+{% endblock %}
+{% block body %}
+
+<div id="map" style="height: 500px; width: 100%;"></div>
+{% endblock %}
