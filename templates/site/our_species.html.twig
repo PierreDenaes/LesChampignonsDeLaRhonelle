@@ -3,12 +3,13 @@
 {% block title %}Nos espèces
 {% endblock %}
 {% block stylesheets %}
-{{ parent() }}
-{{ encore_entry_link_tags('our_recipes') }}
+	{{ parent() }}
+	{{ encore_entry_link_tags('our_species') }}
+	
 {% endblock %}
 {% block javascripts %}
-{{ parent() }}
-{{ encore_entry_script_tags('our_recipes') }}
+	{{ parent() }}
+	{{ encore_entry_script_tags('our_species') }}
 {% endblock %}
 {% block body %}
 	<div class="container-fluid px-3 px-md-5 text-center divider-partenaire species">
@@ -26,7 +27,8 @@
 						<source srcset="{{ asset('images/elements/pleurote-badge-600.png') }}" media="(min-width: 993px)" width="600" height="600">
 						<img class="mushroom-shadow" src="{{ asset('images/elements/pleurote-badge-600.png') }}" alt="Pleurote Bio Les Champignons de la Rhonelle" width="600" height="600">
 					</picture>
-                    <h2 class="fw-bold my-3 text-blue">La <span class="ps-2 pe-3 bg-text shadow-sm">Pleurote</span>
+					<h2 class="fw-bold my-3 text-blue">La
+						<span class="ps-2 pe-3 bg-text shadow-sm">Pleurote</span>
 					</h2>
 				</a>
 			</div>
@@ -36,19 +38,21 @@
 						<source srcset="{{ asset('images/elements/shiitake-badge-150.png') }}" media="(max-width: 576px)" width="150" height="150">
 						<source srcset="{{ asset('images/elements/shiitake-badge-300.png') }}" media="(min-width: 577px) and (max-width: 992px)" width="300" height="300">
 						<source srcset="{{ asset('images/elements/shiitake-badge-600.png') }}" media="(min-width: 993px)" width="600" height="600">
-						<img class="mushroom-shadow"  src="{{ asset('images/elements/shiitake-badge-600.png') }}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="600" height="600">
+						<img class="mushroom-shadow" src="{{ asset('images/elements/shiitake-badge-600.png') }}" alt="Shiitake Bio Les Champignons de la Rhonelle" width="600" height="600">
 					</picture>
-                    <h2 class="fw-bold my-3 text-dark">Le <span class="ps-2 pe-3 bg-text shadow-sm">Shiitake</span>
+					<h2 class="fw-bold my-3 text-dark">Le
+						<span class="ps-2 pe-3 bg-text shadow-sm">Shiitake</span>
 					</h2>
 				</a>
 			</div>
 		</div>
 
 	</div>
-	<div class="container-fluid p-3 p-md-5">
+	<div class="container p-3 p-md-5">
 		<div class="card mb-4 shadow-sm" id="pleurote">
 			<div class="text-center px-3 px-md-5 pt-3 pt-md-5 pb-md-0">
-				<h3 class="fw-bold my-3">La <span class="bg-text shadow-sm ps-1 pe-3">
+				<h3 class="fw-bold my-3 fs-1 text-blue">La
+					<span class="bg-text shadow-sm ps-1 pe-3">
 						Pleurote</span>
 					🍄‍🟫 (Pleurotus)</h3>
 				<div class="divider text-center">
@@ -94,7 +98,8 @@
 
 		<div class="card mb-4 shadow-sm" id="shiitake">
 			<div class=" text-center px-3 px-md-5 pt-3 pt-md-5 pb-md-0">
-				<h3 class="fw-bold my-3">Le <span class="bg-text shadow-sm ps-1 pe-3">
+				<h3 class="fw-bold my-3 fs-1 text-blue">Le
+					<span class="bg-text shadow-sm ps-1 pe-3">
 						Shiitake</span>
 					🍄‍🟫 (Lentinula edodes)</h3>
 				<div class="divider text-center">
@@ -137,6 +142,56 @@
 							<img class="thumbnail rounded-4 shadow-sm m-2" src="{{ asset('images/elements/shiitake-4-thumbnail.webp') }}" width="100" height="100" data-image="shiitake-4" data-type="shiitake">
 						</div>
 
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="container px-3 px-md-5 text-center">
+	<div class="text-center my-4">
+        <h4 class="fw-bold my-3 fs-1 text-blue">Découvrez les photos de
+					<span class="bg-text shadow-sm ps-1 pe-3">
+						nos Stars</span>
+					</h4>
+        <p class="my-5">Explorez nos différentes espèces de champignons et utilisez le système de filtrage pour trier les photos par catégories afin d'admirer chaque espèce dans son environnement naturel.</p>
+    </div>
+
+    <!-- Système de filtrage -->
+    <div class="filter-buttons text-center mb-5">
+        <button class="btn btn-blue filter-btn" data-filter="*">Toutes les catégories</button>
+        <button class="btn btn-secondary filter-btn" data-filter=".Pleurote">Pleurote</button>
+        <button class="btn btn-secondary filter-btn" data-filter=".Shiitake">Shiitake</button>
+        <button class="btn btn-secondary filter-btn" data-filter=".Mixte">Mixte</button>
+    </div>
+		<div id="gallery" class="gallery-grid mb-5"></div>
+
+		<!-- Place to display the PhotoSwipe lightbox -->
+		<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="pswp__bg"></div>
+			<div class="pswp__scroll-wrap">
+				<div class="pswp__container">
+					<div class="pswp__item"></div>
+					<div class="pswp__item"></div>
+					<div class="pswp__item"></div>
+				</div>
+				<div class="pswp__ui pswp__ui--hidden">
+					<div class="pswp__top-bar">
+						<div class="pswp__counter"></div>
+						<button class="pswp__button pswp__button--close" title="Fermer (Esc)"></button>
+						<button class="pswp__button pswp__button--share" title="Partager"></button>
+						<button class="pswp__button pswp__button--fs" title="Plein écran"></button>
+						<button class="pswp__button pswp__button--zoom" title="Zoom"></button>
+						<div class="pswp__preloader">
+							<div class="pswp__preloader__icn">
+								<div class="pswp__preloader__cut">
+									<div class="pswp__preloader__donut"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="pswp__caption">
+						<div class="pswp__caption__center"></div>
 					</div>
 				</div>
 			</div>

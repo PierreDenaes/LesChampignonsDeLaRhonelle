@@ -6,6 +6,7 @@ use App\Entity\Rating;
 use App\Entity\Recipe;
 use App\Entity\Comment;
 use App\Form\CommentType;
+use App\Repository\GalleryRepository;
 use App\Service\CommentService;
 use App\Repository\RecipeRepository;
 use App\Repository\SponsorRepository;
@@ -59,7 +60,30 @@ class SiteController extends AbstractController
     #[Route('/species', name: 'our_species')]
     public function species(): Response
     {
+        
         return $this->render('site/our_species.html.twig');
+    }
+    #[Route('/api/gallery', name: 'api_gallery')]
+    public function getGalleryImages(GalleryRepository $galleryRepository): JsonResponse
+    {
+        $images = $galleryRepository->findAll();
+
+        // Créer un tableau JSON des images avec plusieurs formats
+        $data = [];
+        foreach ($images as $image) {
+            $data[] = [
+                'title' => $image->getTitle(),
+                'imagePaths' => [
+                    '160' => '/images/gallery/160/' . $image->getImageGalName(),
+                    '320' => '/images/gallery/320/' . $image->getImageGalName(),
+                    '640' => '/images/gallery/640/' . $image->getImageGalName(),
+                    '1200' => '/images/gallery/1200/' . $image->getImageGalName(),
+                ],
+                'category' => $image->getCategory(),
+            ];
+        }
+
+        return new JsonResponse($data);
     }
 
     #[Route('/recipes', name: 'recipe_all', methods: ['GET'])]

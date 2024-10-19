@@ -205,6 +205,8 @@ picture img {
     border-bottom: 5px solid map-get($theme-colors, "gold");
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
+    background-position: center top;
 
     h2 {
         font-size: 4rem;
