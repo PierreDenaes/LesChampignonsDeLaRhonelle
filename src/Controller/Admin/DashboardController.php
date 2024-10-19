@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Unit;
 use App\Entity\User;
 use App\Entity\Recipe;
+use App\Entity\Gallery;
 use App\Entity\Sponsor;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,8 +52,11 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::section('Administration');
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::section('Site Web');
         yield MenuItem::linkToCrud('Utillisateurs', 'fa-solid fa-user', User::class);
+        yield MenuItem::linkToCrud('Galerie Photo', 'fa-solid fa-images', Gallery::class);
         yield MenuItem::linkToCrud('Nos sponsors', 'fa-solid fa-handshake', Sponsor::class);
+        yield MenuItem::section('Gestion des Recettes');
         yield MenuItem::linkToCrud('Les recettes', 'fa-solid fa-blender', Recipe::class);
         yield MenuItem::linkToCrud('Les unités de mesure', 'fa-solid fa-ruler', Unit::class);
 

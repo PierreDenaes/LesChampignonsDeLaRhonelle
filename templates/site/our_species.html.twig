@@ -2,9 +2,13 @@
 
 {% block title %}Nos espèces
 {% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+{{ encore_entry_link_tags('our_recipes') }}
+{% endblock %}
 {% block javascripts %}
 {{ parent() }}
-            {{ encore_entry_script_tags('our_recipes') }}
+{{ encore_entry_script_tags('our_recipes') }}
 {% endblock %}
 {% block body %}
 	<div class="container-fluid px-3 px-md-5 text-center divider-partenaire species">
@@ -55,7 +59,7 @@
 					</picture>
 				</div>
 			</div>
-			<div class="card-body">
+			<div class="card-body nomesse">
 				<div class="row">
 					<div class="col-md-6 p-3 p-md-5 text-center">
 						<picture id="mainImage">
@@ -102,7 +106,7 @@
 
 				</div>
 			</div>
-			<div class="card-body">
+			<div class="card-body nome">
 				<div class="row">
 
 					<div class="col-md-6 p-3 p-md-5 order-2 order-md-1">

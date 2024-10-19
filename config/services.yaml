@@ -31,11 +31,18 @@ services:
     App\EventSubscriber\ProfileEventSubscriber:
         tags:
             - { name: doctrine.event_subscriber }
+    App\EventSubscriber\GalleryEventSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+            - { name: 'kernel.event_subscriber' }
 
     App\Service\AvatarService:
         arguments:
             $vichUploader: '@vich_uploader.property_mapping_factory'
     App\Service\RecipeService:
+        arguments:
+            $vichUploader: '@vich_uploader.property_mapping_factory'
+    App\Service\GalleryService:
         arguments:
             $vichUploader: '@vich_uploader.property_mapping_factory'
     App\Controller\RegistrationController:

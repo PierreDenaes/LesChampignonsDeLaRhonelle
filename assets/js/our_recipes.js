@@ -1,3 +1,4 @@
+import '../styles/site/our_recipes.scss';
 function changeMainImage(imageName, elementId) {
     const mainImage = document.querySelector(`#${elementId}`);
     const imgElement = mainImage.querySelector('img');
