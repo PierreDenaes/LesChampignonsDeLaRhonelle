@@ -68,7 +68,9 @@ class SiteController extends AbstractController
     public function about(): Response
     {
         
-        return $this->render('site/about_us.html.twig');
+        return $this->render('site/about_us.html.twig', [
+            'google_maps_api_key' => $_ENV['GOOGLE_MAPS_API_KEY'],
+        ]);
     }
     #[Route('/api/distribution-points', name: 'api_distribution_points')]
     public function getDistributionPoints(DistributionPointRepository $distributionPointRepository): JsonResponse
