@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de Confidentialité{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="text-center mb-4 display-4">Politique de <span class="bg-text shadow-sm ps-1 pe-3">Confidentialité</span></h1>
+
+            <h2 class="mt-4">1. Collecte des données personnelles</h2>
+            <p>Nous collectons les informations suivantes lorsque vous créez un compte utilisateur sur notre site :</p>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Nom</li>
+                <li class="list-group-item">Prénom</li>
+                <li class="list-group-item">Adresse e-mail</li>
+            </ul>
+            <p>À l'avenir, nous pourrions également collecter votre adresse postale et numéro de téléphone pour la gestion des ventes et des livraisons.</p>
+
+            <h2 class="mt-4">2. Utilisation des données personnelles</h2>
+            <p>Les données collectées sont utilisées pour :</p>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">La création et la gestion de votre compte utilisateur</li>
+                <li class="list-group-item">La communication concernant vos commandes et interactions avec notre site</li>
+            </ul>
+
+            <h2 class="mt-4">3. Stockage des données</h2>
+            <p>Vos données sont stockées sur une base de données MySQL sécurisée. Des sauvegardes automatiques de cette base de données sont effectuées et stockées chez notre prestataire OVH.</p>
+
+            <h2 class="mt-4">4. Droits de l'utilisateur</h2>
+            <p>Vous avez le droit de :</p>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Accéder à vos informations personnelles</li>
+                <li class="list-group-item">Modifier ou supprimer la totalité de vos informations personnelles via votre espace utilisateur</li>
+            </ul>
+
+            <h2 class="mt-4">5. Durée de conservation des données</h2>
+            <p>Vos données sont conservées aussi longtemps que vous possédez un compte utilisateur sur notre site. En cas de suppression de votre compte, toutes vos informations sont définitivement supprimées.</p>
+
+            <h2 class="mt-4">6. Cookies</h2>
+            <p>Nous utilisons des cookies uniquement pour faciliter votre connexion à votre compte utilisateur. Ces cookies peuvent être supprimés à tout moment depuis les paramètres de votre navigateur.</p>
+
+            <h2 class="mt-4">7. Contact</h2>
+            <p>Pour toute question ou demande relative à vos données personnelles, vous pouvez nous contacter à :</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>E-mail</strong> : <a href="mailto:admin@leschampignonsdelarhonelle.com" class="text-decoration-underline">admin@leschampignonsdelarhonelle.com</a></li>
+                <li class="list-group-item"><strong>Téléphone</strong> : 06 68 22 09 41</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

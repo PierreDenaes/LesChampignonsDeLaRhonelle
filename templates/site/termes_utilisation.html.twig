@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Termes d'Utilisation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="display-4 text-center mb-4">Termes d'<span class="bg-text shadow-sm ps-1 pe-3">Utilisation</span></h1>
+            <p class="lead">Bienvenue sur notre blog participatif de recettes, « Les Champignons de la Rhonelle ». En utilisant notre plateforme, vous acceptez les termes suivants :</p>
+
+            <h2 class="mt-4">1. Utilisation du Service</h2>
+            <p>Le site permet aux utilisateurs inscrits de publier des recettes, de partager des images, de commenter et d'interagir avec la communauté. L'inscription est nécessaire pour publier des recettes et commenter.</p>
+
+            <h2 class="mt-4">2. Responsabilité des Utilisateurs</h2>
+            <p>Vous êtes pleinement responsable du contenu que vous publiez sur notre plateforme. Cela inclut, mais ne se limite pas à :</p>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Les recettes que vous soumettez, y compris les descriptions, les instructions et les ingrédients.</li>
+                <li class="list-group-item">Les images que vous associez à vos recettes. Assurez-vous de posséder les droits sur les images utilisées.</li>
+                <li class="list-group-item">Les commentaires que vous publiez sur les recettes des autres utilisateurs.</li>
+            </ul>
+            <p>Vous vous engagez à ne pas publier de contenu :</p>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Illégal, diffamatoire ou offensant.</li>
+                <li class="list-group-item">Qui enfreint les droits de propriété intellectuelle d'autrui.</li>
+                <li class="list-group-item">Qui incite à la haine ou à la violence.</li>
+            </ul>
+
+            <h2 class="mt-4">3. Propriété des Recettes et des Images</h2>
+            <p>En publiant une recette et les images associées sur notre plateforme, vous certifiez que vous êtes le propriétaire du contenu ou que vous avez obtenu toutes les autorisations nécessaires pour le publier.</p>
+            <p>Vous conservez les droits de propriété sur vos recettes et images. Toutefois, en publiant sur notre site, vous accordez à « Les Champignons de la Rhonelle » une licence non exclusive pour utiliser, modifier, afficher et distribuer vos recettes et images dans le cadre de l'exploitation du site.</p>
+
+            <h2 class="mt-4">4. Engagement à la Civilité</h2>
+            <p>Nous encourageons un environnement respectueux et bienveillant. Vous vous engagez à interagir de manière civile avec les autres membres de la communauté et à respecter les opinions de chacun. Tout comportement injurieux ou discriminatoire peut entraîner des sanctions.</p>
+
+            <h2 class="mt-4">5. Modération et Suspension de Compte</h2>
+            <p>Nous nous réservons le droit de modérer les recettes et les commentaires publiés sur le site. En cas de non-respect des présentes conditions, nous nous réservons le droit de :</p>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">Modifier ou supprimer tout contenu inapproprié sans préavis.</li>
+                <li class="list-group-item">Suspendre temporairement ou définitivement le compte d'un utilisateur.</li>
+            </ul>
+
+            <h2 class="mt-4">6. Acceptation de la Politique de Confidentialité</h2>
+            <p>En utilisant le site, vous acceptez également notre <a href="{{ path('politique_confidentialite') }}" class="text-decoration-underline">Politique de Confidentialité</a>, qui explique comment vos données personnelles sont collectées, utilisées et protégées.</p>
+
+            <h2 class="mt-4">7. Modifications des Termes d'Utilisation</h2>
+            <p>Nous nous réservons le droit de modifier ces termes à tout moment. Les utilisateurs seront informés des modifications par email ou via une notification sur le site.</p>
+
+            <h2 class="mt-4">8. Contact</h2>
+            <p>Si vous avez des questions concernant ces termes, vous pouvez nous contacter à l'adresse suivante : <a href="mailto:admin@leschampignonsdelarhonelle.com" class="text-decoration-underline">admin@leschampignonsdelarhonelle.com</a>.</p>
+
+            <div class="text-center mt-5">
+                <a href="{{ path('app_home') }}" class="btn btn-blue">Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -64,6 +64,19 @@ class SiteController extends AbstractController
         
         return $this->render('site/our_species.html.twig');
     }
+
+    #[Route('/politique-de-confidentialite', name: 'politique_confidentialite')]
+    public function politiqueConfidentialite(): Response
+    {
+        return $this->render('site/politique_confidentialite.html.twig');
+    }
+
+    #[Route('/termes-utilisation', name: 'termes_utilisation')]
+    public function termesUtilisation(): Response
+    {
+        return $this->render('site/termes_utilisation.html.twig');
+    }
+    
     #[Route('/about', name: 'about_us')]
     public function about(): Response
     {
