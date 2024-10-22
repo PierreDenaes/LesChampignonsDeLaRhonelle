@@ -23,6 +23,8 @@ class RegistrationFormType extends AbstractType
             ->add('email')
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'label' => 'J\'accepte les <a href="{{ path(\'terms\') }}" target="_blank">conditions d\'utilisation</a>',
+                'label_html' => true, // Permet d'ajouter du HTML dans le label
                 'constraints' => [
                     new IsTrue([
                         'message' => 'Vous devez accepter les conditions d\'utilisation.',

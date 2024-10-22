@@ -13,7 +13,6 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        {% if profile is defined and profile.name is not empty %}
             {% include 'elements/profilnav.html.twig' %}
             <div class="col-md-9">
                 <ul class="nav nav-tabs">
@@ -52,16 +51,6 @@
                     </div>
                 </div>
             </div>
-        {% else %}
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5>Créer Profil</h5>
-                        {{ include('profile/profile_form.html.twig', {form: form}) }}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

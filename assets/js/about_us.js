@@ -97,7 +97,7 @@ function loadDistributionCards(data) {
             card.innerHTML = `
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title h3 bg-text fw-bold">${point.name}</h5>
+                        <h3 class="card-title h3 bg-text fw-bold">${point.name}</h3>
                         <p class="h6 fw-bold">Type: ${point.type || 'Non spécifié'}</p>
                         <p class="card-text">${point.description}</p>
                         <p><strong>Adresse:</strong> ${point.address}</p>

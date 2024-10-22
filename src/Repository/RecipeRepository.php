@@ -29,13 +29,12 @@ class RecipeRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    //    public function findOneBySomeField($value): ?Recipe
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findLatestRecipes(int $limit): array
+    {
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

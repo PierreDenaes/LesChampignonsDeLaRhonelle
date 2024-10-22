@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('profil') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('profil') }}
+{% endblock %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        {% if profile is null %}
+            <div class="col-md-9">
+                <h1 class="mb-4">Bienvenue {{ app.user.username }}</h1>
+                <p>Veuillez compléter votre profil pour continuer.</p>
+                {% include 'profile_form.html.twig' %}
+            </div>
+        {% else %}
+            {% include 'elements/profilnav.html.twig' %}
+            <div class="col-md-9">
+                <h1 class="mb-4">Bienvenue {{ profile.firstname }} {{ profile.name }}</h1>
+
+                <div class="latest-comments-section">
+                    <h2 class="h4">Derniers commentaires sur vos recettes</h2>
+                    {% if latestComments is not empty %}
+                        <ul>
+                            {% for comment in latestComments %}
+                                <li>
+                                    {{ comment.content }} - sur la recette <strong>{{ comment.recipe.title }}</strong>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Aucun commentaire récent sur vos recettes.</p>
+                    {% endif %}
+                </div>
+
+                <div class="latest-recipes mt-5">
+                    <h2 class="h4">Dernières recettes ajoutées</h2>
+                    <div class="row">
+                        {% for recipe in latestRecipes %}
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <img src="/images/recipes/{{ recipe.imageName | default('default/default-recipe.webp') }}" class="card-img-top" alt="{{ recipe.title }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ recipe.title }}</h5>
+                                        <p class="card-text">{{ recipe.description }}</p>
+                                        <a href="{{ path('recipe_show', {'id': recipe.id}) }}" class="btn btn-blue">Voir la recette</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

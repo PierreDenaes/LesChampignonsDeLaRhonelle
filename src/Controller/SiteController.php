@@ -7,14 +7,18 @@ use App\Entity\Recipe;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use Pagerfanta\Pagerfanta;
+use App\Entity\ContactMessage;
 use App\Service\RatingService;
 use App\Service\CommentService;
+use App\Form\ContactMessageType;
+use Symfony\Component\Mime\Email;
 use App\Repository\RecipeRepository;
 use App\Repository\GalleryRepository;
 use App\Repository\SponsorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\DistributionPointRepository;
 use Symfony\Component\Routing\Annotation\Route;
@@ -78,10 +82,46 @@ class SiteController extends AbstractController
     }
     
     #[Route('/about', name: 'about_us')]
-    public function about(): Response
+    public function about(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
-        
+        // Création du formulaire
+        $contactMessage = new ContactMessage();
+        $form = $this->createForm(ContactMessageType::class, $contactMessage);
+
+        // Gestion de la soumission du formulaire
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Définir la date de soumission
+            $contactMessage->setSubmittedAt(new \DateTimeImmutable());
+
+            // Enregistrer le message dans la base de données
+            $entityManager->persist($contactMessage);
+            $entityManager->flush();
+
+            // Envoi d'un email à l'administrateur
+            $email = (new Email())
+                ->from($contactMessage->getEmail()) // L'expéditeur est l'email soumis dans le formulaire
+                ->to('admin@leschampignonsdelarhonelle.com') // L'email de l'admin
+                ->subject('Nouveau message de contact')
+                ->html(sprintf(
+                    '<p><strong>Nom:</strong> %s</p><p><strong>Email:</strong> %s</p><p><strong>Message:</strong><br>%s</p>',
+                    $contactMessage->getName(),
+                    $contactMessage->getEmail(),
+                    nl2br($contactMessage->getMessage())
+                ));
+
+            $mailer->send($email);
+
+            // Message flash de confirmation
+            $this->addFlash('success', 'Votre message a bien été envoyé. Nous vous répondrons dès que possible.');
+
+            // Redirection après soumission
+            return $this->redirectToRoute('about_us');
+        }
+
+        // Afficher le formulaire et le reste de la page "À propos"
         return $this->render('site/about_us.html.twig', [
+            'form' => $form->createView(),
             'google_maps_api_key' => $_ENV['GOOGLE_MAPS_API_KEY'],
         ]);
     }

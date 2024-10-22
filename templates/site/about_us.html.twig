@@ -16,13 +16,41 @@
 {% endblock %}
 {% block body %}
 
-	<div id="map" style="height: 500px; width: 100%;" class="border-bottom border-gold border-5"></div>
+<div class="container my-5">
+    <h1 class="text-center mb-4 fw-bold">À propos des <span class="bg-text pe-3">Champignons de la Rhonelle</span></h1>
+    <p class="lead text-center">Cultivons des pleurotes et shiitakes bio avec passion, dans le respect de l’environnement et des circuits courts.</p>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="h4 fw-bold">Notre <span class="bg-text pe-3">Histoire</span></h2>
+            <p>Aux Champignons de la Rhonelle, nous avons choisi de nous consacrer à notre passion pour la myciculture. Après avoir travaillé dans le domaine de l’assainissement en tant que fonctionnaires, nous avons décidé de renouer avec nos racines biologiques et de démarrer une nouvelle aventure, plus proche de la nature et du vivant.</p>
+        </div>
+        <div class="col-md-6">
+            <h2 class="h4 fw-bold">Une Culture <span class="bg-text pe-3">Innovante et Écologique</span></h2>
+            <p>Nos champignons sont cultivés dans des containers isothermes recyclés, une méthode qui permet de contrôler la température et l’humidité tout en minimisant notre empreinte écologique. Nous utilisons des blocs de paille ensemencés de mycélium, et une fois le cycle de culture terminé, le substrat est donné à un maraîcher local pour enrichir ses sols, fermant ainsi la boucle écologique.</p>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h2 class="h4 fw-bold">Des Produits <span class="bg-text pe-3">Locaux et de Qualité</span></h2>
+            <p>Nos pleurotes et shiitakes bio se retrouvent sur les tables de restaurateurs locaux renommés, tels que <strong>La Table de Fred</strong> à Rombies ou <strong>Prune Traiteur</strong> à Valenciennes. Nous proposons également nos produits directement aux particuliers lors de divers marchés régionaux, comme ceux de Valenciennes, Louvignies-Quesnoy, et bien d'autres.</p>
+        </div>
+        <div class="col-md-6">
+            <h2 class="h4 fw-bold">Engagés dans le <span class="bg-text pe-3">Circuit Court</span></h2>
+            <p>Notre priorité est de promouvoir des circuits courts pour garantir fraîcheur et qualité. Grâce à notre installation en périphérie urbaine, nous assurons une distribution rapide et éco-responsable de nos champignons auprès des consommateurs locaux.</p>
+        </div>
+    </div>
+    
+    
+</div>
+	<div id="map" style="height: 500px; width: 100%;" class="border-bottom border-top border-gold border-5"></div>
 	<div class="container my-5">
 		<div class="row mb-4">
 			<div class="col-12 text-center">
-				<h1 class="h2 fw-bold">Nos Points
+				<h2 class="h2 fw-bold">Nos Points
 					<span class="bg-text shadow-sm ps-1 pe-3">de Distribution</span>
-				</h1>
+				</h2>
 			</div>
 		</div>
 
@@ -49,4 +77,32 @@
 			<div class="col-12 text-center my-4" id="pagination"></div>
 		</div>
 	</div>
+	<div class="container my-5">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="text-center fw-bold">Nous <span class="bg-text pe-3">contacter</span></h2>
+            {{ form_start(form) }}
+                <div class="form-group mb-3">
+                    {{ form_label(form.name, 'Nom', { 'label_attr': {'class': 'form-label'} }) }}
+                    {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.name) }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form_label(form.email, 'Email', { 'label_attr': {'class': 'form-label'} }) }}
+                    {{ form_widget(form.email, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.email) }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form_label(form.message, 'Message', { 'label_attr': {'class': 'form-label'} }) }}
+                    {{ form_widget(form.message, { 'attr': {'class': 'form-control', 'rows': 5} }) }}
+                    {{ form_errors(form.message) }}
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-blue text-light fw-bold btn-lg">Envoyer</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

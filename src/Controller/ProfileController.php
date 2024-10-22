@@ -5,16 +5,18 @@ namespace App\Controller;
 use App\Entity\Profile;
 use App\Form\ProfileType;
 use App\Service\AvatarService;
+use App\Repository\RecipeRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * @IsGranted("ROLE_USER")
@@ -76,6 +78,20 @@ class ProfileController extends AbstractController
         return $this->render('profile/index.html.twig', [
             'form' => $form->createView(),
             'defaultAvatar' => $defaultAvatar,
+        ]);
+    }
+
+    #[Route('/home', name: 'profile_home')]
+    public function profileHome(RecipeRepository $recipeRepository, CommentRepository $commentRepository): Response
+    {
+        $user = $this->getUser();
+        $latestRecipes = $recipeRepository->findLatestRecipes(5); // Afficher les 5 dernières recettes
+        $latestComments = $commentRepository->findLatestCommentsByUser($user, 3); // Les 3 derniers commentaires
+
+        return $this->render('profile/home.html.twig', [
+            'latestRecipes' => $latestRecipes,
+            'latestComments' => $latestComments,
+            'profile' => $user->getProfile(),
         ]);
     }
 
