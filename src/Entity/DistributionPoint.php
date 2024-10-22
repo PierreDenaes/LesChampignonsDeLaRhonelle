@@ -24,6 +24,12 @@ class DistributionPoint
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $type = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $site = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +67,30 @@ class DistributionPoint
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getSite(): ?string
+    {
+        return $this->site;
+    }
+
+    public function setSite(?string $site): static
+    {
+        $this->site = $site;
 
         return $this;
     }

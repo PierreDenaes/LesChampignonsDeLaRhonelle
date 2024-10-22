@@ -1,22 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}À Propos | Contact{% endblock %}
+{% block title %}À Propos | Contact
+{% endblock %}
 {% block stylesheets %}
 	{{ parent() }}
 	{{ encore_entry_link_tags('about_us') }}
-	
+
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
 	{{ encore_entry_script_tags('about_us') }}
 
-<!-- Inclure l'API Google Maps avec les repères avancés -->
-<script
-  src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&v=weekly&libraries=marker"
-defer
-></script>
+	<!-- Inclure l'API Google Maps avec les repères avancés -->
+	<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&v=weekly&libraries=marker" defer></script>
 {% endblock %}
 {% block body %}
 
-<div id="map" style="height: 500px; width: 100%;"></div>
+	<div id="map" style="height: 500px; width: 100%;" class="border-bottom border-gold border-5"></div>
+	<div class="container my-5">
+		<div class="row mb-4">
+			<div class="col-12 text-center">
+				<h1 class="h2 fw-bold">Nos Points
+					<span class="bg-text shadow-sm ps-1 pe-3">de Distribution</span>
+				</h1>
+			</div>
+		</div>
+
+		<!-- Filtres par type -->
+		<div class="row mb-5">
+			<div class="col-12 text-center">
+				<button class="btn btn-blue active filter-btn fw-bold m-1" data-type="all">Tous</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Marché">Marché</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Maraîcher">Maraîcher</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Magasin">Magasin</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="AMAP">AMAP</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Restaurant">Restaurant</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Traiteur">Traiteur</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Epicerie">Epicerie</button>
+				<button class="btn btn-blue filter-btn fw-bold m-1" data-type="Ferme">Ferme</button>
+			</div>
+		</div>
+
+		<!-- Grille pour afficher les cartes -->
+		<div class="row" id="distribution-grid"></div>
+
+		<!-- Pagination -->
+		<div class="row">
+			<div class="col-12 text-center my-4" id="pagination"></div>
+		</div>
+	</div>
 {% endblock %}

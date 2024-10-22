@@ -99,6 +99,8 @@ class SiteController extends AbstractController
                 'name' => $point->getName(),
                 'address' => $point->getAddress(),
                 'description' => $point->getDescription(),
+                'type' => $point->getType(),
+                'site' => $point->getSite(),
             ];
         }
 
