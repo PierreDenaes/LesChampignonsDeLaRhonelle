@@ -43,16 +43,45 @@ class ProfileController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->redirectToRoute('app_login'); 
+            return $this->redirectToRoute('app_login');
         }
 
         $profile = $user->getProfile();
 
         if (!$profile) {
+            // Rediriger vers la page de création de profil si aucun profil n'existe
+            return $this->redirectToRoute('profile_home');
+        }
+
+        // Si le profil existe, on gère l'édition du profil
+        return $this->handleEditProfile($request, $profile);
+    }
+
+    #[Route('/home', name: 'profile_home')]
+    public function profileHome(Request $request, RecipeRepository $recipeRepository, CommentRepository $commentRepository): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $profile = $user->getProfile();
+
+        // Si aucun profil n'existe, gérer la création du profil
+        if (!$profile) {
             return $this->handleNewProfile($request, $user);
         }
 
-        return $this->handleEditProfile($request, $profile);
+        // Si le profil existe, afficher les recettes et commentaires
+        $latestRecipes = $recipeRepository->findLatestRecipes(5); // Les 5 dernières recettes
+        $latestComments = $commentRepository->findLatestCommentsByUser($user, 3); // Les 3 derniers commentaires
+
+        return $this->render('profile/home.html.twig', [
+            'latestRecipes' => $latestRecipes,
+            'latestComments' => $latestComments,
+            'profile' => $profile,
+        ]);
     }
 
     private function handleNewProfile(Request $request, $user): Response
@@ -69,29 +98,16 @@ class ProfileController extends AbstractController
             $this->entityManager->persist($profile);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_profile');
+            return $this->redirectToRoute('profile_home');
         }
 
         // Chemin de l'avatar par défaut
         $defaultAvatar = 'images/avatars/default/default-avatar.png';
 
-        return $this->render('profile/index.html.twig', [
+        return $this->render('profile/home.html.twig', [
             'form' => $form->createView(),
             'defaultAvatar' => $defaultAvatar,
-        ]);
-    }
-
-    #[Route('/home', name: 'profile_home')]
-    public function profileHome(RecipeRepository $recipeRepository, CommentRepository $commentRepository): Response
-    {
-        $user = $this->getUser();
-        $latestRecipes = $recipeRepository->findLatestRecipes(5); // Afficher les 5 dernières recettes
-        $latestComments = $commentRepository->findLatestCommentsByUser($user, 3); // Les 3 derniers commentaires
-
-        return $this->render('profile/home.html.twig', [
-            'latestRecipes' => $latestRecipes,
-            'latestComments' => $latestComments,
-            'profile' => $user->getProfile(),
+            'profile' => null, // Pas de profil à afficher
         ]);
     }
 

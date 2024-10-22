@@ -65,7 +65,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
                 $request->getSession()->getFlashBag()->add('success', 'Pour commencer, merci de renseigner votre profil !');
             }
         
-            return new RedirectResponse($this->urlGenerator->generate('app_profile'));
+            return new RedirectResponse($this->urlGenerator->generate('profile_home'));
         } else {
             throw new \Exception('No route found for user role.');
         }

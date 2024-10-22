@@ -13,15 +13,9 @@
 {% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container mt-5">
     <div class="row">
-        {% if profile is null %}
-            <div class="col-md-9">
-                <h1 class="mb-4">Bienvenue {{ app.user.username }}</h1>
-                <p>Veuillez compléter votre profil pour continuer.</p>
-                {% include 'profile_form.html.twig' %}
-            </div>
-        {% else %}
+        {% if profile is defined and profile is not empty %}
             {% include 'elements/profilnav.html.twig' %}
             <div class="col-md-9">
                 <h1 class="mb-4">Bienvenue {{ profile.firstname }} {{ profile.name }}</h1>
@@ -58,6 +52,12 @@
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+        {% else %}
+        <div class="col-md-8 m-auto">
+                <h1 class="mb-4">Bienvenue {{ app.user.email }}</h1>
+                <p>Veuillez compléter votre profil pour continuer.</p>
+                {% include 'profile/_profile_form.html.twig' %}
             </div>
         {% endif %}
     </div>
